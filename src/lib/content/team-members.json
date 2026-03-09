@@ -4,7 +4,7 @@
       "id": "team-1",
       "name": "Host",
       "role": "Moderation",
-      "text": "Fuehrt durch jede Episode und verbindet Wissenschaft mit Alltagssprache.",
+      "text": "Nam convallis, augue sed finibus laoreet, massa risus ultricies neque, quis consequat quam quam ac erat. Quisque vehicula lacus ut ex fermentum ullamcorper. Donec in aliquet tellus. Mauris quis velit quis ante dictum bibendum. Donec risus eros, commodo suscipit sollicitudin eu, egestas in neque. Aliquam nec justo et quam commodo viverra. Curabitur efficitur ipsum quis tellus interdum, sed laoreet ligula egestas.",
       "avatarLabel": "Team",
       "order": 1
     },
@@ -12,7 +12,7 @@
       "id": "team-2",
       "name": "Redaktion",
       "role": "Recherche",
-      "text": "Prueft Quellen, kuratiert Themen und bereitet Expertenfragen vor.",
+      "text": "Nam convallis, augue sed finibus laoreet, massa risus ultricies neque, quis consequat quam quam ac erat. Quisque vehicula lacus ut ex fermentum ullamcorper. Donec in aliquet tellus. Mauris quis velit quis ante dictum bibendum. Donec risus eros, commodo suscipit sollicitudin eu, egestas in neque. Aliquam nec justo et quam commodo viverra. Curabitur efficitur ipsum quis tellus interdum, sed laoreet ligula egestas.",
       "avatarLabel": "Team",
       "order": 2
     },
@@ -20,7 +20,7 @@
       "id": "team-3",
       "name": "Produktion",
       "role": "Audio & Video",
-      "text": "Sorgt fuer klare Tonqualitaet, konsistente Formate und effiziente Publikation.",
+      "text": "Nam convallis, augue sed finibus laoreet, massa risus ultricies neque, quis consequat quam quam ac erat. Quisque vehicula lacus ut ex fermentum ullamcorper. Donec in aliquet tellus. Mauris quis velit quis ante dictum bibendum. Donec risus eros, commodo suscipit sollicitudin eu, egestas in neque. Aliquam nec justo et quam commodo viverra. Curabitur efficitur ipsum quis tellus interdum, sed laoreet ligula egestas.",
       "avatarLabel": "Team",
       "order": 3
     }
