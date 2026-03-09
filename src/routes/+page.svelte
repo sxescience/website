@@ -8,7 +8,13 @@
 		Users,
 		ChevronLeft,
 		ChevronRight,
-		X
+		X,
+		Apple,
+		Youtube,
+		ShoppingBag,
+		Music2,
+		Podcast,
+		ExternalLink
 	} from "lucide-svelte";
 	import type { NewsItem } from "$lib/cms/types";
 	import type { PageData } from "./$types";
@@ -78,6 +84,13 @@
 		}
 
 		return content.news.find((item: NewsItem) => item.id === activeModalNewsId);
+	});
+	const activeModalYoutubeEmbedUrl = $derived.by(() => {
+		if (!activeModalNewsItem) {
+			return null;
+		}
+
+		return deriveYoutubeEmbedUrl(activeModalNewsItem);
 	});
 
 	onMount(() => {
@@ -305,6 +318,106 @@
 			}
 		};
 	}
+
+	function podcastPlatformKey(label: string, url: string): string {
+		const normalizedLabel = label.toLowerCase();
+		const normalizedUrl = url.toLowerCase();
+		const combined = `${normalizedLabel} ${normalizedUrl}`;
+
+		if (combined.includes("youtube music") || normalizedUrl.includes("music.youtube.com")) {
+			return "youtube-music";
+		}
+
+		if (combined.includes("youtube") || normalizedUrl.includes("youtu")) {
+			return "youtube";
+		}
+
+		if (combined.includes("spotify")) {
+			return "spotify";
+		}
+
+		if (combined.includes("apple")) {
+			return "apple";
+		}
+
+		if (combined.includes("amazon")) {
+			return "amazon";
+		}
+
+		return "generic";
+	}
+
+	function deriveYoutubeEmbedUrl(news: NewsItem): string | null {
+		const youtubeLink = news.podcastLinks.find((link) => {
+			const platform = podcastPlatformKey(link.label, link.url);
+			return platform === "youtube" || platform === "youtube-music";
+		});
+
+		if (!youtubeLink) {
+			return null;
+		}
+
+		const parsed = parseUrl(youtubeLink.url);
+		if (!parsed) {
+			return buildYoutubeSearchEmbed(news.title);
+		}
+
+		const host = parsed.hostname.toLowerCase().replace(/^www\./, "").replace(/^m\./, "");
+		const pathname = parsed.pathname;
+		const pathSegments = pathname.split("/").filter(Boolean);
+		const list = parsed.searchParams.get("list");
+
+		if (host === "youtu.be" && pathSegments[0]) {
+			return buildYoutubeVideoEmbed(pathSegments[0]);
+		}
+
+		if (host === "youtube.com" || host === "music.youtube.com" || host === "youtube-nocookie.com") {
+			if (pathname === "/watch") {
+				const videoId = parsed.searchParams.get("v");
+				if (videoId) {
+					return buildYoutubeVideoEmbed(videoId);
+				}
+			}
+
+			if (pathSegments[0] === "shorts" && pathSegments[1]) {
+				return buildYoutubeVideoEmbed(pathSegments[1]);
+			}
+
+			if (pathSegments[0] === "live" && pathSegments[1]) {
+				return buildYoutubeVideoEmbed(pathSegments[1]);
+			}
+
+			if (pathSegments[0] === "embed" && pathSegments[1]) {
+				return buildYoutubeVideoEmbed(pathSegments[1]);
+			}
+
+			if (list) {
+				return buildYoutubePlaylistEmbed(list);
+			}
+		}
+
+		return buildYoutubeSearchEmbed(news.title);
+	}
+
+	function parseUrl(value: string): URL | null {
+		try {
+			return new URL(value);
+		} catch {
+			return null;
+		}
+	}
+
+	function buildYoutubeVideoEmbed(videoId: string): string {
+		return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+	}
+
+	function buildYoutubePlaylistEmbed(listId: string): string {
+		return `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(listId)}`;
+	}
+
+	function buildYoutubeSearchEmbed(query: string): string {
+		return `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(query)}`;
+	}
 </script>
 
 <svelte:head>
@@ -515,16 +628,50 @@
 					<X size={16} />
 				</button>
 
-				<p class="podcast-modal-date">{formatNewsDate(activeModalNewsItem.date)}</p>
-				<h2 id="podcast-modal-title">{activeModalNewsItem.title}</h2>
+					<p class="podcast-modal-date">{formatNewsDate(activeModalNewsItem.date)}</p>
+					<h2 id="podcast-modal-title">{activeModalNewsItem.title}</h2>
 
-				{#if activeModalNewsItem.podcastLinks.length > 0}
-					<div class="podcast-link-grid">
-						{#each activeModalNewsItem.podcastLinks as link (`${link.label}-${link.url}`)}
-							<a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
-						{/each}
-					</div>
-				{:else}
+					{#if activeModalYoutubeEmbedUrl}
+						<div class="podcast-youtube-embed">
+							<iframe
+								src={activeModalYoutubeEmbedUrl}
+								title={`YouTube-Einbettung: ${activeModalNewsItem.title}`}
+								loading="lazy"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								referrerpolicy="strict-origin-when-cross-origin"
+								allowfullscreen
+							></iframe>
+						</div>
+					{/if}
+
+					{#if activeModalNewsItem.podcastLinks.length > 0}
+						<div class="podcast-link-grid">
+							{#each activeModalNewsItem.podcastLinks as link (`${link.label}-${link.url}`)}
+								{@const platform = podcastPlatformKey(link.label, link.url)}
+								<a href={link.url} target="_blank" rel="noopener noreferrer">
+									<span class="podcast-link-main">
+										<span class="podcast-link-icon" aria-hidden="true">
+											{#if platform === "apple"}
+												<Apple size={15} />
+											{:else if platform === "spotify"}
+												<Music2 size={15} />
+											{:else if platform === "amazon"}
+												<ShoppingBag size={15} />
+											{:else if platform === "youtube"}
+												<Youtube size={15} />
+											{:else if platform === "youtube-music"}
+												<Youtube size={15} />
+											{:else}
+												<Podcast size={15} />
+											{/if}
+										</span>
+										<span>{link.label}</span>
+									</span>
+									<ExternalLink size={14} />
+								</a>
+							{/each}
+						</div>
+					{:else}
 					<p class="podcast-empty">Für diese Folge sind noch keine Podcast-Links hinterlegt.</p>
 				{/if}
 			</div>
@@ -1155,9 +1302,9 @@
 	}
 
 	.podcast-link-grid a {
-		display: inline-flex;
+		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
 		min-height: 2.4rem;
 		padding: 0 0.8rem;
 		border-radius: 0.68rem;
@@ -1171,6 +1318,42 @@
 
 	.podcast-link-grid a:hover {
 		background: rgba(255, 255, 255, 0.16);
+	}
+
+	.podcast-link-main {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-width: 0;
+	}
+
+	.podcast-link-main span:last-child {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.podcast-link-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.11);
+	}
+
+	.podcast-youtube-embed {
+		display: grid;
+		justify-items: center;
+	}
+
+	.podcast-youtube-embed iframe {
+		width: min(100%, 740px);
+		aspect-ratio: 16 / 9;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		border-radius: 0.75rem;
+		background: #020409;
 	}
 
 	.podcast-empty {
