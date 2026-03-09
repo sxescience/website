@@ -1,3 +1,8 @@
+export type PodcastLink = {
+	label: string;
+	url: string;
+};
+
 export type NewsItem = {
 	id: string;
 	title: string;
@@ -5,6 +10,7 @@ export type NewsItem = {
 	date: string;
 	ctaLabel: string;
 	href: string;
+	podcastLinks: PodcastLink[];
 	status: string;
 	order: number;
 };

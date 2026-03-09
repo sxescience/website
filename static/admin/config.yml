@@ -63,6 +63,13 @@ singletons:
           - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD" }
           - { label: CTA Label, name: ctaLabel, widget: string }
           - { label: Href, name: href, widget: string }
+          - label: Podcast Links
+            name: podcastLinks
+            widget: list
+            required: false
+            fields:
+              - { label: Plattform, name: label, widget: string }
+              - { label: URL, name: url, widget: string }
           - label: Status
             name: status
             widget: select

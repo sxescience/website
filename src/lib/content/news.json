@@ -7,6 +7,13 @@
       "date": "2026-03-09",
       "ctaLabel": "Folge anschauen",
       "href": "#main-theme",
+      "podcastLinks": [
+        { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/" },
+        { "label": "Spotify", "url": "https://open.spotify.com/" },
+        { "label": "Amazon Music", "url": "https://music.amazon.de/podcasts" },
+        { "label": "YouTube", "url": "https://www.youtube.com/" },
+        { "label": "YouTube Music", "url": "https://music.youtube.com/" }
+      ],
       "status": "published",
       "order": 1
     },
@@ -17,6 +24,13 @@
       "date": "2026-03-08",
       "ctaLabel": "Folge anschauen",
       "href": "#main-theme",
+      "podcastLinks": [
+        { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/" },
+        { "label": "Spotify", "url": "https://open.spotify.com/" },
+        { "label": "Amazon Music", "url": "https://music.amazon.de/podcasts" },
+        { "label": "YouTube", "url": "https://www.youtube.com/" },
+        { "label": "YouTube Music", "url": "https://music.youtube.com/" }
+      ],
       "status": "published",
       "order": 2
     },
@@ -25,8 +39,15 @@
       "title": "Folge 03: Max Mustermann",
       "excerpt": "ivamus velit quam, sagittis non massa in, gravida ultrices lectus. Aliquam rutrum elementum lorem sed varius. Pellentesque ac tempus ex, eget ornare justo. Morbi eget euismod libero. Nulla eu efficitur lectus, ut convallis sem. Phasellus et est aliquam, vehicula libero quis, pulvinar ipsum. Nunc ante risus, tristique et dictum id, molestie sit amet purus.",
       "date": "2026-03-07",
-      "ctaLabel": "Folge Anschauen",
+      "ctaLabel": "Folge anschauen",
       "href": "#main-theme",
+      "podcastLinks": [
+        { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/" },
+        { "label": "Spotify", "url": "https://open.spotify.com/" },
+        { "label": "Amazon Music", "url": "https://music.amazon.de/podcasts" },
+        { "label": "YouTube", "url": "https://www.youtube.com/" },
+        { "label": "YouTube Music", "url": "https://music.youtube.com/" }
+      ],
       "status": "published",
       "order": 3
     },
@@ -35,8 +56,15 @@
       "title": "Folge 04: Max Muster",
       "excerpt": "ivamus velit quam, sagittis non massa in, gravida ultrices lectus. Aliquam rutrum elementum lorem sed varius. Pellentesque ac tempus ex, eget ornare justo. Morbi eget euismod libero. Nulla eu efficitur lectus, ut convallis sem. Phasellus et est aliquam, vehicula libero quis, pulvinar ipsum. Nunc ante risus, tristique et dictum id, molestie sit amet purus.",
       "date": "2026-03-10",
-      "ctaLabel": "Folge Anschauen",
+      "ctaLabel": "Folge anschauen",
       "href": "#main-theme",
+      "podcastLinks": [
+        { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/" },
+        { "label": "Spotify", "url": "https://open.spotify.com/" },
+        { "label": "Amazon Music", "url": "https://music.amazon.de/podcasts" },
+        { "label": "YouTube", "url": "https://www.youtube.com/" },
+        { "label": "YouTube Music", "url": "https://music.youtube.com/" }
+      ],
       "status": "published",
       "order": 4
     }

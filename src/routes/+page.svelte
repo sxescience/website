@@ -1,16 +1,41 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { ArrowRight, Sparkles, Newspaper, Mail, Users, ChevronLeft, ChevronRight } from "lucide-svelte";
+	import {
+		ArrowRight,
+		Sparkles,
+		Newspaper,
+		Mail,
+		Users,
+		ChevronLeft,
+		ChevronRight,
+		X
+	} from "lucide-svelte";
+	import type { NewsItem } from "$lib/cms/types";
 	import type { PageData } from "./$types";
 
 	const MOBILE_NEWS_BREAKPOINT = 720;
 	const TABLET_NEWS_BREAKPOINT = 1120;
+	const SWIPE_ACTIVATION_THRESHOLD = 10;
+	const SWIPE_TRIGGER_THRESHOLD = 64;
+	const SWIPE_MAX_OFFSET = 68;
+	const SWIPE_EDGE_RESISTANCE = 0.34;
 
 	let { data } = $props<{ data: PageData }>();
 
 	let isMobileMenuOpen = $state(false);
 	let viewportWidth = $state(1400);
 	let newsStartIndex = $state(0);
+	let isPodcastModalOpen = $state(false);
+	let activeModalNewsId = $state<string | null>(null);
+	let swipePointerId = $state<number | null>(null);
+	let swipeStartX = $state(0);
+	let swipeStartY = $state(0);
+	let swipeAxis = $state<"horizontal" | "vertical" | null>(null);
+	let swipeOffsetX = $state(0);
+
+	let newsCarouselElement: HTMLDivElement | null = null;
+	let modalCloseButton = $state<HTMLButtonElement | null>(null);
+	let lastFocusedElement: HTMLElement | null = null;
 
 	const content = $derived(data.content);
 	const newsVisibleCount = $derived.by(() => {
@@ -26,7 +51,10 @@
 		}
 		return Math.min(3, total);
 	});
+	const newsMaxStartIndex = $derived.by(() => Math.max(content.news.length - newsVisibleCount, 0));
 	const canNavigateNews = $derived.by(() => content.news.length > newsVisibleCount);
+	const canGoPreviousNews = $derived.by(() => canNavigateNews && newsStartIndex > 0);
+	const canGoNextNews = $derived.by(() => canNavigateNews && newsStartIndex < newsMaxStartIndex);
 	const visibleNews = $derived.by(() => {
 		const total = content.news.length;
 		const visibleCount = Math.min(newsVisibleCount, total);
@@ -39,10 +67,17 @@
 			return content.news;
 		}
 
-		return Array.from({ length: visibleCount }, (_, offset) => {
-			const index = (newsStartIndex + offset) % total;
-			return content.news[index];
-		});
+		return content.news.slice(newsStartIndex, newsStartIndex + visibleCount);
+	});
+	const isNewsTrackDragging = $derived.by(
+		() => swipePointerId !== null && swipeAxis === "horizontal"
+	);
+	const activeModalNewsItem = $derived.by((): NewsItem | undefined => {
+		if (!activeModalNewsId) {
+			return undefined;
+		}
+
+		return content.news.find((item: NewsItem) => item.id === activeModalNewsId);
 	});
 
 	onMount(() => {
@@ -59,12 +94,65 @@
 	});
 
 	$effect(() => {
-		const total = content.news.length;
-		if (total === 0 || !canNavigateNews) {
+		if (!canNavigateNews) {
 			newsStartIndex = 0;
 			return;
 		}
-		newsStartIndex = ((newsStartIndex % total) + total) % total;
+
+		if (newsStartIndex < 0) {
+			newsStartIndex = 0;
+			return;
+		}
+
+		if (newsStartIndex > newsMaxStartIndex) {
+			newsStartIndex = newsMaxStartIndex;
+		}
+	});
+
+	$effect(() => {
+		if (isPodcastModalOpen && !activeModalNewsItem) {
+			closePodcastModal();
+		}
+	});
+
+	$effect(() => {
+		if (!isPodcastModalOpen || typeof window === "undefined") {
+			return;
+		}
+
+		const handleEscapeKey = (event: KeyboardEvent) => {
+			if (event.key !== "Escape") {
+				return;
+			}
+
+			event.preventDefault();
+			closePodcastModal();
+		};
+
+		window.addEventListener("keydown", handleEscapeKey);
+		return () => {
+			window.removeEventListener("keydown", handleEscapeKey);
+		};
+	});
+
+	$effect(() => {
+		if (!isPodcastModalOpen || typeof document === "undefined") {
+			return;
+		}
+
+		lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		const previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+
+		requestAnimationFrame(() => {
+			modalCloseButton?.focus();
+		});
+
+		return () => {
+			document.body.style.overflow = previousOverflow;
+			lastFocusedElement?.focus();
+			lastFocusedElement = null;
+		};
 	});
 
 	function toggleMenu() {
@@ -92,19 +180,125 @@
 	}
 
 	function showPreviousNews() {
-		const total = content.news.length;
-		if (total === 0 || !canNavigateNews) {
+		if (!canGoPreviousNews) {
 			return;
 		}
-		newsStartIndex = (newsStartIndex - 1 + total) % total;
+		newsStartIndex -= 1;
 	}
 
 	function showNextNews() {
-		const total = content.news.length;
-		if (total === 0 || !canNavigateNews) {
+		if (!canGoNextNews) {
 			return;
 		}
-		newsStartIndex = (newsStartIndex + 1) % total;
+		newsStartIndex += 1;
+	}
+
+	function openPodcastModal(itemId: string) {
+		activeModalNewsId = itemId;
+		isPodcastModalOpen = true;
+	}
+
+	function closePodcastModal() {
+		isPodcastModalOpen = false;
+		activeModalNewsId = null;
+	}
+
+	function handlePodcastModalBackdropClick(event: MouseEvent) {
+		if (event.target === event.currentTarget) {
+			closePodcastModal();
+		}
+	}
+
+	function handleNewsPointerDown(event: PointerEvent) {
+		if (!canNavigateNews) {
+			return;
+		}
+
+		if (event.pointerType === "mouse" && event.button !== 0) {
+			return;
+		}
+
+		swipePointerId = event.pointerId;
+		swipeStartX = event.clientX;
+		swipeStartY = event.clientY;
+		swipeAxis = null;
+		swipeOffsetX = 0;
+		newsCarouselElement?.setPointerCapture(event.pointerId);
+	}
+
+	function handleNewsPointerMove(event: PointerEvent) {
+		if (swipePointerId === null || event.pointerId !== swipePointerId) {
+			return;
+		}
+
+		const deltaX = event.clientX - swipeStartX;
+		const deltaY = event.clientY - swipeStartY;
+
+		if (!swipeAxis) {
+			if (
+				Math.abs(deltaX) < SWIPE_ACTIVATION_THRESHOLD &&
+				Math.abs(deltaY) < SWIPE_ACTIVATION_THRESHOLD
+			) {
+				return;
+			}
+
+			swipeAxis = Math.abs(deltaX) >= Math.abs(deltaY) ? "horizontal" : "vertical";
+		}
+
+		if (swipeAxis !== "horizontal") {
+			return;
+		}
+
+		const isBlockedAtEdge = (deltaX > 0 && !canGoPreviousNews) || (deltaX < 0 && !canGoNextNews);
+		const adjustedDeltaX = isBlockedAtEdge ? deltaX * SWIPE_EDGE_RESISTANCE : deltaX;
+		swipeOffsetX = Math.max(-SWIPE_MAX_OFFSET, Math.min(SWIPE_MAX_OFFSET, adjustedDeltaX));
+	}
+
+	function completeNewsSwipe() {
+		if (swipePointerId === null) {
+			return;
+		}
+
+		if (swipeAxis === "horizontal") {
+			if (swipeOffsetX <= -SWIPE_TRIGGER_THRESHOLD && canGoNextNews) {
+				showNextNews();
+			} else if (swipeOffsetX >= SWIPE_TRIGGER_THRESHOLD && canGoPreviousNews) {
+				showPreviousNews();
+			}
+		}
+
+		if (newsCarouselElement?.hasPointerCapture(swipePointerId)) {
+			newsCarouselElement.releasePointerCapture(swipePointerId);
+		}
+
+		swipePointerId = null;
+		swipeAxis = null;
+		swipeOffsetX = 0;
+	}
+
+	function bindNewsSwipe(node: HTMLDivElement) {
+		newsCarouselElement = node;
+
+		const onPointerDown = (event: PointerEvent) => handleNewsPointerDown(event);
+		const onPointerMove = (event: PointerEvent) => handleNewsPointerMove(event);
+		const onPointerEnd = () => completeNewsSwipe();
+
+		node.addEventListener("pointerdown", onPointerDown);
+		node.addEventListener("pointermove", onPointerMove);
+		node.addEventListener("pointerup", onPointerEnd);
+		node.addEventListener("pointercancel", onPointerEnd);
+
+		return {
+			destroy() {
+				node.removeEventListener("pointerdown", onPointerDown);
+				node.removeEventListener("pointermove", onPointerMove);
+				node.removeEventListener("pointerup", onPointerEnd);
+				node.removeEventListener("pointercancel", onPointerEnd);
+				if (newsCarouselElement === node) {
+					newsCarouselElement = null;
+				}
+			}
+		};
 	}
 </script>
 
@@ -179,21 +373,23 @@
 
 			<div class="news-carousel-shell">
 				{#if canNavigateNews}
-					<div class="news-carousel-controls" aria-label="Folgen Navigation">
+					<div class="news-carousel-controls" aria-label="Folgen-Navigation">
 						<button
 							type="button"
 							class="news-carousel-button"
 							onclick={showPreviousNews}
+							disabled={!canGoPreviousNews}
 							aria-label="Vorherige Folge anzeigen"
 						>
 							<ChevronLeft size={16} />
-							<span>Zurueck</span>
+							<span>Zurück</span>
 						</button>
 						<button
 							type="button"
 							class="news-carousel-button"
 							onclick={showNextNews}
-							aria-label="Naechste Folge anzeigen"
+							disabled={!canGoNextNews}
+							aria-label="Nächste Folge anzeigen"
 						>
 							<span>Weiter</span>
 							<ChevronRight size={16} />
@@ -204,15 +400,27 @@
 				<div
 					class="news-carousel"
 					role="region"
-					aria-label="Folgen Karussell"
+					aria-label="Folgenkarussell"
+					use:bindNewsSwipe
 				>
-					<div class="news-track" style={`--news-columns: ${newsVisibleCount || 1};`}>
+					<div
+						class="news-track"
+						class:dragging={isNewsTrackDragging}
+						style={`--news-columns: ${newsVisibleCount || 1}; --news-drag-offset: ${swipeOffsetX}px;`}
+					>
 						{#each visibleNews as item (item.id)}
 							<article class="news-card">
 								<p class="meta">{formatNewsDate(item.date)}</p>
 								<h2>{item.title}</h2>
 								<p>{item.excerpt}</p>
-								<a href={item.href}>{item.ctaLabel} <ArrowRight size={14} /></a>
+								<button
+									type="button"
+									class="news-card-action"
+									onclick={() => openPodcastModal(item.id)}
+								>
+									{item.ctaLabel}
+									<ArrowRight size={14} />
+								</button>
 							</article>
 						{/each}
 					</div>
@@ -283,6 +491,40 @@
 		</div>
 		<p class="footer-end">© {new Date().getFullYear()} {content.site.copyrightBrandName}</p>
 	</footer>
+
+	{#if isPodcastModalOpen && activeModalNewsItem}
+		<div class="modal-overlay" role="presentation" onclick={handlePodcastModalBackdropClick}>
+			<div
+				class="podcast-modal"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="podcast-modal-title"
+			>
+				<button
+					type="button"
+					class="podcast-modal-close"
+					aria-label="Popup schließen"
+					onclick={closePodcastModal}
+					bind:this={modalCloseButton}
+				>
+					<X size={16} />
+				</button>
+
+				<p class="podcast-modal-date">{formatNewsDate(activeModalNewsItem.date)}</p>
+				<h2 id="podcast-modal-title">{activeModalNewsItem.title}</h2>
+
+				{#if activeModalNewsItem.podcastLinks.length > 0}
+					<div class="podcast-link-grid">
+						{#each activeModalNewsItem.podcastLinks as link (`${link.label}-${link.url}`)}
+							<a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+						{/each}
+					</div>
+				{:else}
+					<p class="podcast-empty">Für diese Folge sind noch keine Podcast-Links hinterlegt.</p>
+				{/if}
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -617,8 +859,16 @@
 		transform: translateY(-1px);
 	}
 
+	.news-carousel-button:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+		transform: none;
+	}
+
 	.news-carousel {
 		border-radius: 0.9rem;
+		overflow: hidden;
+		touch-action: pan-y;
 	}
 
 	.news-carousel:focus-visible {
@@ -630,6 +880,13 @@
 		display: grid;
 		gap: 0.8rem;
 		grid-template-columns: repeat(var(--news-columns, 1), minmax(0, 1fr));
+		transform: translateX(var(--news-drag-offset, 0px));
+		transition: transform 220ms ease;
+		will-change: transform;
+	}
+
+	.news-track.dragging {
+		transition: none;
 	}
 
 	.news-card,
@@ -670,7 +927,7 @@
 		color: #c4d0e6;
 	}
 
-	.news-card a {
+	.news-card-action {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
@@ -678,14 +935,16 @@
 		width: fit-content;
 		padding: 0.35rem 0.6rem;
 		border-radius: 999px;
+		border: 0;
 		background: rgba(255, 255, 255, 0.1);
 		color: #f8fbff;
 		font-size: 0.76rem;
 		font-weight: 700;
-		text-decoration: none;
+		cursor: pointer;
+		transition: background-color 0.2s ease;
 	}
 
-	.news-card a:hover {
+	.news-card-action:hover {
 		background: rgba(255, 255, 255, 0.17);
 	}
 
@@ -831,6 +1090,87 @@
 		text-align: center;
 		color: #8ea1c4;
 		font-size: 0.8rem;
+	}
+
+	.modal-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		display: grid;
+		place-items: center;
+		padding: 1rem;
+		background: rgba(2, 6, 13, 0.72);
+		backdrop-filter: blur(6px);
+	}
+
+	.podcast-modal {
+		width: min(560px, 100%);
+		max-height: min(82vh, 700px);
+		overflow-y: auto;
+		display: grid;
+		gap: 0.8rem;
+		padding: 1.1rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: linear-gradient(165deg, rgba(21, 30, 50, 0.92), rgba(8, 13, 23, 0.97));
+		box-shadow: 0 24px 40px rgba(0, 0, 0, 0.42);
+	}
+
+	.podcast-modal-close {
+		justify-self: end;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.07);
+		color: #edf4ff;
+		cursor: pointer;
+	}
+
+	.podcast-modal-close:hover {
+		background: rgba(255, 255, 255, 0.16);
+	}
+
+	.podcast-modal-date {
+		margin: 0;
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: #9db4db;
+	}
+
+	.podcast-link-grid {
+		display: grid;
+		gap: 0.55rem;
+		grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+	}
+
+	.podcast-link-grid a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.4rem;
+		padding: 0 0.8rem;
+		border-radius: 0.68rem;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.07);
+		color: #eff5ff;
+		font-size: 0.8rem;
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.podcast-link-grid a:hover {
+		background: rgba(255, 255, 255, 0.16);
+	}
+
+	.podcast-empty {
+		margin: 0;
+		color: #c5d1e8;
 	}
 
 	.reveal {

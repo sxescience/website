@@ -5,7 +5,15 @@ import siteSettingsSource from "$lib/content/site-settings.json";
 import teamMembersSource from "$lib/content/team-members.json";
 
 import { fallbackHomeContent, fallbackLegalContent } from "./defaults";
-import type { HomeContent, LegalContent, MissionItem, NewsItem, SiteSettings, TeamMember } from "./types";
+import type {
+	HomeContent,
+	LegalContent,
+	MissionItem,
+	NewsItem,
+	PodcastLink,
+	SiteSettings,
+	TeamMember
+} from "./types";
 
 const LIVE_STATUSES = new Set(["published", "live", "active", "public"]);
 
@@ -57,6 +65,15 @@ function listFromSource(value: unknown): Record<string, unknown>[] {
 
 	const wrapped = asObject(value);
 	return asList(wrapped?.items);
+}
+
+function mapPodcastLinks(value: unknown): PodcastLink[] {
+	return asList(value)
+		.map((row, index) => ({
+			label: stringValue(row.label, `Podcast-Link ${index + 1}`),
+			url: stringValue(row.url, "")
+		}))
+		.filter((link) => link.url.length > 0);
 }
 
 function mapSiteSettings(source: unknown): SiteSettings {
@@ -126,6 +143,7 @@ function mapNews(source: unknown): NewsItem[] {
 			date: stringValue(row.date, ""),
 			ctaLabel: stringValue(row.ctaLabel, "Folge anschauen"),
 			href: stringValue(row.href, "#main-theme"),
+			podcastLinks: mapPodcastLinks(row.podcastLinks ?? row.podcast_links),
 			status: stringValue(row.status, "published").toLowerCase(),
 			order: numberValue(row.order, index + 1)
 		}))
