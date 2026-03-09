@@ -214,7 +214,17 @@
 			return;
 		}
 
-		if (event.pointerType === "mouse" && event.button !== 0) {
+		if (!(event.target instanceof HTMLElement)) {
+			return;
+		}
+
+		// Never start swipe logic from interactive elements like the episode CTA.
+		if (event.target.closest(".news-card-action")) {
+			return;
+		}
+
+		// Swipe should support touch/pen gestures and not interfere with normal mouse clicks.
+		if (event.pointerType === "mouse" || event.button !== 0) {
 			return;
 		}
 
@@ -223,7 +233,6 @@
 		swipeStartY = event.clientY;
 		swipeAxis = null;
 		swipeOffsetX = 0;
-		newsCarouselElement?.setPointerCapture(event.pointerId);
 	}
 
 	function handleNewsPointerMove(event: PointerEvent) {
@@ -265,10 +274,6 @@
 			} else if (swipeOffsetX >= SWIPE_TRIGGER_THRESHOLD && canGoPreviousNews) {
 				showPreviousNews();
 			}
-		}
-
-		if (newsCarouselElement?.hasPointerCapture(swipePointerId)) {
-			newsCarouselElement.releasePointerCapture(swipePointerId);
 		}
 
 		swipePointerId = null;
@@ -416,7 +421,6 @@
 									<button
 										type="button"
 										class="news-card-action"
-										onpointerdown={(event) => event.stopPropagation()}
 										onclick={() => openPodcastModal(item.id)}
 									>
 									{item.ctaLabel}
