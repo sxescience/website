@@ -413,11 +413,12 @@
 								<p class="meta">{formatNewsDate(item.date)}</p>
 								<h2>{item.title}</h2>
 								<p>{item.excerpt}</p>
-								<button
-									type="button"
-									class="news-card-action"
-									onclick={() => openPodcastModal(item.id)}
-								>
+									<button
+										type="button"
+										class="news-card-action"
+										onpointerdown={(event) => event.stopPropagation()}
+										onclick={() => openPodcastModal(item.id)}
+									>
 									{item.ctaLabel}
 									<ArrowRight size={14} />
 								</button>
