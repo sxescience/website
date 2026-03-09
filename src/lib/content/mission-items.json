@@ -2,20 +2,20 @@
   "items": [
     {
       "id": "mission-1",
-      "title": "Wissen verstaendlich machen",
-      "text": "Wir uebersetzen aktuelle Forschung in klare Aussagen mit direktem Praxisbezug.",
+      "title": "ivamus velit quam",
+      "text": "ivamus velit quam, sagittis non massa in, gravida ultrices lectus. Aliquam rutrum elementum lorem sed varius. Pellentesque ac tempus ex, eget ornare justo. Morbi eget euismod libero. Nulla eu efficitur lectus, ut convallis sem. Phasellus et est aliquam, vehicula libero quis, pulvinar ipsum. Nunc ante risus, tristique et dictum id, molestie sit amet purus.",
       "order": 1
     },
     {
       "id": "mission-2",
-      "title": "Folgen sichtbar machen",
-      "text": "Jede Folge zeigt konkrete Auswirkungen fuer Gesellschaft, Wirtschaft und Alltag.",
+      "title": "ivamus velit quam",
+      "text": "ivamus velit quam, sagittis non massa in, gravida ultrices lectus. Aliquam rutrum elementum lorem sed varius. Pellentesque ac tempus ex, eget ornare justo. Morbi eget euismod libero. Nulla eu efficitur lectus, ut convallis sem. Phasellus et est aliquam, vehicula libero quis, pulvinar ipsum. Nunc ante risus, tristique et dictum id, molestie sit amet purus.",
       "order": 2
     },
     {
       "id": "mission-3",
-      "title": "Dialog foerdern",
-      "text": "Wir bringen Forschung, Praxis und Oeffentlichkeit in ein gemeinsames Gespraech.",
+      "title": "ivamus velit quam",
+      "text": "ivamus velit quam, sagittis non massa in, gravida ultrices lectus. Aliquam rutrum elementum lorem sed varius. Pellentesque ac tempus ex, eget ornare justo. Morbi eget euismod libero. Nulla eu efficitur lectus, ut convallis sem. Phasellus et est aliquam, vehicula libero quis, pulvinar ipsum. Nunc ante risus, tristique et dictum id, molestie sit amet purus.",
       "order": 3
     }
   ]
