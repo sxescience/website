@@ -13,8 +13,7 @@
 		Youtube,
 		ShoppingBag,
 		Music2,
-		Podcast,
-		ExternalLink
+		Podcast
 	} from "lucide-svelte";
 	import type { NewsItem } from "$lib/cms/types";
 	import type { PageData } from "./$types";
@@ -667,7 +666,6 @@
 										</span>
 										<span>{link.label}</span>
 									</span>
-									<ExternalLink size={14} />
 								</a>
 							{/each}
 						</div>
@@ -1304,7 +1302,7 @@
 	.podcast-link-grid a {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: flex-start;
 		min-height: 2.4rem;
 		padding: 0 0.8rem;
 		border-radius: 0.68rem;
