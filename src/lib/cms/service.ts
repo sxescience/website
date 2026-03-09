@@ -28,6 +28,11 @@ function numberValue(value: unknown, fallbackValue: number): number {
 	return fallbackValue;
 }
 
+function dateSortValue(value: string): number | undefined {
+	const parsed = Date.parse(value);
+	return Number.isFinite(parsed) ? parsed : undefined;
+}
+
 function asObject(value: unknown): Record<string, unknown> | undefined {
 	if (!value || typeof value !== "object" || Array.isArray(value)) {
 		return undefined;
@@ -119,13 +124,33 @@ function mapNews(source: unknown): NewsItem[] {
 			title: stringValue(row.title, defaults[0]?.title ?? ""),
 			excerpt: stringValue(row.excerpt, defaults[0]?.excerpt ?? ""),
 			date: stringValue(row.date, ""),
-			ctaLabel: stringValue(row.ctaLabel, "Folge lesen"),
+			ctaLabel: stringValue(row.ctaLabel, "Folge anschauen"),
 			href: stringValue(row.href, "#main-theme"),
 			status: stringValue(row.status, "published").toLowerCase(),
 			order: numberValue(row.order, index + 1)
 		}))
 		.filter((item) => LIVE_STATUSES.has(item.status))
-		.sort((a, b) => a.order - b.order);
+		.sort((a, b) => {
+			const aDate = dateSortValue(a.date);
+			const bDate = dateSortValue(b.date);
+
+			if (aDate !== undefined && bDate !== undefined) {
+				if (aDate !== bDate) {
+					return bDate - aDate;
+				}
+				return b.order - a.order;
+			}
+
+			if (aDate !== undefined) {
+				return -1;
+			}
+
+			if (bDate !== undefined) {
+				return 1;
+			}
+
+			return b.order - a.order;
+		});
 
 	return mapped.length > 0 ? mapped : defaults;
 }

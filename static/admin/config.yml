@@ -60,7 +60,7 @@ singletons:
           - { label: ID, name: id, widget: string }
           - { label: Title, name: title, widget: string }
           - { label: Excerpt, name: excerpt, widget: text }
-          - { label: Date, name: date, widget: string }
+          - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD" }
           - { label: CTA Label, name: ctaLabel, widget: string }
           - { label: Href, name: href, widget: string }
           - label: Status

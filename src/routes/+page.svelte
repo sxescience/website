@@ -1,11 +1,71 @@
 <script lang="ts">
-	import { ArrowRight, Sparkles, Newspaper, Mail, Users } from "lucide-svelte";
+	import { onMount } from "svelte";
+	import { ArrowRight, Sparkles, Newspaper, Mail, Users, ChevronLeft, ChevronRight } from "lucide-svelte";
 	import type { PageData } from "./$types";
+
+	const MOBILE_NEWS_BREAKPOINT = 720;
+	const TABLET_NEWS_BREAKPOINT = 1120;
 
 	let { data } = $props<{ data: PageData }>();
 
 	let isMobileMenuOpen = $state(false);
+	let viewportWidth = $state(1400);
+	let newsStartIndex = $state(0);
+
 	const content = $derived(data.content);
+	const newsVisibleCount = $derived.by(() => {
+		const total = content.news.length;
+		if (total === 0) {
+			return 0;
+		}
+		if (viewportWidth < MOBILE_NEWS_BREAKPOINT) {
+			return 1;
+		}
+		if (viewportWidth < TABLET_NEWS_BREAKPOINT) {
+			return Math.min(2, total);
+		}
+		return Math.min(3, total);
+	});
+	const canNavigateNews = $derived.by(() => content.news.length > newsVisibleCount);
+	const visibleNews = $derived.by(() => {
+		const total = content.news.length;
+		const visibleCount = Math.min(newsVisibleCount, total);
+
+		if (total === 0 || visibleCount === 0) {
+			return [];
+		}
+
+		if (total <= visibleCount) {
+			return content.news;
+		}
+
+		return Array.from({ length: visibleCount }, (_, offset) => {
+			const index = (newsStartIndex + offset) % total;
+			return content.news[index];
+		});
+	});
+
+	onMount(() => {
+		const updateViewportWidth = () => {
+			viewportWidth = window.innerWidth;
+		};
+
+		updateViewportWidth();
+		window.addEventListener("resize", updateViewportWidth);
+
+		return () => {
+			window.removeEventListener("resize", updateViewportWidth);
+		};
+	});
+
+	$effect(() => {
+		const total = content.news.length;
+		if (total === 0 || !canNavigateNews) {
+			newsStartIndex = 0;
+			return;
+		}
+		newsStartIndex = ((newsStartIndex % total) + total) % total;
+	});
 
 	function toggleMenu() {
 		isMobileMenuOpen = !isMobileMenuOpen;
@@ -17,6 +77,34 @@
 
 	function handleNewsletterSubmit(event: SubmitEvent) {
 		event.preventDefault();
+	}
+
+	function formatNewsDate(value: string): string {
+		const parsed = Date.parse(value);
+		if (!Number.isFinite(parsed)) {
+			return value;
+		}
+		return new Date(parsed).toLocaleDateString("de-DE", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric"
+		});
+	}
+
+	function showPreviousNews() {
+		const total = content.news.length;
+		if (total === 0 || !canNavigateNews) {
+			return;
+		}
+		newsStartIndex = (newsStartIndex - 1 + total) % total;
+	}
+
+	function showNextNews() {
+		const total = content.news.length;
+		if (total === 0 || !canNavigateNews) {
+			return;
+		}
+		newsStartIndex = (newsStartIndex + 1) % total;
 	}
 </script>
 
@@ -89,15 +177,46 @@
 				</div>
 			</aside>
 
-			<div class="news-grid">
-				{#each content.news as item (item.id)}
-					<article class="news-card">
-						<p class="meta">{item.date}</p>
-						<h2>{item.title}</h2>
-						<p>{item.excerpt}</p>
-						<a href={item.href}>{item.ctaLabel} <ArrowRight size={14} /></a>
-					</article>
-				{/each}
+			<div class="news-carousel-shell">
+				{#if canNavigateNews}
+					<div class="news-carousel-controls" aria-label="Folgen Navigation">
+						<button
+							type="button"
+							class="news-carousel-button"
+							onclick={showPreviousNews}
+							aria-label="Vorherige Folge anzeigen"
+						>
+							<ChevronLeft size={16} />
+							<span>Zurueck</span>
+						</button>
+						<button
+							type="button"
+							class="news-carousel-button"
+							onclick={showNextNews}
+							aria-label="Naechste Folge anzeigen"
+						>
+							<span>Weiter</span>
+							<ChevronRight size={16} />
+						</button>
+					</div>
+				{/if}
+
+				<div
+					class="news-carousel"
+					role="region"
+					aria-label="Folgen Karussell"
+				>
+					<div class="news-track" style={`--news-columns: ${newsVisibleCount || 1};`}>
+						{#each visibleNews as item (item.id)}
+							<article class="news-card">
+								<p class="meta">{formatNewsDate(item.date)}</p>
+								<h2>{item.title}</h2>
+								<p>{item.excerpt}</p>
+								<a href={item.href}>{item.ctaLabel} <ArrowRight size={14} /></a>
+							</article>
+						{/each}
+					</div>
+				</div>
 			</div>
 		</section>
 
@@ -463,11 +582,54 @@
 		color: #d7e4fb;
 	}
 
-	.news-grid {
+	.news-carousel-shell {
 		grid-column: 1 / -1;
 		display: grid;
+		gap: 0.65rem;
+	}
+
+	.news-carousel-controls {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.5rem;
+	}
+
+	.news-carousel-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		height: 2rem;
+		padding: 0 0.72rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.06);
+		color: #e9f2ff;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: background-color 0.2s ease, transform 0.2s ease;
+	}
+
+	.news-carousel-button:hover {
+		background: rgba(255, 255, 255, 0.14);
+		transform: translateY(-1px);
+	}
+
+	.news-carousel {
+		border-radius: 0.9rem;
+	}
+
+	.news-carousel:focus-visible {
+		outline: 2px solid #8ab7ff;
+		outline-offset: 3px;
+	}
+
+	.news-track {
+		display: grid;
 		gap: 0.8rem;
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		grid-template-columns: repeat(var(--news-columns, 1), minmax(0, 1fr));
 	}
 
 	.news-card,

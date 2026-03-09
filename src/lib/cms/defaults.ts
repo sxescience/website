@@ -46,8 +46,8 @@ export const fallbackHomeContent: HomeContent = {
 			id: "folge-01",
 			title: "Folge 01: Forschung und Wirkung",
 			excerpt: "Wie neue Erkenntnisse aus Labor und Hochschule in Entscheidungen einfliessen.",
-			date: "03. Maerz 2026",
-			ctaLabel: "Folge lesen",
+			date: "2026-03-03",
+			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
 			status: "published",
 			order: 1
@@ -56,8 +56,8 @@ export const fallbackHomeContent: HomeContent = {
 			id: "folge-02",
 			title: "Folge 02: Daten und Verantwortung",
 			excerpt: "Welche Standards Forschungsdaten brauchen, damit Vertrauen entstehen kann.",
-			date: "24. Februar 2026",
-			ctaLabel: "Folge lesen",
+			date: "2026-02-24",
+			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
 			status: "published",
 			order: 2
@@ -66,8 +66,8 @@ export const fallbackHomeContent: HomeContent = {
 			id: "folge-03",
 			title: "Folge 03: Transfer in die Praxis",
 			excerpt: "Beispiele, wie Forschungsergebnisse messbar in Unternehmen ankommen.",
-			date: "10. Februar 2026",
-			ctaLabel: "Folge lesen",
+			date: "2026-02-10",
+			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
 			status: "published",
 			order: 3
