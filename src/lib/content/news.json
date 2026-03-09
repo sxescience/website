@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "folge-01",
+      "title": "Folge 01: Forschung und Wirkung",
+      "excerpt": "Wie neue Erkenntnisse aus Labor und Hochschule in Entscheidungen einfliessen.",
+      "date": "03. Maerz 2026",
+      "ctaLabel": "Folge lesen",
+      "href": "#main-theme",
+      "status": "published",
+      "order": 1
+    },
+    {
+      "id": "folge-02",
+      "title": "Folge 02: Daten und Verantwortung",
+      "excerpt": "Welche Standards Forschungsdaten brauchen, damit Vertrauen entstehen kann.",
+      "date": "24. Februar 2026",
+      "ctaLabel": "Folge lesen",
+      "href": "#main-theme",
+      "status": "published",
+      "order": 2
+    },
+    {
+      "id": "folge-03",
+      "title": "Folge 03: Transfer in die Praxis",
+      "excerpt": "Beispiele, wie Forschungsergebnisse messbar in Unternehmen ankommen.",
+      "date": "10. Februar 2026",
+      "ctaLabel": "Folge lesen",
+      "href": "#main-theme",
+      "status": "published",
+      "order": 3
+    }
+  ]
+}

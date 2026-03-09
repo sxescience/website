@@ -115,7 +115,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  section {
+    scroll-margin-top: 7rem;
   }
 }

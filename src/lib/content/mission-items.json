@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": "mission-1",
+      "title": "Wissen verstaendlich machen",
+      "text": "Wir uebersetzen aktuelle Forschung in klare Aussagen mit direktem Praxisbezug.",
+      "order": 1
+    },
+    {
+      "id": "mission-2",
+      "title": "Folgen sichtbar machen",
+      "text": "Jede Folge zeigt konkrete Auswirkungen fuer Gesellschaft, Wirtschaft und Alltag.",
+      "order": 2
+    },
+    {
+      "id": "mission-3",
+      "title": "Dialog foerdern",
+      "text": "Wir bringen Forschung, Praxis und Oeffentlichkeit in ein gemeinsames Gespraech.",
+      "order": 3
+    }
+  ]
+}

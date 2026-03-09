@@ -1,42 +1,37 @@
-# sv
+# Forschung mit Folgen Website
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+SvelteKit website with a built-in Git-based CMS (`Sveltia`) under `/admin`.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Local development
 
 ```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv create --template minimal --types ts --install npm .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+## CMS (`/admin`)
 
-To create a production version of your app:
+- Admin UI: `static/admin/index.html`
+- CMS config: `static/admin/config.yml`
+- Editable content files:
+  - `src/lib/content/site-settings.json`
+  - `src/lib/content/news.json`
+  - `src/lib/content/mission-items.json`
+  - `src/lib/content/team-members.json`
+  - `src/lib/content/legal-content.json`
+
+## Vercel deployment
+
+1. Connect this GitHub repo to Vercel.
+2. Deploy normally.
+3. Open `/admin` on the deployed domain.
+4. Log in via GitHub in the CMS and edit content.
+5. CMS changes create commits -> Vercel redeploys -> website updates for all visitors.
+
+Detailed setup notes: `docs/sveltia-cms-setup.md`
+
+## Type checks
 
 ```sh
-npm run build
+npm run check
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

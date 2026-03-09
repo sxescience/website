@@ -1,10 +1,17 @@
-<script>import "../app.css";
-import favicon from '$lib/assets/favicon.svg';
+<script lang="ts">
+	import { onMount } from "svelte";
+	import "../app.css";
+	import favicon from "$lib/assets/favicon.svg";
 
-let { children } = $props();</script>
+	let { children } = $props();
+
+	onMount(() => {
+		document.documentElement.classList.add("dark");
+	});
+</script>
 
 <svelte:head>
-	<link rel="icon" href="{favicon}" />
+	<link rel="icon" href={favicon} />
 </svelte:head>
 
 {@render children()}

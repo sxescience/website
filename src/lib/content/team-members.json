@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "team-1",
+      "name": "Host",
+      "role": "Moderation",
+      "text": "Fuehrt durch jede Episode und verbindet Wissenschaft mit Alltagssprache.",
+      "avatarLabel": "Team",
+      "order": 1
+    },
+    {
+      "id": "team-2",
+      "name": "Redaktion",
+      "role": "Recherche",
+      "text": "Prueft Quellen, kuratiert Themen und bereitet Expertenfragen vor.",
+      "avatarLabel": "Team",
+      "order": 2
+    },
+    {
+      "id": "team-3",
+      "name": "Produktion",
+      "role": "Audio & Video",
+      "text": "Sorgt fuer klare Tonqualitaet, konsistente Formate und effiziente Publikation.",
+      "avatarLabel": "Team",
+      "order": 3
+    }
+  ]
+}
