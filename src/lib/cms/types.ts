@@ -3,8 +3,12 @@ export type PodcastLink = {
 	url: string;
 };
 
-export type NewsItem = {
+export type OrderedContentItem = {
 	id: string;
+	order: number;
+};
+
+export type NewsItem = OrderedContentItem & {
 	title: string;
 	excerpt: string;
 	date: string;
@@ -12,23 +16,18 @@ export type NewsItem = {
 	href: string;
 	podcastLinks: PodcastLink[];
 	status: string;
-	order: number;
 };
 
-export type MissionItem = {
-	id: string;
+export type MissionItem = OrderedContentItem & {
 	title: string;
 	text: string;
-	order: number;
 };
 
-export type TeamMember = {
-	id: string;
+export type TeamMember = OrderedContentItem & {
 	name: string;
 	role: string;
 	text: string;
 	avatarLabel: string;
-	order: number;
 };
 
 export type SiteSettings = {
@@ -51,6 +50,12 @@ export type SiteSettings = {
 	cmsChipTag1: string;
 	cmsChipTag2: string;
 	cmsChipTag3: string;
+	newsControlsAriaLabel: string;
+	newsCarouselAriaLabel: string;
+	newsPreviousButtonLabel: string;
+	newsPreviousButtonAriaLabel: string;
+	newsNextButtonLabel: string;
+	newsNextButtonAriaLabel: string;
 	missionKicker: string;
 	missionTitle: string;
 	newsletterKicker: string;
@@ -68,6 +73,12 @@ export type SiteSettings = {
 	footerNewsLabel: string;
 	footerImpressumLabel: string;
 	footerDatenschutzLabel: string;
+	themeToggleAriaLabel: string;
+	themeLightModeLabel: string;
+	themeDarkModeLabel: string;
+	podcastModalCloseButtonAriaLabel: string;
+	podcastModalEmptyStateText: string;
+	podcastModalYoutubeTitlePrefix: string;
 	copyrightBrandName: string;
 };
 

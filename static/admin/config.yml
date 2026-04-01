@@ -30,6 +30,12 @@ singletons:
       - { label: CMS Chip Tag 1, name: cmsChipTag1, widget: string }
       - { label: CMS Chip Tag 2, name: cmsChipTag2, widget: string }
       - { label: CMS Chip Tag 3, name: cmsChipTag3, widget: string }
+      - { label: News Controls Aria Label, name: newsControlsAriaLabel, widget: string }
+      - { label: News Carousel Aria Label, name: newsCarouselAriaLabel, widget: string }
+      - { label: News Previous Button Label, name: newsPreviousButtonLabel, widget: string }
+      - { label: News Previous Button Aria Label, name: newsPreviousButtonAriaLabel, widget: string }
+      - { label: News Next Button Label, name: newsNextButtonLabel, widget: string }
+      - { label: News Next Button Aria Label, name: newsNextButtonAriaLabel, widget: string }
       - { label: Mission Kicker, name: missionKicker, widget: string }
       - { label: Mission Title, name: missionTitle, widget: string }
       - { label: Newsletter Kicker, name: newsletterKicker, widget: string }
@@ -47,6 +53,12 @@ singletons:
       - { label: Footer News Label, name: footerNewsLabel, widget: string }
       - { label: Footer Impressum Label, name: footerImpressumLabel, widget: string }
       - { label: Footer Datenschutz Label, name: footerDatenschutzLabel, widget: string }
+      - { label: Theme Toggle Aria Label, name: themeToggleAriaLabel, widget: string }
+      - { label: Theme Light Mode Label, name: themeLightModeLabel, widget: string }
+      - { label: Theme Dark Mode Label, name: themeDarkModeLabel, widget: string }
+      - { label: Podcast Modal Close Button Aria Label, name: podcastModalCloseButtonAriaLabel, widget: string }
+      - { label: Podcast Modal Empty State Text, name: podcastModalEmptyStateText, widget: string }
+      - { label: Podcast Modal YouTube Title Prefix, name: podcastModalYoutubeTitlePrefix, widget: string }
       - { label: Copyright Brand Name, name: copyrightBrandName, widget: string }
 
   - name: news

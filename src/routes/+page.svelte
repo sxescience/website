@@ -24,6 +24,9 @@
 	const SWIPE_TRIGGER_THRESHOLD = 64;
 	const SWIPE_MAX_OFFSET = 68;
 	const SWIPE_EDGE_RESISTANCE = 0.34;
+	const THEME_STORAGE_KEY = "sxe-theme";
+
+	type ThemeMode = "dark" | "light";
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -32,6 +35,7 @@
 	let newsStartIndex = $state(0);
 	let isPodcastModalOpen = $state(false);
 	let activeModalNewsId = $state<string | null>(null);
+	let themeMode = $state<ThemeMode>("dark");
 	let swipePointerId = $state<number | null>(null);
 	let swipeStartX = $state(0);
 	let swipeStartY = $state(0);
@@ -91,6 +95,9 @@
 
 		return deriveYoutubeEmbedUrl(activeModalNewsItem);
 	});
+	const currentThemeModeLabel = $derived.by(() =>
+		themeMode === "dark" ? content.site.themeDarkModeLabel : content.site.themeLightModeLabel
+	);
 
 	onMount(() => {
 		const updateViewportWidth = () => {
@@ -98,6 +105,7 @@
 		};
 
 		updateViewportWidth();
+		themeMode = getCurrentThemeMode();
 		window.addEventListener("resize", updateViewportWidth);
 
 		return () => {
@@ -173,6 +181,10 @@
 
 	function closeMenu() {
 		isMobileMenuOpen = false;
+	}
+
+	function toggleThemeMode() {
+		applyThemeMode(themeMode === "dark" ? "light" : "dark");
 	}
 
 	function handleNewsletterSubmit(event: SubmitEvent) {
@@ -417,6 +429,28 @@
 	function buildYoutubeSearchEmbed(query: string): string {
 		return `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(query)}`;
 	}
+
+	function getCurrentThemeMode(): ThemeMode {
+		if (typeof document === "undefined") {
+			return "dark";
+		}
+		return document.documentElement.classList.contains("dark") ? "dark" : "light";
+	}
+
+	function applyThemeMode(mode: ThemeMode) {
+		if (typeof document === "undefined") {
+			return;
+		}
+
+		const root = document.documentElement;
+		root.classList.toggle("dark", mode === "dark");
+		root.style.colorScheme = mode;
+		themeMode = mode;
+
+		if (typeof window !== "undefined") {
+			window.localStorage.setItem(THEME_STORAGE_KEY, mode);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -433,15 +467,24 @@
 	<div class="ambient" aria-hidden="true"></div>
 
 	<header class="site-header" id="top">
-		<div class="inner header-row">
-			<a class="brand" href="#top">
-				<span class="brand-dot" aria-hidden="true"></span>
-				{content.site.brandName}
-			</a>
+			<div class="inner header-row">
+				<a class="brand" href="#top">
+					<span class="brand-dot" aria-hidden="true"></span>
+					{content.site.brandName}
+				</a>
 
-			<button
-				type="button"
-				class="menu-toggle"
+				<button
+					type="button"
+					class="theme-toggle"
+					onclick={toggleThemeMode}
+					aria-label={content.site.themeToggleAriaLabel}
+				>
+					{currentThemeModeLabel}
+				</button>
+
+				<button
+					type="button"
+					class="menu-toggle"
 				onclick={toggleMenu}
 				aria-expanded={isMobileMenuOpen}
 				aria-controls="site-nav"
@@ -488,38 +531,38 @@
 				</div>
 			</aside>
 
-			<div class="news-carousel-shell">
-				{#if canNavigateNews}
-					<div class="news-carousel-controls" aria-label="Folgen-Navigation">
-						<button
-							type="button"
-							class="news-carousel-button"
-							onclick={showPreviousNews}
-							disabled={!canGoPreviousNews}
-							aria-label="Vorherige Folge anzeigen"
-						>
-							<ChevronLeft size={16} />
-							<span>Zurück</span>
-						</button>
-						<button
-							type="button"
-							class="news-carousel-button"
-							onclick={showNextNews}
-							disabled={!canGoNextNews}
-							aria-label="Nächste Folge anzeigen"
-						>
-							<span>Weiter</span>
-							<ChevronRight size={16} />
-						</button>
-					</div>
-				{/if}
+				<div class="news-carousel-shell">
+					{#if canNavigateNews}
+						<div class="news-carousel-controls" aria-label={content.site.newsControlsAriaLabel}>
+							<button
+								type="button"
+								class="news-carousel-button"
+								onclick={showPreviousNews}
+								disabled={!canGoPreviousNews}
+								aria-label={content.site.newsPreviousButtonAriaLabel}
+							>
+								<ChevronLeft size={16} />
+								<span>{content.site.newsPreviousButtonLabel}</span>
+							</button>
+							<button
+								type="button"
+								class="news-carousel-button"
+								onclick={showNextNews}
+								disabled={!canGoNextNews}
+								aria-label={content.site.newsNextButtonAriaLabel}
+							>
+								<span>{content.site.newsNextButtonLabel}</span>
+								<ChevronRight size={16} />
+							</button>
+						</div>
+					{/if}
 
-				<div
-					class="news-carousel"
-					role="region"
-					aria-label="Folgenkarussell"
-					use:bindNewsSwipe
-				>
+					<div
+						class="news-carousel"
+						role="region"
+						aria-label={content.site.newsCarouselAriaLabel}
+						use:bindNewsSwipe
+					>
 					<div
 						class="news-track"
 						class:dragging={isNewsTrackDragging}
@@ -617,13 +660,13 @@
 				aria-modal="true"
 				aria-labelledby="podcast-modal-title"
 			>
-				<button
-					type="button"
-					class="podcast-modal-close"
-					aria-label="Popup schließen"
-					onclick={closePodcastModal}
-					bind:this={modalCloseButton}
-				>
+					<button
+						type="button"
+						class="podcast-modal-close"
+						aria-label={content.site.podcastModalCloseButtonAriaLabel}
+						onclick={closePodcastModal}
+						bind:this={modalCloseButton}
+					>
 					<X size={16} />
 				</button>
 
@@ -634,7 +677,7 @@
 						<div class="podcast-youtube-embed">
 							<iframe
 								src={activeModalYoutubeEmbedUrl}
-								title={`YouTube-Einbettung: ${activeModalNewsItem.title}`}
+								title={`${content.site.podcastModalYoutubeTitlePrefix}: ${activeModalNewsItem.title}`}
 								loading="lazy"
 								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 								referrerpolicy="strict-origin-when-cross-origin"
@@ -670,7 +713,7 @@
 							{/each}
 						</div>
 					{:else}
-					<p class="podcast-empty">Für diese Folge sind noch keine Podcast-Links hinterlegt.</p>
+					<p class="podcast-empty">{content.site.podcastModalEmptyStateText}</p>
 				{/if}
 			</div>
 		</div>
@@ -802,6 +845,29 @@
 		border-color: var(--line-soft);
 		background: rgba(255, 255, 255, 0.06);
 		color: #ffffff;
+	}
+
+	.theme-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 2.15rem;
+		padding: 0 0.82rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: rgba(255, 255, 255, 0.08);
+		color: #edf4ff;
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: background-color 0.2s ease, transform 0.2s ease;
+	}
+
+	.theme-toggle:hover {
+		background: rgba(255, 255, 255, 0.16);
+		transform: translateY(-1px);
 	}
 
 	.menu-toggle {
@@ -1359,6 +1425,217 @@
 		color: #c5d1e8;
 	}
 
+	:global(html:not(.dark)) .page-shell {
+		--shell-0: color-mix(in oklch, var(--background) 96%, #d7e5f8 4%);
+		--shell-1: color-mix(in oklch, var(--card) 92%, #dbe7f8 8%);
+		--shell-2: color-mix(in oklch, var(--card) 88%, #d0e0f5 12%);
+		--line-soft: rgba(15, 23, 42, 0.12);
+		--line-strong: rgba(15, 23, 42, 0.22);
+		--copy-muted: #42546f;
+	}
+
+	:global(html:not(.dark)) .ambient {
+		background:
+			radial-gradient(circle at 10% 8%, rgba(61, 131, 204, 0.18), transparent 32%),
+			radial-gradient(circle at 86% 14%, rgba(37, 179, 158, 0.14), transparent 34%),
+			linear-gradient(180deg, rgba(17, 24, 39, 0.015), transparent 32%);
+	}
+
+	:global(html:not(.dark)) .skip-link {
+		background: #edf4ff;
+		color: #10203a;
+	}
+
+	:global(html:not(.dark)) .site-header {
+		background: color-mix(in srgb, #ffffff 88%, transparent);
+	}
+
+	:global(html:not(.dark)) .brand {
+		color: #12253f;
+	}
+
+	:global(html:not(.dark)) nav a {
+		color: #2a4061;
+	}
+
+	:global(html:not(.dark)) nav a:hover {
+		color: #0f1f37;
+		background: rgba(16, 32, 58, 0.08);
+	}
+
+	:global(html:not(.dark)) .theme-toggle {
+		border-color: rgba(15, 23, 42, 0.18);
+		background: rgba(25, 54, 102, 0.08);
+		color: #112540;
+	}
+
+	:global(html:not(.dark)) .theme-toggle:hover {
+		background: rgba(25, 54, 102, 0.14);
+	}
+
+	:global(html:not(.dark)) .menu-toggle span {
+		background: #1a2f4f;
+	}
+
+	:global(html:not(.dark)) .panel {
+		box-shadow:
+			0 20px 32px rgba(15, 23, 42, 0.08),
+			inset 0 1px 0 rgba(255, 255, 255, 0.8);
+	}
+
+	:global(html:not(.dark)) .kicker {
+		color: #53698b;
+	}
+
+	:global(html:not(.dark)) .button-ghost {
+		background: rgba(255, 255, 255, 0.66);
+		color: #163153;
+	}
+
+	:global(html:not(.dark)) .cms-chip {
+		border-color: rgba(15, 23, 42, 0.14);
+		background: linear-gradient(150deg, rgba(255, 255, 255, 0.85), rgba(238, 246, 255, 0.62));
+	}
+
+	:global(html:not(.dark)) .cms-chip p {
+		color: #364c6d;
+	}
+
+	:global(html:not(.dark)) .chip-head {
+		color: #4d6385;
+	}
+
+	:global(html:not(.dark)) .chip-grid span {
+		background: rgba(26, 47, 79, 0.08);
+		color: #234066;
+	}
+
+	:global(html:not(.dark)) .news-carousel-button {
+		border-color: rgba(15, 23, 42, 0.16);
+		background: rgba(26, 47, 79, 0.08);
+		color: #173252;
+	}
+
+	:global(html:not(.dark)) .news-carousel-button:hover {
+		background: rgba(26, 47, 79, 0.14);
+	}
+
+	:global(html:not(.dark)) .news-card,
+	:global(html:not(.dark)) .mission-card,
+	:global(html:not(.dark)) .team-card {
+		border-color: rgba(15, 23, 42, 0.12);
+	}
+
+	:global(html:not(.dark)) .news-card:hover,
+	:global(html:not(.dark)) .mission-card:hover,
+	:global(html:not(.dark)) .team-card:hover {
+		border-color: rgba(54, 116, 207, 0.36);
+		box-shadow: 0 14px 22px rgba(20, 38, 63, 0.12);
+	}
+
+	:global(html:not(.dark)) .meta {
+		color: #4f6a90;
+	}
+
+	:global(html:not(.dark)) .news-card p,
+	:global(html:not(.dark)) .mission-card p,
+	:global(html:not(.dark)) .team-card p {
+		color: #405472;
+	}
+
+	:global(html:not(.dark)) .news-card-action {
+		background: rgba(30, 66, 124, 0.12);
+		color: #173152;
+	}
+
+	:global(html:not(.dark)) .news-card-action:hover {
+		background: rgba(30, 66, 124, 0.2);
+	}
+
+	:global(html:not(.dark)) .newsletter-form {
+		border-color: rgba(15, 23, 42, 0.14);
+		background: rgba(255, 255, 255, 0.72);
+	}
+
+	:global(html:not(.dark)) .newsletter-form label {
+		color: #4d6588;
+	}
+
+	:global(html:not(.dark)) .newsletter-form input {
+		border-color: rgba(15, 23, 42, 0.2);
+		background: rgba(255, 255, 255, 0.9);
+		color: #152f50;
+	}
+
+	:global(html:not(.dark)) .avatar {
+		background: rgba(30, 66, 124, 0.12);
+		color: #1d3a61;
+	}
+
+	:global(html:not(.dark)) .site-footer {
+		background: color-mix(in srgb, #f7fbff 90%, transparent);
+	}
+
+	:global(html:not(.dark)) .footer-grid p {
+		color: #455a79;
+	}
+
+	:global(html:not(.dark)) .footer-links a {
+		border-color: rgba(15, 23, 42, 0.16);
+		background: rgba(26, 47, 79, 0.08);
+		color: #1c3a62;
+	}
+
+	:global(html:not(.dark)) .footer-links a:hover {
+		background: rgba(26, 47, 79, 0.14);
+	}
+
+	:global(html:not(.dark)) .footer-end {
+		color: #5b7397;
+	}
+
+	:global(html:not(.dark)) .podcast-modal {
+		border-color: rgba(15, 23, 42, 0.16);
+		background: linear-gradient(165deg, rgba(251, 254, 255, 0.98), rgba(236, 245, 255, 0.96));
+		box-shadow: 0 22px 38px rgba(13, 26, 46, 0.22);
+	}
+
+	:global(html:not(.dark)) .podcast-modal h2 {
+		color: #122844;
+	}
+
+	:global(html:not(.dark)) .podcast-modal-close {
+		border-color: rgba(15, 23, 42, 0.18);
+		background: rgba(26, 47, 79, 0.08);
+		color: #132b4a;
+	}
+
+	:global(html:not(.dark)) .podcast-modal-close:hover {
+		background: rgba(26, 47, 79, 0.14);
+	}
+
+	:global(html:not(.dark)) .podcast-modal-date {
+		color: #4f6688;
+	}
+
+	:global(html:not(.dark)) .podcast-link-grid a {
+		border-color: rgba(15, 23, 42, 0.18);
+		background: rgba(255, 255, 255, 0.88);
+		color: #183659;
+	}
+
+	:global(html:not(.dark)) .podcast-link-grid a:hover {
+		background: rgba(220, 235, 255, 0.82);
+	}
+
+	:global(html:not(.dark)) .podcast-link-icon {
+		background: rgba(30, 66, 124, 0.12);
+	}
+
+	:global(html:not(.dark)) .podcast-empty {
+		color: #4b6182;
+	}
+
 	.reveal {
 		opacity: 0;
 		transform: translateY(22px) scale(0.99);
@@ -1385,10 +1662,10 @@
 		}
 	}
 
-	@media (max-width: 860px) {
-		.menu-toggle {
-			display: flex;
-		}
+		@media (max-width: 860px) {
+			.menu-toggle {
+				display: flex;
+			}
 
 		nav {
 			display: none;
@@ -1410,11 +1687,16 @@
 			display: flex;
 		}
 
-		nav a {
-			justify-content: flex-start;
-			height: 2.3rem;
+			nav a {
+				justify-content: flex-start;
+				height: 2.3rem;
+			}
+
+			:global(html:not(.dark)) nav {
+				background: rgba(255, 255, 255, 0.95);
+				box-shadow: 0 16px 24px rgba(30, 46, 71, 0.14);
+			}
 		}
-	}
 
 	@media (max-width: 640px) {
 		.inner,

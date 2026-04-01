@@ -248,6 +248,65 @@
 		color: #9eb4d9;
 	}
 
+	:global(html:not(.dark)) .ambient {
+		background:
+			radial-gradient(circle at 10% 10%, rgba(45, 132, 194, 0.16), transparent 30%),
+			radial-gradient(circle at 86% 15%, rgba(33, 186, 162, 0.1), transparent 35%);
+	}
+
+	:global(html:not(.dark)) .back-link {
+		border-color: rgba(15, 23, 42, 0.18);
+		background: rgba(20, 40, 74, 0.08);
+		color: #183557;
+	}
+
+	:global(html:not(.dark)) .back-link:hover {
+		background: rgba(20, 40, 74, 0.14);
+	}
+
+	:global(html:not(.dark)) .brand {
+		color: #3d5476;
+	}
+
+	:global(html:not(.dark)) .hero-panel,
+	:global(html:not(.dark)) .legal-card {
+		border-color: rgba(15, 23, 42, 0.14);
+		background: linear-gradient(165deg, rgba(251, 254, 255, 0.97), rgba(238, 246, 255, 0.95));
+		box-shadow: 0 16px 28px rgba(20, 38, 63, 0.1);
+	}
+
+	:global(html:not(.dark)) .kicker {
+		color: #4f6688;
+	}
+
+	:global(html:not(.dark)) .lead {
+		color: #42546f;
+	}
+
+	:global(html:not(.dark)) :global(.legal-html p),
+	:global(html:not(.dark)) :global(.legal-html li),
+	:global(html:not(.dark)) .website-credit {
+		color: #405472;
+	}
+
+	:global(html:not(.dark)) :global(.legal-html a) {
+		color: #1d3a61;
+	}
+
+	:global(html:not(.dark)) .website-credit a {
+		border-color: rgba(15, 23, 42, 0.18);
+		background: rgba(20, 40, 74, 0.08);
+		color: #183557;
+	}
+
+	:global(html:not(.dark)) .website-credit a:hover {
+		background: rgba(20, 40, 74, 0.14);
+	}
+
+	:global(html:not(.dark)) .notice {
+		color: #4f688e;
+	}
+
 	@media (max-width: 640px) {
 		.page-header {
 			flex-direction: column;

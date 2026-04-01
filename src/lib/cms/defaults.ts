@@ -1,4 +1,16 @@
-import type { HomeContent, LegalContent } from "./types";
+import type { HomeContent, LegalContent, PodcastLink } from "./types";
+
+const FALLBACK_PODCAST_LINKS: PodcastLink[] = [
+	{ label: "Apple Podcasts", url: "https://podcasts.apple.com/" },
+	{ label: "Spotify", url: "https://open.spotify.com/" },
+	{ label: "Amazon Music", url: "https://music.amazon.de/podcasts" },
+	{ label: "YouTube", url: "https://www.youtube.com/" },
+	{ label: "YouTube Music", url: "https://music.youtube.com/" }
+];
+
+function getFallbackPodcastLinks(): PodcastLink[] {
+	return FALLBACK_PODCAST_LINKS.map((link) => ({ ...link }));
+}
 
 export const fallbackHomeContent: HomeContent = {
 	site: {
@@ -22,6 +34,12 @@ export const fallbackHomeContent: HomeContent = {
 		cmsChipTag1: "News Feed",
 		cmsChipTag2: "Episode Updates",
 		cmsChipTag3: "CMS Adapter",
+		newsControlsAriaLabel: "Folgen-Navigation",
+		newsCarouselAriaLabel: "Folgenkarussell",
+		newsPreviousButtonLabel: "Zurück",
+		newsPreviousButtonAriaLabel: "Vorherige Folge anzeigen",
+		newsNextButtonLabel: "Weiter",
+		newsNextButtonAriaLabel: "Nächste Folge anzeigen",
 		missionKicker: "Mission",
 		missionTitle: "Wissenschaft mit Klarheit, Kontext und Konsequenz",
 		newsletterKicker: "Newsletter",
@@ -39,6 +57,12 @@ export const fallbackHomeContent: HomeContent = {
 		footerNewsLabel: "Folgen",
 		footerImpressumLabel: "Impressum",
 		footerDatenschutzLabel: "Datenschutz",
+		themeToggleAriaLabel: "Farbmodus umschalten",
+		themeLightModeLabel: "Hell",
+		themeDarkModeLabel: "Dunkel",
+		podcastModalCloseButtonAriaLabel: "Popup schließen",
+		podcastModalEmptyStateText: "Für diese Folge sind noch keine Podcast-Links hinterlegt.",
+		podcastModalYoutubeTitlePrefix: "YouTube-Einbettung",
 		copyrightBrandName: "Forschung mit Folgen"
 	},
 	news: [
@@ -49,13 +73,7 @@ export const fallbackHomeContent: HomeContent = {
 			date: "2026-03-03",
 			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
-			podcastLinks: [
-				{ label: "Apple Podcasts", url: "https://podcasts.apple.com/" },
-				{ label: "Spotify", url: "https://open.spotify.com/" },
-				{ label: "Amazon Music", url: "https://music.amazon.de/podcasts" },
-				{ label: "YouTube", url: "https://www.youtube.com/" },
-				{ label: "YouTube Music", url: "https://music.youtube.com/" }
-			],
+			podcastLinks: getFallbackPodcastLinks(),
 			status: "published",
 			order: 1
 		},
@@ -66,13 +84,7 @@ export const fallbackHomeContent: HomeContent = {
 			date: "2026-02-24",
 			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
-			podcastLinks: [
-				{ label: "Apple Podcasts", url: "https://podcasts.apple.com/" },
-				{ label: "Spotify", url: "https://open.spotify.com/" },
-				{ label: "Amazon Music", url: "https://music.amazon.de/podcasts" },
-				{ label: "YouTube", url: "https://www.youtube.com/" },
-				{ label: "YouTube Music", url: "https://music.youtube.com/" }
-			],
+			podcastLinks: getFallbackPodcastLinks(),
 			status: "published",
 			order: 2
 		},
@@ -83,34 +95,28 @@ export const fallbackHomeContent: HomeContent = {
 			date: "2026-02-10",
 			ctaLabel: "Folge anschauen",
 			href: "#main-theme",
-			podcastLinks: [
-				{ label: "Apple Podcasts", url: "https://podcasts.apple.com/" },
-				{ label: "Spotify", url: "https://open.spotify.com/" },
-				{ label: "Amazon Music", url: "https://music.amazon.de/podcasts" },
-				{ label: "YouTube", url: "https://www.youtube.com/" },
-				{ label: "YouTube Music", url: "https://music.youtube.com/" }
-			],
+			podcastLinks: getFallbackPodcastLinks(),
 			status: "published",
 			order: 3
 		}
 	],
-		missionItems: [
-			{
-				id: "mission-1",
-				title: "Wissen verständlich machen",
-				text: "Wir übersetzen aktuelle Forschung in klare Aussagen mit direktem Praxisbezug.",
-				order: 1
-			},
-			{
-				id: "mission-2",
-				title: "Folgen sichtbar machen",
-				text: "Jede Folge zeigt konkrete Auswirkungen für Gesellschaft, Wirtschaft und Alltag.",
-				order: 2
-			},
-			{
-				id: "mission-3",
-				title: "Dialog fördern",
-				text: "Wir bringen Forschung, Praxis und Öffentlichkeit in ein gemeinsames Gespräch.",
+	missionItems: [
+		{
+			id: "mission-1",
+			title: "Wissen verständlich machen",
+			text: "Wir übersetzen aktuelle Forschung in klare Aussagen mit direktem Praxisbezug.",
+			order: 1
+		},
+		{
+			id: "mission-2",
+			title: "Folgen sichtbar machen",
+			text: "Jede Folge zeigt konkrete Auswirkungen für Gesellschaft, Wirtschaft und Alltag.",
+			order: 2
+		},
+		{
+			id: "mission-3",
+			title: "Dialog fördern",
+			text: "Wir bringen Forschung, Praxis und Öffentlichkeit in ein gemeinsames Gespräch.",
 			order: 3
 		}
 	],
@@ -171,15 +177,15 @@ export const fallbackLegalContent: LegalContent = {
 		<p>Der Provider der Seiten erhebt und speichert automatisch Informationen in Server-Log-Dateien. Diese Daten dienen der technisch fehlerfreien Bereitstellung der Website.</p>
 		<p>Diese Website kann technisch notwendige Cookies verwenden.</p>
 		<h3>4. Ihre Rechte</h3>
-			<ul>
-				<li>Recht auf Auskunft gemäß Art. 15 DSGVO</li>
-				<li>Recht auf Berichtigung gemäß Art. 16 DSGVO</li>
-				<li>Recht auf Löschung gemäß Art. 17 DSGVO</li>
-				<li>Recht auf Einschränkung gemäß Art. 18 DSGVO</li>
-				<li>Recht auf Datenübertragbarkeit gemäß Art. 20 DSGVO</li>
-				<li>Recht auf Widerspruch gemäß Art. 21 DSGVO</li>
-			</ul>
-		`,
+		<ul>
+			<li>Recht auf Auskunft gemäß Art. 15 DSGVO</li>
+			<li>Recht auf Berichtigung gemäß Art. 16 DSGVO</li>
+			<li>Recht auf Löschung gemäß Art. 17 DSGVO</li>
+			<li>Recht auf Einschränkung gemäß Art. 18 DSGVO</li>
+			<li>Recht auf Datenübertragbarkeit gemäß Art. 20 DSGVO</li>
+			<li>Recht auf Widerspruch gemäß Art. 21 DSGVO</li>
+		</ul>
+	`,
 	noticeText:
 		"Wichtig: Bitte die Platzhalter (Anschrift, E-Mail, optional Telefon) durch deine echten Angaben ersetzen, bevor die Seite veröffentlicht wird."
 };
