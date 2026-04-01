@@ -475,15 +475,6 @@
 
 				<button
 					type="button"
-					class="theme-toggle"
-					onclick={toggleThemeMode}
-					aria-label={content.site.themeToggleAriaLabel}
-				>
-					{currentThemeModeLabel}
-				</button>
-
-				<button
-					type="button"
 					class="menu-toggle"
 				onclick={toggleMenu}
 				aria-expanded={isMobileMenuOpen}
@@ -495,15 +486,26 @@
 				<span></span>
 			</button>
 
-			<nav id="site-nav" class:open={isMobileMenuOpen}>
-				<a href="#main-theme" onclick={closeMenu}>{content.site.navMainThemeLabel}</a>
-				<a href="#mission" onclick={closeMenu}>{content.site.navMissionLabel}</a>
-				<a href="#newsletter" onclick={closeMenu}>{content.site.navNewsletterLabel}</a>
-				<a href="#team" onclick={closeMenu}>{content.site.navTeamLabel}</a>
-				<a href="/impressum" onclick={closeMenu}>{content.site.navImpressumLabel}</a>
-			</nav>
-		</div>
-	</header>
+				<nav id="site-nav" class:open={isMobileMenuOpen}>
+					<a href="#main-theme" onclick={closeMenu}>{content.site.navMainThemeLabel}</a>
+					<a href="#mission" onclick={closeMenu}>{content.site.navMissionLabel}</a>
+					<a href="#newsletter" onclick={closeMenu}>{content.site.navNewsletterLabel}</a>
+					<a href="#team" onclick={closeMenu}>{content.site.navTeamLabel}</a>
+					<a href="/impressum" onclick={closeMenu}>{content.site.navImpressumLabel}</a>
+					<button
+						type="button"
+						class="theme-toggle"
+						onclick={() => {
+							toggleThemeMode();
+							closeMenu();
+						}}
+						aria-label={content.site.themeToggleAriaLabel}
+					>
+						{currentThemeModeLabel}
+					</button>
+				</nav>
+			</div>
+		</header>
 
 	<main class="main-stack">
 		<section id="main-theme" class="panel hero-panel reveal" style="--delay: 60ms;">
@@ -863,6 +865,10 @@
 		text-transform: uppercase;
 		cursor: pointer;
 		transition: background-color 0.2s ease, transform 0.2s ease;
+	}
+
+	nav .theme-toggle {
+		margin-left: 0.2rem;
 	}
 
 	.theme-toggle:hover {
@@ -1690,6 +1696,12 @@
 			nav a {
 				justify-content: flex-start;
 				height: 2.3rem;
+			}
+
+			nav .theme-toggle {
+				justify-content: flex-start;
+				height: 2.3rem;
+				margin-left: 0;
 			}
 
 			:global(html:not(.dark)) nav {
