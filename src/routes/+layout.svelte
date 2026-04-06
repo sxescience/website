@@ -7,6 +7,13 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<script
+		id="Cookiebot"
+		src="https://consent.cookiebot.com/uc.js"
+		data-cbid="806d9233-dbe3-4666-97ee-2cb393327c27"
+		data-blockingmode="auto"
+		type="text/javascript"
+	></script>
 	<script>
 		(() => {
 			const storageKey = "sxe-theme";
