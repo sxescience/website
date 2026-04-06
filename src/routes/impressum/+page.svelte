@@ -81,8 +81,8 @@
 		inset: 0;
 		pointer-events: none;
 		background:
-			radial-gradient(circle at 10% 10%, rgba(45, 132, 194, 0.22), transparent 30%),
-			radial-gradient(circle at 86% 15%, rgba(33, 186, 162, 0.12), transparent 35%);
+			radial-gradient(circle at 10% 10%, rgb(var(--rgb-accent-blue) / 0.22), transparent 30%),
+			radial-gradient(circle at 86% 15%, rgb(var(--rgb-accent-teal) / 0.12), transparent 35%);
 		z-index: 0;
 	}
 
@@ -108,16 +108,16 @@
 		height: 2.15rem;
 		padding: 0 0.8rem;
 		border-radius: 999px;
-		border: 1px solid rgba(255, 255, 255, 0.14);
-		background: rgba(255, 255, 255, 0.04);
-		color: #d7e3f7;
+		border: 1px solid rgb(var(--rgb-white) / 0.14);
+		background: rgb(var(--rgb-white) / 0.04);
+		color: rgb(215 227 247);
 		text-decoration: none;
 		font-size: 0.82rem;
 		font-weight: 700;
 	}
 
 	.back-link:hover {
-		background: rgba(255, 255, 255, 0.1);
+		background: rgb(var(--rgb-white) / 0.1);
 	}
 
 	.brand {
@@ -127,7 +127,7 @@
 		font-weight: 700;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		color: #b8c8e5;
+		color: rgb(184 200 229);
 	}
 
 	.page-main {
@@ -138,10 +138,10 @@
 
 	.hero-panel,
 	.legal-card {
-		border: 1px solid rgba(255, 255, 255, 0.14);
+		border: 1px solid rgb(var(--rgb-white) / 0.14);
 		border-radius: 1rem;
-		background: linear-gradient(165deg, rgba(21, 30, 50, 0.88), rgba(10, 14, 23, 0.92));
-		box-shadow: 0 20px 30px rgba(0, 0, 0, 0.26);
+		background: linear-gradient(165deg, rgb(21 30 50 / 0.88), rgb(10 14 23 / 0.92));
+		box-shadow: 0 20px 30px rgb(var(--rgb-black) / 0.26);
 	}
 
 	.hero-panel {
@@ -157,7 +157,7 @@
 		font-weight: 700;
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
-		color: #95add7;
+		color: rgb(149 173 215);
 	}
 
 	h1,
@@ -180,7 +180,7 @@
 
 	.lead {
 		margin: 0.7rem 0 0;
-		color: #bac9e4;
+		color: rgb(186 201 228);
 	}
 
 	.legal-grid {
@@ -203,7 +203,7 @@
 	:global(.legal-html p),
 	:global(.legal-html li) {
 		margin: 0;
-		color: #c5d3ea;
+		color: rgb(var(--rgb-legal-copy-dark));
 		line-height: 1.6;
 	}
 
@@ -215,7 +215,7 @@
 	}
 
 	:global(.legal-html a) {
-		color: #e7f2ff;
+		color: rgb(var(--rgb-link-dark));
 	}
 
 	.website-credit {
@@ -223,7 +223,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		margin-top: 0.3rem;
-		color: #c5d3ea;
+		color: rgb(var(--rgb-legal-copy-dark));
 	}
 
 	.website-credit a {
@@ -233,78 +233,78 @@
 		width: 1.75rem;
 		height: 1.75rem;
 		border-radius: 999px;
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		background: rgba(255, 255, 255, 0.06);
-		color: #e7f2ff;
+		border: 1px solid rgb(var(--rgb-white) / 0.2);
+		background: rgb(var(--rgb-white) / 0.06);
+		color: rgb(var(--rgb-link-dark));
 	}
 
 	.website-credit a:hover {
-		background: rgba(255, 255, 255, 0.14);
+		background: rgb(var(--rgb-white) / 0.14);
 	}
 
 	.notice {
 		margin: 0.1rem 0 0;
 		font-size: 0.86rem;
-		color: #9eb4d9;
+		color: rgb(158 180 217);
 	}
 
 	:global(html:not(.dark)) .ambient {
 		background:
-			radial-gradient(circle at 10% 10%, rgba(45, 132, 194, 0.16), transparent 30%),
-			radial-gradient(circle at 86% 15%, rgba(33, 186, 162, 0.1), transparent 35%);
+			radial-gradient(circle at 10% 10%, rgb(var(--rgb-accent-blue) / 0.16), transparent 30%),
+			radial-gradient(circle at 86% 15%, rgb(var(--rgb-accent-teal) / 0.1), transparent 35%);
 	}
 
 	:global(html:not(.dark)) .back-link {
-		border-color: rgba(15, 23, 42, 0.18);
-		background: rgba(20, 40, 74, 0.08);
-		color: #183557;
+		border-color: rgb(var(--rgb-slate-900) / 0.18);
+		background: rgb(var(--rgb-slate-800) / 0.08);
+		color: rgb(var(--rgb-link-light));
 	}
 
 	:global(html:not(.dark)) .back-link:hover {
-		background: rgba(20, 40, 74, 0.14);
+		background: rgb(var(--rgb-slate-800) / 0.14);
 	}
 
 	:global(html:not(.dark)) .brand {
-		color: #3d5476;
+		color: rgb(61 84 118);
 	}
 
 	:global(html:not(.dark)) .hero-panel,
 	:global(html:not(.dark)) .legal-card {
-		border-color: rgba(15, 23, 42, 0.14);
-		background: linear-gradient(165deg, rgba(251, 254, 255, 0.97), rgba(238, 246, 255, 0.95));
-		box-shadow: 0 16px 28px rgba(20, 38, 63, 0.1);
+		border-color: rgb(var(--rgb-slate-900) / 0.14);
+		background: linear-gradient(165deg, rgb(251 254 255 / 0.97), rgb(238 246 255 / 0.95));
+		box-shadow: 0 16px 28px rgb(20 38 63 / 0.1);
 	}
 
 	:global(html:not(.dark)) .kicker {
-		color: #4f6688;
+		color: rgb(79 102 136);
 	}
 
 	:global(html:not(.dark)) .lead {
-		color: #42546f;
+		color: rgb(66 84 111);
 	}
 
 	:global(html:not(.dark)) :global(.legal-html p),
 	:global(html:not(.dark)) :global(.legal-html li),
 	:global(html:not(.dark)) .website-credit {
-		color: #405472;
+		color: rgb(64 84 114);
 	}
 
 	:global(html:not(.dark)) :global(.legal-html a) {
-		color: #1d3a61;
+		color: rgb(29 58 97);
 	}
 
 	:global(html:not(.dark)) .website-credit a {
-		border-color: rgba(15, 23, 42, 0.18);
-		background: rgba(20, 40, 74, 0.08);
-		color: #183557;
+		border-color: rgb(var(--rgb-slate-900) / 0.18);
+		background: rgb(var(--rgb-slate-800) / 0.08);
+		color: rgb(var(--rgb-link-light));
 	}
 
 	:global(html:not(.dark)) .website-credit a:hover {
-		background: rgba(20, 40, 74, 0.14);
+		background: rgb(var(--rgb-slate-800) / 0.14);
 	}
 
 	:global(html:not(.dark)) .notice {
-		color: #4f688e;
+		color: rgb(79 104 142);
 	}
 
 	@media (max-width: 640px) {

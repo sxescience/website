@@ -86,7 +86,6 @@ singletons:
             name: status
             widget: select
             options: [published, draft]
-            default: published
           - { label: Order, name: order, widget: number, value_type: int, min: 1 }
 
   - name: mission_items
