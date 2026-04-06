@@ -816,8 +816,12 @@
 		width: 0.6rem;
 		height: 0.6rem;
 		border-radius: 999px;
-		background: linear-gradient(135deg, rgb(35 198 176), rgb(95 163 255));
-		box-shadow: 0 0 20px rgb(82 170 255 / 0.7);
+		background: linear-gradient(
+			135deg,
+			rgb(var(--rgb-brand-teal)),
+			rgb(var(--rgb-brand-blue))
+		);
+		box-shadow: 0 0 20px rgb(var(--rgb-brand-blue) / 0.7);
 	}
 
 	nav {
@@ -992,7 +996,11 @@
 	}
 
 	.button-primary {
-		background: linear-gradient(140deg, rgb(37 186 168), rgb(79 141 255));
+		background: linear-gradient(
+			140deg,
+			rgb(var(--rgb-brand-teal)),
+			rgb(var(--rgb-brand-blue))
+		);
 		color: rgb(var(--rgb-surface-light));
 	}
 
@@ -1128,7 +1136,7 @@
 	.mission-card:hover,
 	.team-card:hover {
 		transform: translateY(-5px);
-		border-color: rgb(154 195 255 / 0.45);
+		border-color: rgb(var(--rgb-brand-blue) / 0.45);
 		box-shadow: 0 16px 24px rgb(var(--rgb-black) / 0.26);
 	}
 
@@ -1225,7 +1233,11 @@
 		padding: 0 1rem;
 		border: 0;
 		border-radius: 0.65rem;
-		background: linear-gradient(140deg, rgb(33 192 172), rgb(95 151 255));
+		background: linear-gradient(
+			140deg,
+			rgb(var(--rgb-brand-teal)),
+			rgb(var(--rgb-brand-blue))
+		);
 		font-size: 0.78rem;
 		font-weight: 800;
 		letter-spacing: 0.09em;
@@ -1540,7 +1552,7 @@
 	:global(html:not(.dark)) .news-card:hover,
 	:global(html:not(.dark)) .mission-card:hover,
 	:global(html:not(.dark)) .team-card:hover {
-		border-color: rgb(54 116 207 / 0.36);
+		border-color: rgb(var(--rgb-brand-blue) / 0.36);
 		box-shadow: 0 14px 22px rgb(20 38 63 / 0.12);
 	}
 

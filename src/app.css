@@ -17,16 +17,16 @@
   --rgb-slate-900: 15 23 42;
   --rgb-slate-850: 26 47 79;
   --rgb-slate-800: 20 40 74;
-  --rgb-blue-700: 30 66 124;
+  --rgb-blue-700: 176 112 24;
 
   /* Brand and accent palette */
-  --rgb-brand-teal: 35 198 176;
-  --rgb-brand-blue: 95 163 255;
-  --rgb-accent-teal: 33 186 162;
-  --rgb-accent-teal-soft: 37 179 158;
-  --rgb-accent-blue: 45 132 194;
-  --rgb-accent-blue-soft: 61 131 204;
-  --rgb-focus-blue: 138 183 255;
+  --rgb-brand-teal: 255 196 112;
+  --rgb-brand-blue: 235 166 58;
+  --rgb-accent-teal: 246 177 74;
+  --rgb-accent-teal-soft: 238 169 67;
+  --rgb-accent-blue: 235 166 58;
+  --rgb-accent-blue-soft: 226 154 45;
+  --rgb-focus-blue: 255 196 112;
   --rgb-warning-amber: 235 166 58;
   --rgb-error-red: 220 38 38;
 
@@ -45,7 +45,7 @@
   --rgb-surface-card-light: 255 255 255;
   --rgb-surface-soft-light: 237 244 255;
   --rgb-surface-muted-light: 238 246 255;
-  --rgb-surface-accent-light: 220 235 255;
+  --rgb-surface-accent-light: 255 238 214;
   --rgb-border-light: 208 220 243;
 
   --background: rgb(var(--rgb-surface-light));
@@ -66,8 +66,8 @@
   --border: rgb(var(--rgb-border-light));
   --input: rgb(var(--rgb-border-light));
   --ring: rgb(var(--rgb-brand-blue));
-  --chart-1: rgb(95 163 255);
-  --chart-2: rgb(33 186 162);
+  --chart-1: rgb(var(--rgb-brand-blue));
+  --chart-2: rgb(var(--rgb-brand-teal));
   --chart-3: rgb(79 104 142);
   --chart-4: rgb(235 166 58);
   --chart-5: rgb(220 38 38);
@@ -107,10 +107,10 @@
   --border: rgb(var(--rgb-border-dark) / 0.1);
   --input: rgb(var(--rgb-border-dark) / 0.15);
   --ring: rgb(var(--rgb-focus-blue));
-  --chart-1: rgb(95 151 255);
-  --chart-2: rgb(35 198 176);
+  --chart-1: rgb(var(--rgb-brand-blue));
+  --chart-2: rgb(var(--rgb-brand-teal));
   --chart-3: rgb(235 166 58);
-  --chart-4: rgb(154 178 217);
+  --chart-4: rgb(176 112 24);
   --chart-5: rgb(220 38 38);
   --sidebar: rgb(var(--rgb-surface-soft-dark));
   --sidebar-foreground: rgb(var(--rgb-text-strong-dark));
