@@ -8,6 +8,8 @@
 		Users,
 		ChevronLeft,
 		ChevronRight,
+		Sun,
+		Moon,
 		X
 	} from "lucide-svelte";
 	import type { NewsItem } from "$lib/cms/types";
@@ -99,10 +101,6 @@
 
 		return deriveYoutubeEmbedUrl(activeModalNewsItem);
 	});
-	const currentThemeModeLabel = $derived.by(() =>
-		themeMode === "dark" ? content.site.themeDarkModeLabel : content.site.themeLightModeLabel
-	);
-
 	onMount(() => {
 		const updateViewportWidth = () => {
 			viewportWidth = window.innerWidth;
@@ -477,8 +475,12 @@
 	<header class="site-header" id="top">
 			<div class="inner header-row">
 				<a class="brand" href="#top">
-					<span class="brand-dot" aria-hidden="true"></span>
-					{content.site.brandName}
+					<img
+						class="brand-logo"
+						src="/assets/sxe-logo-science-transparent.png"
+						alt="Science x Entrepreneurship"
+						decoding="async"
+					/>
 				</a>
 
 				<button
@@ -503,13 +505,21 @@
 					<button
 						type="button"
 						class="theme-toggle"
+						class:light={themeMode === "light"}
 						onclick={() => {
 							toggleThemeMode();
 							closeMenu();
 						}}
 						aria-label={content.site.themeToggleAriaLabel}
+						aria-pressed={themeMode === "light"}
 					>
-						{currentThemeModeLabel}
+						<span class="theme-toggle-icon" aria-hidden="true">
+							<Sun size={14} strokeWidth={2.4} />
+						</span>
+						<span class="theme-toggle-icon" aria-hidden="true">
+							<Moon size={14} strokeWidth={2.4} />
+						</span>
+						<span class="theme-toggle-thumb" aria-hidden="true"></span>
 					</button>
 				</nav>
 			</div>
@@ -747,7 +757,7 @@
 		min-height: 100vh;
 		color: var(--foreground);
 		position: relative;
-		overflow: clip;
+		overflow-x: clip;
 	}
 
 	.ambient {
@@ -802,26 +812,16 @@
 	.brand {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.55rem;
-		font-family: "Space Grotesk", "Manrope", sans-serif;
-		font-size: 1.05rem;
-		font-weight: 700;
-		letter-spacing: 0.04em;
-		text-transform: uppercase;
-		color: rgb(237 242 255);
 		text-decoration: none;
 	}
 
-	.brand-dot {
-		width: 0.6rem;
-		height: 0.6rem;
-		border-radius: 999px;
-		background: linear-gradient(
-			135deg,
-			rgb(var(--rgb-brand-teal)),
-			rgb(var(--rgb-brand-blue))
-		);
-		box-shadow: 0 0 20px rgb(var(--rgb-brand-blue) / 0.7);
+	.brand-logo {
+		display: block;
+		width: auto;
+		height: clamp(3.1rem, 5.2vw, 4.35rem);
+		max-width: min(14rem, 42vw);
+		object-fit: contain;
+		object-position: left center;
 	}
 
 	nav {
@@ -853,21 +853,19 @@
 	}
 
 	.theme-toggle {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		height: 2.15rem;
-		padding: 0 0.82rem;
+		justify-content: space-between;
+		width: 3.85rem;
+		height: 2.1rem;
+		padding: 0 0.42rem;
 		border-radius: 999px;
 		border: 1px solid rgb(var(--rgb-white) / 0.2);
 		background: rgb(var(--rgb-white) / 0.08);
 		color: rgb(var(--rgb-text-strong-dark));
-		font-size: 0.76rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
 		cursor: pointer;
-		transition: background-color 0.2s ease, transform 0.2s ease;
+		transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 	}
 
 	nav .theme-toggle {
@@ -877,6 +875,40 @@
 	.theme-toggle:hover {
 		background: rgb(var(--rgb-white) / 0.16);
 		transform: translateY(-1px);
+	}
+
+	.theme-toggle-icon {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		width: 1.2rem;
+		height: 1.2rem;
+		place-items: center;
+		color: rgb(var(--rgb-text-soft-dark));
+		transition: color 0.2s ease;
+	}
+
+	.theme-toggle:not(.light) .theme-toggle-icon:last-of-type,
+	.theme-toggle.light .theme-toggle-icon:first-of-type {
+		color: rgb(255 246 231);
+	}
+
+	.theme-toggle-thumb {
+		position: absolute;
+		z-index: 1;
+		top: 0.22rem;
+		left: 0.22rem;
+		width: 1.62rem;
+		height: 1.62rem;
+		border-radius: 999px;
+		background: rgb(var(--rgb-brand-blue));
+		box-shadow: 0 5px 12px rgb(var(--rgb-black) / 0.24);
+		transition: transform 0.22s ease, background-color 0.2s ease;
+	}
+
+	.theme-toggle.light .theme-toggle-thumb {
+		transform: translateX(1.72rem);
+		background: rgb(var(--rgb-warning-amber));
 	}
 
 	.menu-toggle {
@@ -1487,13 +1519,17 @@
 	}
 
 	:global(html:not(.dark)) .theme-toggle {
-		border-color: rgb(var(--rgb-slate-900) / 0.18);
-		background: rgb(25 54 102 / 0.08);
-		color: rgb(17 37 64);
+		border-color: rgb(176 112 24 / 0.26);
+		background: rgb(255 238 214 / 0.8);
+		color: rgb(111 70 17);
 	}
 
 	:global(html:not(.dark)) .theme-toggle:hover {
-		background: rgb(25 54 102 / 0.14);
+		background: rgb(255 226 184 / 0.92);
+	}
+
+	:global(html:not(.dark)) .theme-toggle-icon {
+		color: rgb(139 89 20 / 0.55);
 	}
 
 	:global(html:not(.dark)) .menu-toggle span {
@@ -1549,6 +1585,11 @@
 		border-color: rgb(var(--rgb-slate-900) / 0.12);
 	}
 
+	:global(html:not(.dark)) .news-card {
+		border-color: rgb(176 112 24 / 0.2);
+		background: linear-gradient(150deg, rgb(255 250 241 / 0.96), rgb(255 238 214 / 0.74));
+	}
+
 	:global(html:not(.dark)) .news-card:hover,
 	:global(html:not(.dark)) .mission-card:hover,
 	:global(html:not(.dark)) .team-card:hover {
@@ -1556,8 +1597,17 @@
 		box-shadow: 0 14px 22px rgb(20 38 63 / 0.12);
 	}
 
+	:global(html:not(.dark)) .news-card:hover {
+		border-color: rgb(176 112 24 / 0.36);
+		box-shadow: 0 14px 22px rgb(176 112 24 / 0.14);
+	}
+
 	:global(html:not(.dark)) .meta {
 		color: rgb(79 106 144);
+	}
+
+	:global(html:not(.dark)) .news-card .meta {
+		color: rgb(139 89 20);
 	}
 
 	:global(html:not(.dark)) .news-card p,
@@ -1566,13 +1616,17 @@
 		color: rgb(64 84 114);
 	}
 
+	:global(html:not(.dark)) .news-card p {
+		color: rgb(89 68 43);
+	}
+
 	:global(html:not(.dark)) .news-card-action {
-		background: rgb(var(--rgb-blue-700) / 0.12);
-		color: rgb(23 49 82);
+		background: rgb(176 112 24 / 0.14);
+		color: rgb(111 70 17);
 	}
 
 	:global(html:not(.dark)) .news-card-action:hover {
-		background: rgb(var(--rgb-blue-700) / 0.2);
+		background: rgb(176 112 24 / 0.22);
 	}
 
 	:global(html:not(.dark)) .newsletter-form {
@@ -1716,7 +1770,7 @@
 			}
 
 			nav .theme-toggle {
-				justify-content: flex-start;
+				align-self: flex-start;
 				height: 2.3rem;
 				margin-left: 0;
 			}
