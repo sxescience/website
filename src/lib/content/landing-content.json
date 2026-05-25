@@ -1,0 +1,979 @@
+{
+  "meta": {
+    "title": {
+      "de": "Scientists x Entrepreneurship | SxE",
+      "en": "Scientists x Entrepreneurship | SxE"
+    },
+    "description": {
+      "de": "SxE ermutigt Wissenschaftler, wissenschaftliche Entdeckungen in Deep-Tech-Startups und Wirkung zu übersetzen.",
+      "en": "SxE encourages scientists to translate scientific discoveries into deep-tech startups and impact."
+    },
+    "ogImage": "/assets/sxe-logo-science-transparent.png"
+  },
+  "brandName": "SxE",
+  "brandSubtitle": "Scientists x Entrepreneurship",
+  "skipLinkLabel": {
+    "de": "Zum Inhalt springen",
+    "en": "Skip to content"
+  },
+  "languageToggleLabel": {
+    "de": "Sprache wechseln",
+    "en": "Switch language"
+  },
+  "themeToggleAriaLabel": {
+    "de": "Farbmodus umschalten",
+    "en": "Toggle color mode"
+  },
+  "nav": [
+    {
+      "id": "about",
+      "label": {
+        "de": "Über SxE",
+        "en": "About SxE"
+      }
+    },
+    {
+      "id": "faq",
+      "label": {
+        "de": "FAQ",
+        "en": "FAQ"
+      }
+    },
+    {
+      "id": "podcast",
+      "label": {
+        "de": "Podcast",
+        "en": "Podcast"
+      }
+    },
+    {
+      "id": "resources",
+      "label": {
+        "de": "Ressourcen",
+        "en": "Resources"
+      }
+    },
+    {
+      "id": "team",
+      "label": {
+        "de": "Team",
+        "en": "Team"
+      }
+    },
+    {
+      "id": "contact",
+      "label": {
+        "de": "Kontakt",
+        "en": "Contact"
+      }
+    }
+  ],
+  "hero": {
+    "kicker": {
+      "de": "Deep-Tech-Gründung beginnt in der Wissenschaft",
+      "en": "Deep-tech entrepreneurship starts in science"
+    },
+    "title": {
+      "de": "Die Welt braucht Wissenschaftler, die den Mut haben zu gründen.",
+      "en": "The world needs scientists who dare to build."
+    },
+    "lead": {
+      "de": "Hunderttausende Forscher arbeiten unermüdlich daran, Wissenschaft voranzubringen. Doch zu viele Entdeckungen verlassen das Labor nie. Das wollen wir ändern.",
+      "en": "Hundreds of thousands of researchers are working tirelessly to advance science, but too many discoveries never leave the lab. We want to change that."
+    },
+    "primaryLabel": {
+      "de": "Entfache dein Potenzial",
+      "en": "Ignite your potential"
+    },
+    "primaryHref": "#faq",
+    "secondaryLabel": {
+      "de": "Mehr über SxE",
+      "en": "Learn about SxE"
+    },
+    "secondaryHref": "#about",
+    "stats": [
+      {
+        "value": "Science",
+        "label": {
+          "de": "als Quelle von Innovation",
+          "en": "as a source of innovation"
+        }
+      },
+      {
+        "value": "Deep Tech",
+        "label": {
+          "de": "mit Potenzial für Wirkung",
+          "en": "with potential for impact"
+        }
+      },
+      {
+        "value": "Community",
+        "label": {
+          "de": "für die ersten Schritte",
+          "en": "for the first steps"
+        }
+      }
+    ]
+  },
+  "about": {
+    "kicker": {
+      "de": "Über SxE",
+      "en": "About SxE"
+    },
+    "title": {
+      "de": "Wissenschaft trifft unternehmerische Initiative.",
+      "en": "Science meets entrepreneurial initiative."
+    },
+    "body": {
+      "de": "Scientists x Entrepreneurship ist eine ehrenamtliche Initiative, die Wissenschaftler ermutigt, mehr Deep-Tech-Startups zu gründen. Wir glauben, dass Deutschland und Europa ein ungenutztes Potenzial an wissenschaftlichem Talent haben, um Innovation, Wettbewerbsfähigkeit und Wohlstand zu stärken. Viele von uns wurden durch ein Stipendium der Studienstiftung des deutschen Volkes unterstützt.\n\nSxE ist eine unabhängige ehrenamtliche Initiative.",
+      "en": "Scientists x Entrepreneurship is a volunteer-led initiative that encourages scientists to create more deep-tech startups. We believe Germany and Europe have untapped scientific talent that can strengthen innovation, competitiveness and prosperity. Many of us have been supported with a stipend by the Studienstiftung des deutschen Volkes.\n\nSxE is an independent volunteer initiative."
+    },
+    "features": [
+      {
+        "icon": "🔬",
+        "title": {
+          "de": "Wissenschaft trifft Unternehmertum",
+          "en": "Science meets entrepreneurship"
+        },
+        "text": {
+          "de": "Wir helfen dabei, Forschung nicht nur als Publikation oder Patent zu denken, sondern als mögliche Grundlage für Anwendung und Wirkung.",
+          "en": "We help scientists think beyond publications and patents toward possible applications and impact."
+        }
+      },
+      {
+        "icon": "🤝",
+        "title": {
+          "de": "Community von Stipendiaten",
+          "en": "Community of scholarship holders"
+        },
+        "text": {
+          "de": "SxE verbindet Menschen aus Wissenschaft, Gründung und Förderung, darunter Stipendiaten der Studienstiftung des deutschen Volkes.",
+          "en": "SxE connects people across science, entrepreneurship and support networks, including scholarship holders of the Studienstiftung des deutschen Volkes."
+        }
+      },
+      {
+        "icon": "🚀",
+        "title": {
+          "de": "Workshops, Netzwerk & Ressourcen",
+          "en": "Workshops, network & resources"
+        },
+        "text": {
+          "de": "Wir sammeln Orientierung, Formate und Anlaufstellen für Wissenschaftler, die ihre Gründungsideen prüfen möchten.",
+          "en": "We collect orientation, formats and support points for scientists who want to explore entrepreneurial ideas."
+        }
+      }
+    ]
+  },
+  "infographics": {
+    "kicker": {
+      "de": "Orientierung",
+      "en": "Orientation"
+    },
+    "title": {
+      "de": "Schaubilder für den ersten Überblick",
+      "en": "Visual primers for a first overview"
+    },
+    "items": [
+      {
+        "title": {
+          "de": "Akademische Karriere vs. Gründung",
+          "en": "Academic career vs. starting a company"
+        },
+        "teaser": {
+          "de": "Ein Vergleich typischer Vor- und Nachteile beider Wege. Die Grafik dient als Einstieg, nicht als endgültige Entscheidungshilfe.",
+          "en": "A comparison of typical advantages and disadvantages of both paths. The chart is an entry point, not a final decision guide."
+        },
+        "src": "/assets/infographic-career-vs-startup.png",
+        "alt": {
+          "de": "Tabelle mit Vorteilen und Nachteilen von Gründung und akademischer Karriere",
+          "en": "Table comparing advantages and disadvantages of starting a company and pursuing an academic career"
+        },
+        "credit": "Credit: TUM Venture Labs"
+      },
+      {
+        "title": {
+          "de": "Skills von Wissenschaftlern und Gründern",
+          "en": "Skills of scientists and founders"
+        },
+        "teaser": {
+          "de": "Viele wissenschaftliche Arbeitsweisen sind auch für frühe Gründungsschritte relevant: Neugier, Ausdauer und Umgang mit Unsicherheit.",
+          "en": "Many scientific working habits also matter in early entrepreneurship: curiosity, perseverance and working with uncertainty."
+        },
+        "src": "/assets/infographic-scientist-founder-skills.png",
+        "alt": {
+          "de": "Tabelle mit gemeinsamen Fähigkeiten von Wissenschaftlern und Startup-Gründern",
+          "en": "Table comparing skills of scientists and startup founders"
+        },
+        "credit": "Credit: TUM Venture Labs"
+      },
+      {
+        "title": {
+          "de": "Brauche ich einen Business-Cofounder?",
+          "en": "Do I need a business co-founder?"
+        },
+        "teaser": {
+          "de": "Ein Entscheidungsbaum, der zeigt, wann ein Business-Cofounder hilfreich sein kann und wann andere Formen von Unterstützung reichen könnten.",
+          "en": "A decision tree showing when a business co-founder may help and when other forms of support may be enough."
+        },
+        "src": "/assets/infographic-business-cofounder.jpeg",
+        "alt": {
+          "de": "Entscheidungsbaum zur Frage, ob ein Business-Cofounder gebraucht wird",
+          "en": "Decision tree about whether a business co-founder is needed"
+        },
+        "credit": "Credit: Anna-Lena Schindl, Positron Ventures"
+      }
+    ]
+  },
+  "podcast": {
+    "kicker": {
+      "de": "Podcast",
+      "en": "Podcast"
+    },
+    "title": {
+      "de": "Forschung mit Folgen",
+      "en": "Forschung mit Folgen"
+    },
+    "lead": {
+      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind. Die aktuelle Website nutzt vorerst die CMS-Folgen als Fallback; eine RSS-Anbindung ist vorbereitet.",
+      "en": "In the podcast, we speak with founders who moved from science toward application. The current site uses CMS episodes as a fallback for now; an RSS integration hook is prepared."
+    },
+    "ctaLabel": {
+      "de": "Zum Podcast",
+      "en": "Listen to the Podcast"
+    },
+    "href": "/podcast",
+    "fallbackThumbnail": "/assets/podcast-cover-placeholder.jpeg",
+    "rssTodo": "TODO: RSS-Feed-URL eintragen und latest episode serverseitig mappen."
+  },
+  "faq": {
+    "kicker": {
+      "de": "FAQs for Scientists",
+      "en": "FAQs for Scientists"
+    },
+    "title": {
+      "de": "Fragen, die viele Wissenschaftler am Anfang beschäftigen",
+      "en": "Questions many scientists ask at the beginning"
+    },
+    "intro": {
+      "de": "Die Antworten sind aus der englischen Arbeitsreferenz abgeleitet und vorsichtig redigiert. Sie ersetzen keine rechtliche, steuerliche oder individuelle Karriereberatung.",
+      "en": "The answers are adapted from the English working reference and carefully edited. They do not replace legal, tax or individual career advice."
+    },
+    "groups": [
+      {
+        "title": {
+          "de": "Von Forschungsidee zu Anwendung",
+          "en": "From research idea to application"
+        },
+        "itemIds": [
+          "research-to-application",
+          "startup-idea",
+          "promising-idea",
+          "realistic-picture"
+        ]
+      },
+      {
+        "title": {
+          "de": "Skills, Ausprobieren & Team",
+          "en": "Skills, experimentation & team"
+        },
+        "itemIds": [
+          "scientist-skills",
+          "learn-skills",
+          "try-entrepreneur",
+          "cofounders"
+        ]
+      },
+      {
+        "title": {
+          "de": "Mitgründer, Recht & IP",
+          "en": "Co-founders, legal topics & IP"
+        },
+        "itemIds": [
+          "find-cofounder",
+          "legal-advice",
+          "ip-rights",
+          "confidential-peers"
+        ]
+      },
+      {
+        "title": {
+          "de": "Risiko, Karriere & Umfeld",
+          "en": "Risk, career & environment"
+        },
+        "itemIds": [
+          "financial-risks",
+          "researcher-career",
+          "failure-career",
+          "peer-group"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "id": "research-to-application",
+        "question": {
+          "de": "Sollte ich meine Forschung in die Anwendung bringen?",
+          "en": "Should I bring my research to application?"
+        },
+        "answer": {
+          "de": "Wenn deine Forschung ein relevantes Problem lösen, einen deutlichen Qualitäts- oder Kostenvorteil schaffen oder einen neuen Markt eröffnen könnte, lohnt sich eine strukturierte Prüfung. Das bedeutet nicht, dass du sofort gründen musst. Du kannst auch als technischer Berater helfen, damit eine Entdeckung Anwendung findet.",
+          "en": "If your research could solve a relevant problem, create a clear quality or cost advantage, or open a new market, it is worth exploring in a structured way. That does not mean you have to found a company immediately. You can also support others as a technical advisor so that a discovery can reach application."
+        }
+      },
+      {
+        "id": "startup-idea",
+        "question": {
+          "de": "Wie kann ich aus meiner Forschung eine Startup-Idee entwickeln?",
+          "en": "How can I develop a start-up idea out of my research?"
+        },
+        "answer": {
+          "de": "Starte mit einer Problemhypothese: Wer hat welches Problem, wie häufig tritt es auf und welche Folgen hat es? Sprich früh mit potenziellen Nutzern oder Kunden, ohne direkt dein Produkt zu verkaufen. Prüfe Zahlungsbereitschaft, Alternativen und Wettbewerb, bevor du dich zu sehr in eine technische Lösung verliebst.",
+          "en": "Start with a problem hypothesis: who has which problem, how often does it occur, and what are the consequences? Speak early with potential users or customers without pitching your product too soon. Test willingness to pay, alternatives and competition before falling too deeply in love with a technical solution."
+        }
+      },
+      {
+        "id": "promising-idea",
+        "question": {
+          "de": "Wie finde ich heraus, ob meine Geschäftsidee vielversprechend ist?",
+          "en": "How can I find out if my business idea is promising?"
+        },
+        "answer": {
+          "de": "Kostenloses Erstfeedback bekommst du oft bei Startup-Zentren deiner Universität, Stadt oder regionalen Kammern. Sprich außerdem mit Industrieexperten, wissenschaftlichen Peers, potenziellen Kunden und Menschen aus relevanten Fachveranstaltungen. SxE kann ggf. mit Experten oder weiterer Unterstützung verbinden.",
+          "en": "Free first feedback is often available through startup centers at your university, city or regional business chambers. You can also speak with industry experts, scientific peers, potential customers and people at relevant domain events. SxE may be able to connect you with experts or other support."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Kontakt zu SxE",
+              "en": "Contact SxE"
+            },
+            "url": "#contact"
+          },
+          {
+            "label": {
+              "de": "TUM Venture Labs",
+              "en": "TUM Venture Labs"
+            },
+            "url": "https://www.tum-venture-labs.de/"
+          }
+        ]
+      },
+      {
+        "id": "realistic-picture",
+        "question": {
+          "de": "Wie bekomme ich ein realistisches Bild davon, ein wissenschaftliches Startup aufzubauen?",
+          "en": "How can I get a realistic picture of what it means to build a scientific start-up?"
+        },
+        "answer": {
+          "de": "Nutze Podcasts, Bücher, Videos, lokale Events, Workshops und Pitch-Wettbewerbe, um echte Gründungsgeschichten kennenzulernen. Besonders hilfreich ist der Austausch mit Gründern wissenschaftsbasierter Startups in deinem Umfeld. Du musst nicht sofort teilnehmen; oft reicht es, zuzuhören, Fragen zu stellen und Muster zu erkennen.",
+          "en": "Use podcasts, books, videos, local events, workshops and pitch competitions to learn from real founder stories. Speaking with founders of science-based startups around you can be especially helpful. You do not have to participate immediately; listening, asking questions and spotting patterns already helps."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Lab to Startup",
+              "en": "Lab to Startup"
+            },
+            "url": "https://www.labtostartup.com/"
+          },
+          {
+            "label": {
+              "de": "Start up the Science",
+              "en": "Start up the Science"
+            },
+            "url": "https://www.inam.berlin/start-up-the-science-podcast"
+          },
+          {
+            "label": {
+              "de": "TU Startup Stories",
+              "en": "TU Startup Stories"
+            },
+            "url": "https://podcasts.apple.com/de/podcast/tu-startup-stories-von-der-idee-zum-durchbruch/id1820875079"
+          },
+          {
+            "label": {
+              "de": "Lab to Market Leadership",
+              "en": "Lab to Market Leadership"
+            },
+            "url": "https://www.deeptechleaders.com/lab-to-market-leadership-podcast"
+          },
+          {
+            "label": {
+              "de": "Scientist to CEO",
+              "en": "Scientist to CEO"
+            },
+            "url": "https://open.spotify.com/show/0G8ourmQ1sHbJrwWHEGUFe"
+          },
+          {
+            "label": {
+              "de": "The Biotech Startups Podcast",
+              "en": "The Biotech Startups Podcast"
+            },
+            "url": "https://www.thebiotechstartupspodcast.com/"
+          }
+        ]
+      },
+      {
+        "id": "scientist-skills",
+        "question": {
+          "de": "Ich bin Wissenschaftler, nicht Unternehmer. Habe ich die nötigen Fähigkeiten?",
+          "en": "I am a scientist, not an entrepreneur – do I have the skills needed?"
+        },
+        "answer": {
+          "de": "Du musst nicht von Anfang an alle Fähigkeiten mitbringen. Entscheidend sind Motivation, Lernbereitschaft und das ernsthafte Arbeiten an einem relevanten Problem. Wissenschaftliche Stärken wie analytisches Denken, Problemlösen, Resilienz und der Umgang mit Unsicherheit können eine starke Grundlage für Gründung sein.",
+          "en": "You do not need to have all the skills from the beginning. Motivation, willingness to learn and serious work on a relevant problem matter most. Scientific strengths such as analytical thinking, problem solving, resilience and working through uncertainty can be a strong foundation for entrepreneurship."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Quelle zu Unicorn-Founder-Hintergründen",
+              "en": "Source on unicorn founder backgrounds"
+            },
+            "url": "https://endeavor.org/stories/unicorn-founder-pathways/"
+          }
+        ]
+      },
+      {
+        "id": "learn-skills",
+        "question": {
+          "de": "Kann ich unternehmerische Fähigkeiten lernen?",
+          "en": "Can I acquire entrepreneurial skills?"
+        },
+        "answer": {
+          "de": "Ja. Viele Grundlagen lassen sich über Workshops, Online-Programme, Startup-Schools, Bücher und Peer-Learning erarbeiten. Für Wissenschaftler gibt es inzwischen zahlreiche Formate, die erste Schritte wie Problemvalidierung, Produkt-Markt-Passung, Finanzierung und Teamaufbau vermitteln.",
+          "en": "Yes. Many basics can be learned through workshops, online programs, startup schools, books and peer learning. There are now many formats for scientists that cover first steps such as problem validation, product-market fit, funding and team building."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Y Combinator Startup School",
+              "en": "Y Combinator Startup School"
+            },
+            "url": "https://www.startupschool.org"
+          },
+          {
+            "label": {
+              "de": "BayStartUp Know-how",
+              "en": "BayStartUp Know-how"
+            },
+            "url": "https://www.baystartup.de/startups/startup-know-how"
+          },
+          {
+            "label": {
+              "de": "The Founders AI Toolbox",
+              "en": "The Founders AI Toolbox"
+            },
+            "url": "https://www.notion.so/1372473977eb80e6b7b6e84834b21c26?pvs=21"
+          },
+          {
+            "label": {
+              "de": "YES Events",
+              "en": "YES Events"
+            },
+            "url": "https://youngentrepreneursinscience.com/events/"
+          },
+          {
+            "label": {
+              "de": "UnternehmerTUM Academy",
+              "en": "UnternehmerTUM Academy"
+            },
+            "url": "https://academy.unternehmertum.de/program/"
+          },
+          {
+            "label": {
+              "de": "Nucleate Activator",
+              "en": "Nucleate Activator"
+            },
+            "url": "https://www.nucleate.xyz/activator/"
+          }
+        ]
+      },
+      {
+        "id": "try-entrepreneur",
+        "question": {
+          "de": "Kann ich die Rolle als Unternehmer ausprobieren?",
+          "en": "Can I try out the role of an entrepreneur?"
+        },
+        "answer": {
+          "de": "Ja. Viele Programme erlauben es, eine Idee zeitlich begrenzt zu testen, ohne sofort eine langfristige Verpflichtung einzugehen. Das kann helfen zu verstehen, welche Aufgaben vor dir liegen, welche Rollen dir liegen und wo du Mitgründer oder andere Unterstützung brauchst.",
+          "en": "Yes. Many programs allow you to test an idea for a limited period without committing to everything long term. This can help you understand the tasks ahead, which roles fit you and where you may need co-founders or other support."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Yes, you as a scientist can also be a great entrepreneur",
+              "en": "Yes, you as a scientist can also be a great entrepreneur"
+            },
+            "url": "https://scientistentrepreneurs.substack.com/i/142104579/actually-do-it-try-on-the-role-of-an-entrepreneur-for-a-while"
+          },
+          {
+            "label": {
+              "de": "Ressourcen & Programme",
+              "en": "Resources & programs"
+            },
+            "url": "#resources"
+          }
+        ]
+      },
+      {
+        "id": "cofounders",
+        "question": {
+          "de": "Brauche ich Mitgründer, insbesondere einen Business-Cofounder?",
+          "en": "Do I need co-founders, especially a business co-founder?"
+        },
+        "answer": {
+          "de": "Ein Startup aufzubauen ist Teamarbeit. Mitgründer sollten langfristig relevante, komplementäre Fähigkeiten einbringen. Das bedeutet aber nicht automatisch, dass jedes wissenschaftliche Startup einen Business-Cofounder braucht. Manche Aufgaben lassen sich auch durch Beratung, Mitarbeiter oder Netzwerkpartner abdecken.",
+          "en": "Building a startup is a team effort. Co-founders should contribute complementary skills that are relevant for the long term. This does not automatically mean every scientific startup needs a business co-founder. Some tasks can be covered through advisors, employees or network partners."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Do you need a business co-founder?",
+              "en": "Do you need a business co-founder?"
+            },
+            "url": "https://open.substack.com/pub/scientistentrepreneurs/p/do-you-need-a-business-co-founder?r=jsy66&utm_campaign=post-expanded-share&utm_medium=web"
+          }
+        ]
+      },
+      {
+        "id": "find-cofounder",
+        "question": {
+          "de": "Wie finde ich einen Mitgründer?",
+          "en": "How can I find a co-founder?"
+        },
+        "answer": {
+          "de": "Beginne in deinem bestehenden Umfeld: Kollegen, Freunde, Alumni-Netzwerke und Fachveranstaltungen. Zusätzlich gibt es Matching-Plattformen, Startup-Zentren, Company Builder, Meetups und branchenspezifische Events. Vereinbare am Anfang ein klares gemeinsames Ziel und prüfe die Zusammenarbeit nach einer festen Zeitspanne.",
+          "en": "Start with your existing environment: colleagues, friends, alumni networks and domain events. There are also matching platforms, startup centers, company builders, meetups and industry events. Set a clear first goal together and review the collaboration after a defined period."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Founders Platform",
+              "en": "Founders Platform"
+            },
+            "url": "https://www.founders-platform.de/co-founder-matchmaking"
+          },
+          {
+            "label": {
+              "de": "Y Combinator Co-founder Matching",
+              "en": "Y Combinator Co-founder Matching"
+            },
+            "url": "https://www.ycombinator.com/cofounder-matching"
+          },
+          {
+            "label": {
+              "de": "TUM Venture Labs Jobs",
+              "en": "TUM Venture Labs Jobs"
+            },
+            "url": "https://www.founders-platform.de/jobs"
+          }
+        ]
+      },
+      {
+        "id": "legal-advice",
+        "question": {
+          "de": "Welche rechtliche Beratung brauche ich?",
+          "en": "What legal advice do I need?"
+        },
+        "answer": {
+          "de": "Frühe rechtliche Themen können IP-Rechte, Lizenzierung, Gründervereinbarungen, Beteiligungsverteilung, Vesting, Gesellschaftsform, Mitarbeiterbeteiligung und internationale Strukturfragen sein. Das ist keine Rechtsberatung; bei konkreten Schritten solltest du qualifizierte Beratung einholen.",
+          "en": "Early legal topics may include IP rights, licensing, founder agreements, equity split, vesting, legal entity setup, employee participation and international structure questions. This is not legal advice; for concrete steps you should seek qualified advice."
+        }
+      },
+      {
+        "id": "ip-rights",
+        "question": {
+          "de": "Wie erhalte ich die IP-Rechte an meiner Forschung?",
+          "en": "How do I obtain the IP rights to my research?"
+        },
+        "answer": {
+          "de": "Veröffentliche IP-relevante Informationen nicht vorschnell, wenn Patentschutz möglich sein könnte. Abhängig von Status, Arbeitsvertrag, Universität oder Forschungseinrichtung gelten unterschiedliche Regeln. Häufig ist die Technologietransferstelle der erste Ansprechpartner. Konkrete Fälle solltest du rechtlich prüfen lassen.",
+          "en": "Do not publish IP-relevant information too early if patent protection may be possible. Rules differ depending on your status, employment contract, university or research institution. The technology transfer office is often the first point of contact. Concrete cases should be reviewed legally."
+        },
+        "links": [
+          {
+            "label": {
+              "de": "Tech transfer agreement guide",
+              "en": "Tech transfer agreement guide"
+            },
+            "url": "https://open.substack.com/pub/scientistentrepreneurs/p/behind-the-scenes-of-getting-to-a?r=jsy66&utm_campaign=post-expanded-share&utm_medium=web"
+          },
+          {
+            "label": {
+              "de": "Part 2",
+              "en": "Part 2"
+            },
+            "url": "https://open.substack.com/pub/scientistentrepreneurs/p/behind-the-scenes-of-getting-to-a-fa9?r=jsy66&utm_campaign=post-expanded-share&utm_medium=web"
+          },
+          {
+            "label": {
+              "de": "Part 3",
+              "en": "Part 3"
+            },
+            "url": "https://open.substack.com/pub/scientistentrepreneurs/p/behind-the-scenes-of-getting-to-a-1af?r=jsy66&utm_campaign=post-expanded-share&utm_medium=web"
+          },
+          {
+            "label": {
+              "de": "Part 4",
+              "en": "Part 4"
+            },
+            "url": "https://open.substack.com/pub/scientistentrepreneurs/p/behind-the-scenes-of-getting-to-a-0d2?r=jsy66&utm_campaign=post-expanded-share&utm_medium=web"
+          }
+        ]
+      },
+      {
+        "id": "confidential-peers",
+        "question": {
+          "de": "Gibt es Peers, mit denen ich mich vertraulich austauschen kann?",
+          "en": "Are there peers I can exchange ideas with confidentially?"
+        },
+        "answer": {
+          "de": "Viele Gründer sorgen sich anfangs, dass Ideen gestohlen werden. Ein bewusster Umgang mit IP-relevanten Details ist wichtig, doch früher Austausch ist oft hilfreich. Universitäre Venture Manager, Startup-Zentren und vertrauliche Peer-Netzwerke können gute erste Gesprächspartner sein.",
+          "en": "Many aspiring founders worry that ideas may be stolen. Thoughtful handling of IP-relevant details is important, but early exchange is often helpful. University venture managers, startup centers and confidential peer networks can be good first sparring partners."
+        }
+      },
+      {
+        "id": "financial-risks",
+        "question": {
+          "de": "Welche finanziellen Risiken hat eine Gründung?",
+          "en": "What are the financial risks of founding a company?"
+        },
+        "answer": {
+          "de": "Gründen kann zeitweise finanzielle Unsicherheit bedeuten. Das heißt aber nicht, dass du am ersten Tag alles riskieren musst. Teams, Förderprogramme, Grants und eine bewusste Planung können persönliche Risiken reduzieren. Für verbindliche Fragen zu Haftung und Finanzen brauchst du qualifizierte Beratung.",
+          "en": "Founding a company can mean financial uncertainty for a while. That does not mean you have to risk everything on day one. Teams, support programs, grants and conscious planning can reduce personal risk. For binding questions about liability and finances, seek qualified advice."
+        }
+      },
+      {
+        "id": "researcher-career",
+        "question": {
+          "de": "Bedeutet Gründen das Ende meiner Forschungskarriere?",
+          "en": "Does starting a company mean the end of my researcher career?"
+        },
+        "answer": {
+          "de": "Nicht unbedingt. Für viele ist Unternehmertum eine weitere Form, Forschung anzuwenden. Manche bleiben eng mit ihrem Feld verbunden, kombinieren akademische und unternehmerische Rollen oder kehren später in andere wissenschaftsnahe Laufbahnen zurück.",
+          "en": "Not necessarily. For many, entrepreneurship is another way of applying research. Some remain closely connected to their field, combine academic and entrepreneurial roles or later return to science-adjacent careers."
+        }
+      },
+      {
+        "id": "failure-career",
+        "question": {
+          "de": "Viele Startups scheitern. Ruiniert das meine Karriere?",
+          "en": "Many start-ups fail – will it ruin my career?"
+        },
+        "answer": {
+          "de": "Ein Startup, das sich nicht am Markt durchsetzt, muss kein persönliches Scheitern sein. Erfahrung, Netzwerk, Branchenverständnis und neue Fähigkeiten können für weitere Gründungen, akademische Rollen oder Industriepositionen wertvoll sein.",
+          "en": "A startup that does not succeed in the market does not have to be a personal failure. Experience, network, industry understanding and new skills can be valuable for future ventures, academic roles or industry positions."
+        }
+      },
+      {
+        "id": "peer-group",
+        "question": {
+          "de": "Wird eine Gründung in meiner Peer Group kritisch gesehen?",
+          "en": "Will founding a company be viewed critically by my peer group?"
+        },
+        "answer": {
+          "de": "Das hängt vom Umfeld ab. In vielen Forschungs- und Innovationskontexten wird die Anwendung wissenschaftlicher Ergebnisse zunehmend als glaubwürdiger Weg zu Wirkung verstanden. Entscheidend sind meist die Ernsthaftigkeit der Motivation und die Qualität der Arbeit.",
+          "en": "It depends on the environment. In many research and innovation communities, applying scientific results is increasingly seen as a credible path to impact. The seriousness of your motivation and the quality of your work usually matter most."
+        }
+      }
+    ]
+  },
+  "resources": {
+    "kicker": {
+      "de": "Ressourcen & Programme",
+      "en": "Resources & programs"
+    },
+    "title": {
+      "de": "Formate, Programme und erste Anlaufstellen",
+      "en": "Formats, programs and first support points"
+    },
+    "categories": [
+      {
+        "title": {
+          "de": "Europaweit",
+          "en": "Europe-wide"
+        },
+        "items": [
+          {
+            "name": "Young Entrepreneurs in Science (YES)",
+            "description": {
+              "de": "Workshops und Events für Wissenschaftler, die Entrepreneurship kennenlernen möchten.",
+              "en": "Workshops and events for scientists who want to explore entrepreneurship."
+            },
+            "url": "https://youngentrepreneursinscience.com/"
+          },
+          {
+            "name": "Wilbe",
+            "description": {
+              "de": "Programme und Build Weeks für wissenschaftsbasierte Gründungsideen.",
+              "en": "Programs and build weeks for science-based venture ideas."
+            },
+            "url": "https://www.wilbe.com/bsf"
+          },
+          {
+            "name": "Nucleate",
+            "description": {
+              "de": "Community und Accelerator-Formate für Life-Science- und Biotech-Ventures.",
+              "en": "Community and accelerator formats for life science and biotech ventures."
+            },
+            "url": "https://www.nucleate.xyz/activator/"
+          },
+          {
+            "name": "Deep Tech Founders",
+            "description": {
+              "de": "Unterstützung für Teams mit Deep-Tech-Fokus.",
+              "en": "Support for teams with a deep-tech focus."
+            },
+            "url": "https://deeptechfounders.com/"
+          },
+          {
+            "name": "Creative Destruction Lab",
+            "description": {
+              "de": "Mentoring-orientiertes Programm für skalierbare wissenschafts- und technologiegetriebene Ventures.",
+              "en": "Mentor-driven program for scalable science- and technology-driven ventures."
+            },
+            "url": "https://creativedestructionlab.com/"
+          },
+          {
+            "name": "INAM Advanced Materials Lab",
+            "description": {
+              "de": "Programm für Startups im Bereich Advanced Materials.",
+              "en": "Program for startups in advanced materials."
+            },
+            "url": "https://www.inam.berlin/admalab"
+          },
+          {
+            "name": "Remove Carbon Accelerator",
+            "description": {
+              "de": "Accelerator für Teams im Bereich Carbon Removal.",
+              "en": "Accelerator for carbon removal teams."
+            },
+            "url": "https://remove.global/"
+          },
+          {
+            "name": "XPreneurs Incubator",
+            "description": {
+              "de": "Incubator für frühe Startup-Teams.",
+              "en": "Incubator for early startup teams."
+            },
+            "url": "https://xpreneurs.io/"
+          },
+          {
+            "name": "Seraphim Space Accelerator",
+            "description": {
+              "de": "Accelerator für Space-Tech-Startups.",
+              "en": "Accelerator for space-tech startups."
+            },
+            "url": "https://seraphim.vc/accelerator/"
+          }
+        ]
+      },
+      {
+        "title": {
+          "de": "Lokal / Regional",
+          "en": "Local / Regional"
+        },
+        "items": [
+          {
+            "name": "ETH Pioneer Fellowships",
+            "description": {
+              "de": "Förderprogramm für ETH-nahe Gründer.",
+              "en": "Support program for founders connected to ETH."
+            },
+            "url": "https://ethz.ch/en/industry/entrepreneurship/find-offers-programs-space-grants-for-entrepreneurs/pioneer-fellowship.html"
+          },
+          {
+            "name": "AHEAD",
+            "description": {
+              "de": "Fraunhofer-Programm für Hightech-Ventures.",
+              "en": "Fraunhofer program for high-tech ventures."
+            },
+            "url": "https://www.ahead.fraunhofer.de/en.html"
+          },
+          {
+            "name": "Maximize",
+            "description": {
+              "de": "Incubator-Angebot für frühe Startup-Teams.",
+              "en": "Incubator offering for early startup teams."
+            },
+            "url": "https://www.maximize-incubator.com/"
+          },
+          {
+            "name": "VTT Launchpad",
+            "description": {
+              "de": "Venture-Builder-Programm von VTT.",
+              "en": "VTT venture builder program."
+            },
+            "url": "https://www.vttresearch.com/en/vtt-launchpad"
+          },
+          {
+            "name": "TUM Venture Labs / UnternehmerTUM",
+            "description": {
+              "de": "Münchner Deep-Tech-Ökosystem mit Angeboten für Wissenschaftler und Gründerteams.",
+              "en": "Munich deep-tech ecosystem with offerings for scientists and founder teams."
+            },
+            "url": "https://www.tum-venture-labs.de/offerings/"
+          },
+          {
+            "name": "RWTH Aachen",
+            "description": {
+              "de": "Ideation-Angebote für Gründungsteams im Hochschulumfeld.",
+              "en": "Ideation offerings for founder teams in a university context."
+            },
+            "url": "https://www.rwth-innovation.de/en/for-start-ups-investors/offerings-founders/ideation-program"
+          },
+          {
+            "name": "KTH",
+            "description": {
+              "de": "Pre-incubator-Programm für frühe Ideen.",
+              "en": "Pre-incubator program for early ideas."
+            },
+            "url": "https://www.kth.se/en/om/innovation/program-extra-stod/forinkubator-program/kth-innovations-forinkubatorprogram-1.414438"
+          },
+          {
+            "name": "Chalmers University",
+            "description": {
+              "de": "Venture Creation und Unterstützung für akademienahe Gründungen.",
+              "en": "Venture creation and support for university-adjacent startups."
+            },
+            "url": "https://chalmersventures.com/venturecreation/"
+          },
+          {
+            "name": "Planet Positive Lab",
+            "description": {
+              "de": "Programm für planet-positive Gründungsideen.",
+              "en": "Program for planet-positive venture ideas."
+            },
+            "url": "https://www.planetpositivelab.com/"
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "kicker": {
+      "de": "Kontakt",
+      "en": "Contact"
+    },
+    "title": {
+      "de": "Sprich mit uns über deine nächsten Schritte.",
+      "en": "Talk to us about your next steps."
+    },
+    "lead": {
+      "de": "SxE kann euch ggf. mit Experten oder Support verbinden. Meldet euch bei uns!",
+      "en": "SxE may be able to connect you with experts or other support. Reach out to us!"
+    },
+    "newsletterTitle": {
+      "de": "Newsletter",
+      "en": "Newsletter"
+    },
+    "newsletterLead": {
+      "de": "Erhalte Hinweise zu neuen Podcast-Folgen, Ressourcen und Formaten rund um Wissenschaft und Gründung.",
+      "en": "Get updates on new podcast episodes, resources and formats around science and entrepreneurship."
+    },
+    "newsletterEmailLabel": {
+      "de": "E-Mail für Newsletter",
+      "en": "Newsletter email"
+    },
+    "newsletterEmailPlaceholder": {
+      "de": "name@beispiel.de",
+      "en": "name@example.com"
+    },
+    "newsletterSubmitLabel": {
+      "de": "Newsletter abonnieren",
+      "en": "Subscribe"
+    },
+    "nameLabel": {
+      "de": "Name",
+      "en": "Name"
+    },
+    "emailLabel": {
+      "de": "E-Mail",
+      "en": "Email"
+    },
+    "messageLabel": {
+      "de": "Nachricht",
+      "en": "Message"
+    },
+    "submitLabel": {
+      "de": "Nachricht senden",
+      "en": "Send message"
+    },
+    "successMessage": {
+      "de": "Danke! Der echte Versand ist noch nicht angebunden. Bitte sende deine Nachricht vorerst per E-Mail an uns.",
+      "en": "Thank you! Sending is not connected yet. For now, please send your message to us by email."
+    },
+    "emailHref": "mailto:sxe.science@gmail.com",
+    "emailLabelText": "sxe.science@gmail.com",
+    "socialLinks": [
+      {
+        "label": "LinkedIn",
+        "url": "#"
+      }
+    ]
+  },
+  "team": {
+    "kicker": {
+      "de": "Team",
+      "en": "Team"
+    },
+    "title": {
+      "de": "Das Team hinter SxE",
+      "en": "The team behind SxE"
+    },
+    "lead": {
+      "de": "SxE wird ehrenamtlich getragen. Die Arbeit verteilt sich auf Initiative, Podcast, Ressourcen und Community-Aufbau.",
+      "en": "SxE is volunteer-led. The work spans initiative building, podcast, resources and community development."
+    },
+    "items": [
+      {
+        "icon": "🤝",
+        "title": {
+          "de": "Initiative & Community",
+          "en": "Initiative & community"
+        },
+        "text": {
+          "de": "Wir verbinden Wissenschaftler, Gründer und Unterstützer, die Deep-Tech-Gründungen aus der Wissenschaft stärken möchten.",
+          "en": "We connect scientists, founders and supporters who want to strengthen deep-tech ventures from science."
+        }
+      },
+      {
+        "icon": "🎙️",
+        "title": {
+          "de": "Podcast",
+          "en": "Podcast"
+        },
+        "text": {
+          "de": "Mit Forschung mit Folgen sammeln wir Erfahrungsberichte von Menschen, die Wissenschaft in Anwendung übersetzen.",
+          "en": "With Forschung mit Folgen, we collect stories from people translating science into application."
+        }
+      },
+      {
+        "icon": "🧭",
+        "title": {
+          "de": "Ressourcen & Orientierung",
+          "en": "Resources & orientation"
+        },
+        "text": {
+          "de": "Wir kuratieren Programme, Fragen und Einstiegspunkte für die ersten Schritte in Richtung Gründung.",
+          "en": "We curate programs, questions and starting points for first steps toward entrepreneurship."
+        }
+      }
+    ]
+  },
+  "footer": {
+    "description": {
+      "de": "SxE ist eine ehrenamtliche Initiative für Wissenschaftler, die Anwendung, Deep Tech und Gründung als mögliche Wege zu Wirkung erkunden möchten.",
+      "en": "SxE is a volunteer-led initiative for scientists who want to explore application, deep tech and entrepreneurship as possible paths to impact."
+    },
+    "imprintLabel": {
+      "de": "Impressum",
+      "en": "Imprint"
+    },
+    "privacyLabel": {
+      "de": "Datenschutz",
+      "en": "Privacy"
+    },
+    "copyright": "Scientists x Entrepreneurship"
+  }
+}

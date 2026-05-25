@@ -1,4 +1,5 @@
 import legalContentSource from "$lib/content/legal-content.json";
+import landingContentSource from "$lib/content/landing-content.json";
 import missionItemsSource from "$lib/content/mission-items.json";
 import newsSource from "$lib/content/news.json";
 import siteSettingsSource from "$lib/content/site-settings.json";
@@ -6,6 +7,7 @@ import teamMembersSource from "$lib/content/team-members.json";
 
 import type {
 	HomeContent,
+	LandingContent,
 	LegalContent,
 	MissionItem,
 	NewsItem,
@@ -134,6 +136,15 @@ function mapSiteSettings(source: unknown): SiteSettings {
 	return mapRequiredStringRecord(source, siteSettingsSource as SiteSettings, "site_settings");
 }
 
+function mapLandingContent(source: unknown): LandingContent {
+	const row = asObject(source);
+	if (!row) {
+		throw new Error('CMS data "landing_content" must be an object.');
+	}
+
+	return source as LandingContent;
+}
+
 function mapNews(source: unknown): NewsItem[] {
 	const rows = listFromSource(source);
 	const mapped: NewsItem[] = [];
@@ -213,6 +224,7 @@ export async function getHomeContent(): Promise<HomeContent> {
 	const site = mapSiteSettings(siteSettingsSource);
 	return {
 		site,
+		landing: mapLandingContent(landingContentSource),
 		news: mapNews(newsSource),
 		missionItems: mapMissionItems(missionItemsSource),
 		teamMembers: mapTeamMembers(teamMembersSource)

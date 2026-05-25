@@ -1,181 +1,120 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 	import {
 		ArrowRight,
-		Sparkles,
-		Newspaper,
+		BookOpen,
+		ChevronDown,
+		ExternalLink,
 		Mail,
-		Users,
-		ChevronLeft,
-		ChevronRight,
-		Sun,
+		Menu,
 		Moon,
+		Podcast,
+		Rocket,
+		Sparkles,
+		Sun,
+		Users,
 		X
 	} from "lucide-svelte";
-	import type { NewsItem } from "$lib/cms/types";
+	import type { FaqItem, LanguageCode, LocalizedString, NewsItem } from "$lib/cms/types";
 	import type { PageData } from "./$types";
 
-	const MOBILE_NEWS_BREAKPOINT = 720;
-	const TABLET_NEWS_BREAKPOINT = 1120;
-	const SWIPE_ACTIVATION_THRESHOLD = 10;
-	const SWIPE_TRIGGER_THRESHOLD = 64;
-	const SWIPE_MAX_OFFSET = 68;
-	const SWIPE_EDGE_RESISTANCE = 0.34;
+	const LANGUAGE_STORAGE_KEY = "sxe-language";
 	const THEME_STORAGE_KEY = "sxe-theme";
+	const SECTION_IDS = ["about", "faq", "podcast", "resources", "team", "contact"];
 
 	type ThemeMode = "dark" | "light";
-	type PodcastPlatform = "youtube-music" | "youtube" | "spotify" | "apple" | "amazon";
-
-	const PODCAST_BRAND_ICON_URLS: Record<PodcastPlatform, string> = {
-		apple: "https://cdn.simpleicons.org/applepodcasts",
-		spotify: "https://cdn.simpleicons.org/spotify",
-		amazon: "https://cdn.simpleicons.org/amazonmusic",
-		youtube: "https://cdn.simpleicons.org/youtube",
-		"youtube-music": "https://cdn.simpleicons.org/youtubemusic"
-	};
 
 	let { data } = $props<{ data: PageData }>();
 
-	let isMobileMenuOpen = $state(false);
-	let viewportWidth = $state(1400);
-	let newsStartIndex = $state(0);
-	let isPodcastModalOpen = $state(false);
-	let activeModalNewsId = $state<string | null>(null);
+	let language = $state<LanguageCode>("de");
 	let themeMode = $state<ThemeMode>("dark");
-	let swipePointerId = $state<number | null>(null);
-	let swipeStartX = $state(0);
-	let swipeStartY = $state(0);
-	let swipeAxis = $state<"horizontal" | "vertical" | null>(null);
-	let swipeOffsetX = $state(0);
-
-	let newsCarouselElement: HTMLDivElement | null = null;
-	let modalCloseButton = $state<HTMLButtonElement | null>(null);
-	let lastFocusedElement: HTMLElement | null = null;
+	let isMobileMenuOpen = $state(false);
+	let activeSectionId = $state("about");
+	let openFaqId = $state<string | null>(null);
+	let contactSubmitted = $state(false);
 
 	const content = $derived(data.content);
-	const newsVisibleCount = $derived.by(() => {
-		const total = content.news.length;
-		if (total === 0) {
-			return 0;
-		}
-		if (viewportWidth < MOBILE_NEWS_BREAKPOINT) {
-			return 1;
-		}
-		if (viewportWidth < TABLET_NEWS_BREAKPOINT) {
-			return Math.min(2, total);
-		}
-		return Math.min(3, total);
-	});
-	const newsMaxStartIndex = $derived.by(() => Math.max(content.news.length - newsVisibleCount, 0));
-	const canNavigateNews = $derived.by(() => content.news.length > newsVisibleCount);
-	const canGoPreviousNews = $derived.by(() => canNavigateNews && newsStartIndex > 0);
-	const canGoNextNews = $derived.by(() => canNavigateNews && newsStartIndex < newsMaxStartIndex);
-	const visibleNews = $derived.by(() => {
-		const total = content.news.length;
-		const visibleCount = Math.min(newsVisibleCount, total);
+	const landing = $derived(content.landing);
+	const latestEpisode = $derived(content.news[0]);
 
-		if (total === 0 || visibleCount === 0) {
-			return [];
-		}
-
-		if (total <= visibleCount) {
-			return content.news;
-		}
-
-		return content.news.slice(newsStartIndex, newsStartIndex + visibleCount);
-	});
-	const isNewsTrackDragging = $derived.by(
-		() => swipePointerId !== null && swipeAxis === "horizontal"
-	);
-	const activeModalNewsItem = $derived.by((): NewsItem | undefined => {
-		if (!activeModalNewsId) {
-			return undefined;
-		}
-
-		return content.news.find((item: NewsItem) => item.id === activeModalNewsId);
-	});
-	const activeModalYoutubeEmbedUrl = $derived.by(() => {
-		if (!activeModalNewsItem) {
-			return null;
-		}
-
-		return deriveYoutubeEmbedUrl(activeModalNewsItem);
-	});
 	onMount(() => {
-		const updateViewportWidth = () => {
-			viewportWidth = window.innerWidth;
-		};
-
-		updateViewportWidth();
+		language = getStoredLanguage();
 		themeMode = getCurrentThemeMode();
-		window.addEventListener("resize", updateViewportWidth);
+		document.documentElement.lang = language;
 
-		return () => {
-			window.removeEventListener("resize", updateViewportWidth);
-		};
-	});
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visibleEntry = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-	$effect(() => {
-		if (!canNavigateNews) {
-			newsStartIndex = 0;
-			return;
-		}
-
-		if (newsStartIndex < 0) {
-			newsStartIndex = 0;
-			return;
-		}
-
-		if (newsStartIndex > newsMaxStartIndex) {
-			newsStartIndex = newsMaxStartIndex;
-		}
-	});
-
-	$effect(() => {
-		if (isPodcastModalOpen && !activeModalNewsItem) {
-			closePodcastModal();
-		}
-	});
-
-	$effect(() => {
-		if (!isPodcastModalOpen || typeof window === "undefined") {
-			return;
-		}
-
-		const handleEscapeKey = (event: KeyboardEvent) => {
-			if (event.key !== "Escape") {
-				return;
+				if (visibleEntry?.target.id) {
+					activeSectionId = visibleEntry.target.id;
+				}
+			},
+			{
+				rootMargin: "-35% 0px -55% 0px",
+				threshold: [0.12, 0.28, 0.48]
 			}
+		);
 
-			event.preventDefault();
-			closePodcastModal();
+		for (const id of SECTION_IDS) {
+			const section = document.getElementById(id);
+			if (section) {
+				observer.observe(section);
+			}
+		}
+
+		const openFaqFromHash = () => {
+			const hash = window.location.hash.replace("#faq-", "");
+			if (hash && landing.faq.items.some((item: FaqItem) => item.id === hash)) {
+				openFaqId = hash;
+				requestAnimationFrame(() => scrollToElementWithHeaderOffset(`faq-${hash}`));
+			}
 		};
 
-		window.addEventListener("keydown", handleEscapeKey);
+		openFaqFromHash();
+		window.addEventListener("hashchange", openFaqFromHash);
+
 		return () => {
-			window.removeEventListener("keydown", handleEscapeKey);
+			observer.disconnect();
+			window.removeEventListener("hashchange", openFaqFromHash);
 		};
 	});
 
 	$effect(() => {
-		if (!isPodcastModalOpen || typeof document === "undefined") {
+		if (typeof document === "undefined") {
 			return;
 		}
 
-		lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-		const previousOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
-
-		requestAnimationFrame(() => {
-			modalCloseButton?.focus();
-		});
-
-		return () => {
-			document.body.style.overflow = previousOverflow;
-			lastFocusedElement?.focus();
-			lastFocusedElement = null;
-		};
+		document.documentElement.lang = language;
+		try {
+			window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+		} catch {
+			// Ignore storage failures in restricted browser modes.
+		}
 	});
+
+	function t(value: LocalizedString): string {
+		return value[language];
+	}
+
+	function getStoredLanguage(): LanguageCode {
+		if (typeof window === "undefined") {
+			return "de";
+		}
+
+		try {
+			return window.localStorage.getItem(LANGUAGE_STORAGE_KEY) === "en" ? "en" : "de";
+		} catch {
+			return "de";
+		}
+	}
+
+	function setLanguage(nextLanguage: LanguageCode) {
+		language = nextLanguage;
+		closeMenu();
+	}
 
 	function toggleMenu() {
 		isMobileMenuOpen = !isMobileMenuOpen;
@@ -187,253 +126,6 @@
 
 	function toggleThemeMode() {
 		applyThemeMode(themeMode === "dark" ? "light" : "dark");
-	}
-
-	function handleNewsletterSubmit(event: SubmitEvent) {
-		event.preventDefault();
-	}
-
-	function formatNewsDate(value: string): string {
-		const parsed = Date.parse(value);
-		if (!Number.isFinite(parsed)) {
-			return value;
-		}
-		return new Date(parsed).toLocaleDateString("de-DE", {
-			day: "2-digit",
-			month: "2-digit",
-			year: "numeric"
-		});
-	}
-
-	function showPreviousNews() {
-		if (!canGoPreviousNews) {
-			return;
-		}
-		newsStartIndex -= 1;
-	}
-
-	function showNextNews() {
-		if (!canGoNextNews) {
-			return;
-		}
-		newsStartIndex += 1;
-	}
-
-	function openPodcastModal(itemId: string) {
-		activeModalNewsId = itemId;
-		isPodcastModalOpen = true;
-	}
-
-	function closePodcastModal() {
-		isPodcastModalOpen = false;
-		activeModalNewsId = null;
-	}
-
-	function handlePodcastModalBackdropClick(event: MouseEvent) {
-		if (event.target === event.currentTarget) {
-			closePodcastModal();
-		}
-	}
-
-	function handleNewsPointerDown(event: PointerEvent) {
-		if (!canNavigateNews) {
-			return;
-		}
-
-		if (!(event.target instanceof HTMLElement)) {
-			return;
-		}
-
-		// Never start swipe logic from interactive elements like the episode CTA.
-		if (event.target.closest(".news-card-action")) {
-			return;
-		}
-
-		// Swipe should support touch/pen gestures and not interfere with normal mouse clicks.
-		if (event.pointerType === "mouse" || event.button !== 0) {
-			return;
-		}
-
-		swipePointerId = event.pointerId;
-		swipeStartX = event.clientX;
-		swipeStartY = event.clientY;
-		swipeAxis = null;
-		swipeOffsetX = 0;
-	}
-
-	function handleNewsPointerMove(event: PointerEvent) {
-		if (swipePointerId === null || event.pointerId !== swipePointerId) {
-			return;
-		}
-
-		const deltaX = event.clientX - swipeStartX;
-		const deltaY = event.clientY - swipeStartY;
-
-		if (!swipeAxis) {
-			if (
-				Math.abs(deltaX) < SWIPE_ACTIVATION_THRESHOLD &&
-				Math.abs(deltaY) < SWIPE_ACTIVATION_THRESHOLD
-			) {
-				return;
-			}
-
-			swipeAxis = Math.abs(deltaX) >= Math.abs(deltaY) ? "horizontal" : "vertical";
-		}
-
-		if (swipeAxis !== "horizontal") {
-			return;
-		}
-
-		const isBlockedAtEdge = (deltaX > 0 && !canGoPreviousNews) || (deltaX < 0 && !canGoNextNews);
-		const adjustedDeltaX = isBlockedAtEdge ? deltaX * SWIPE_EDGE_RESISTANCE : deltaX;
-		swipeOffsetX = Math.max(-SWIPE_MAX_OFFSET, Math.min(SWIPE_MAX_OFFSET, adjustedDeltaX));
-	}
-
-	function completeNewsSwipe() {
-		if (swipePointerId === null) {
-			return;
-		}
-
-		if (swipeAxis === "horizontal") {
-			if (swipeOffsetX <= -SWIPE_TRIGGER_THRESHOLD && canGoNextNews) {
-				showNextNews();
-			} else if (swipeOffsetX >= SWIPE_TRIGGER_THRESHOLD && canGoPreviousNews) {
-				showPreviousNews();
-			}
-		}
-
-		swipePointerId = null;
-		swipeAxis = null;
-		swipeOffsetX = 0;
-	}
-
-	function bindNewsSwipe(node: HTMLDivElement) {
-		newsCarouselElement = node;
-
-		const onPointerDown = (event: PointerEvent) => handleNewsPointerDown(event);
-		const onPointerMove = (event: PointerEvent) => handleNewsPointerMove(event);
-		const onPointerEnd = () => completeNewsSwipe();
-
-		node.addEventListener("pointerdown", onPointerDown);
-		node.addEventListener("pointermove", onPointerMove);
-		node.addEventListener("pointerup", onPointerEnd);
-		node.addEventListener("pointercancel", onPointerEnd);
-
-		return {
-			destroy() {
-				node.removeEventListener("pointerdown", onPointerDown);
-				node.removeEventListener("pointermove", onPointerMove);
-				node.removeEventListener("pointerup", onPointerEnd);
-				node.removeEventListener("pointercancel", onPointerEnd);
-				if (newsCarouselElement === node) {
-					newsCarouselElement = null;
-				}
-			}
-		};
-	}
-
-	function podcastPlatformKey(label: string, url: string): PodcastPlatform | null {
-		const normalizedLabel = label.toLowerCase();
-		const normalizedUrl = url.toLowerCase();
-		const combined = `${normalizedLabel} ${normalizedUrl}`;
-
-		if (combined.includes("youtube music") || normalizedUrl.includes("music.youtube.com")) {
-			return "youtube-music";
-		}
-
-		if (combined.includes("youtube") || normalizedUrl.includes("youtu")) {
-			return "youtube";
-		}
-
-		if (combined.includes("spotify")) {
-			return "spotify";
-		}
-
-		if (combined.includes("apple")) {
-			return "apple";
-		}
-
-		if (combined.includes("amazon")) {
-			return "amazon";
-		}
-
-		return null;
-	}
-
-	function podcastPlatformBrandIconUrl(platform: PodcastPlatform | null): string | null {
-		if (!platform) {
-			return null;
-		}
-
-		return PODCAST_BRAND_ICON_URLS[platform];
-	}
-
-	function deriveYoutubeEmbedUrl(news: NewsItem): string | null {
-		const youtubeLink = news.podcastLinks.find((link) => {
-			const platform = podcastPlatformKey(link.label, link.url);
-			return platform === "youtube" || platform === "youtube-music";
-		});
-
-		if (!youtubeLink) {
-			return null;
-		}
-
-		const parsed = parseUrl(youtubeLink.url);
-		if (!parsed) {
-			return null;
-		}
-
-		const host = parsed.hostname.toLowerCase().replace(/^www\./, "").replace(/^m\./, "");
-		const pathname = parsed.pathname;
-		const pathSegments = pathname.split("/").filter(Boolean);
-		const list = parsed.searchParams.get("list");
-
-		if (host === "youtu.be" && pathSegments[0]) {
-			return buildYoutubeVideoEmbed(pathSegments[0]);
-		}
-
-		if (host === "youtube.com" || host === "music.youtube.com" || host === "youtube-nocookie.com") {
-			if (pathname === "/watch") {
-				const videoId = parsed.searchParams.get("v");
-				if (videoId) {
-					return buildYoutubeVideoEmbed(videoId);
-				}
-			}
-
-			if (pathSegments[0] === "shorts" && pathSegments[1]) {
-				return buildYoutubeVideoEmbed(pathSegments[1]);
-			}
-
-			if (pathSegments[0] === "live" && pathSegments[1]) {
-				return buildYoutubeVideoEmbed(pathSegments[1]);
-			}
-
-			if (pathSegments[0] === "embed" && pathSegments[1]) {
-				return buildYoutubeVideoEmbed(pathSegments[1]);
-			}
-
-			if (list) {
-				return buildYoutubePlaylistEmbed(list);
-			}
-		}
-
-		return null;
-	}
-
-	function parseUrl(value: string): URL | null {
-		try {
-			return new URL(value);
-		} catch {
-			return null;
-		}
-	}
-
-	function buildYoutubeVideoEmbed(videoId: string): string {
-		return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?rel=0`;
-	}
-
-	function buildYoutubePlaylistEmbed(listId: string): string {
-		return `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(listId)}`;
 	}
 
 	function getCurrentThemeMode(): ThemeMode {
@@ -453,13 +145,92 @@
 		root.style.colorScheme = mode;
 		themeMode = mode;
 
-		if (typeof window !== "undefined") {
+		try {
 			window.localStorage.setItem(THEME_STORAGE_KEY, mode);
+		} catch {
+			// Ignore storage failures in restricted browser modes.
 		}
+	}
+
+	function formatNewsDate(value: string): string {
+		const parsed = Date.parse(value);
+		if (!Number.isFinite(parsed)) {
+			return value;
+		}
+		return new Date(parsed).toLocaleDateString(language === "de" ? "de-DE" : "en-GB", {
+			day: "2-digit",
+			month: "short",
+			year: "numeric"
+		});
+	}
+
+	async function toggleFaq(itemId: string) {
+		const nextOpenFaqId = openFaqId === itemId ? null : itemId;
+		openFaqId = nextOpenFaqId;
+
+		if (!nextOpenFaqId || typeof window === "undefined") {
+			return;
+		}
+
+		window.history.replaceState(null, "", `#faq-${nextOpenFaqId}`);
+		await tick();
+		scrollToElementWithHeaderOffset(`faq-${nextOpenFaqId}`);
+	}
+
+	function scrollToElementWithHeaderOffset(elementId: string) {
+		const element = document.getElementById(elementId);
+		const header = document.querySelector(".site-header");
+		if (!element) {
+			return;
+		}
+
+		const headerHeight = header instanceof HTMLElement ? header.offsetHeight : 0;
+		const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - 18;
+		window.scrollTo({ top, behavior: "smooth" });
+	}
+
+	function handleContactSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		contactSubmitted = true;
+		// TODO: Echten Formularversand anbinden.
+	}
+
+	function podcastLinkForEpisode(item: NewsItem | undefined): string {
+		return item?.podcastLinks[0]?.url ?? landing.podcast.href;
+	}
+
+	function resourceLogoUrl(url: string): string {
+		try {
+			const hostname = new URL(url).hostname.replace(/^www\./, "");
+			return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=96`;
+		} catch {
+			return "/assets/sxe-logo-science-transparent.png";
+		}
+	}
+
+	function faqItemsForGroup(itemIds: string[]): FaqItem[] {
+		return itemIds
+			.map((itemId) => landing.faq.items.find((item: FaqItem) => item.id === itemId))
+			.filter((item): item is FaqItem => Boolean(item));
+	}
+
+	function faqItemNumber(itemId: string): string {
+		const index = landing.faq.items.findIndex((item: FaqItem) => item.id === itemId);
+		return String(index + 1).padStart(2, "0");
+	}
+
+	function isExternalUrl(url: string): boolean {
+		return /^https?:\/\//.test(url);
 	}
 </script>
 
 <svelte:head>
+	<title>{t(landing.meta.title)}</title>
+	<meta name="description" content={t(landing.meta.description)} />
+	<meta property="og:title" content={t(landing.meta.title)} />
+	<meta property="og:description" content={t(landing.meta.description)} />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content={landing.meta.ogImage} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
@@ -469,39 +240,66 @@
 </svelte:head>
 
 <div class="page-shell">
-	<a class="skip-link" href="#main-theme">{content.site.skipLinkLabel}</a>
+	<a class="skip-link" href="#about">{t(landing.skipLinkLabel)}</a>
 	<div class="ambient" aria-hidden="true"></div>
 
-	<header class="site-header" id="top">
-			<div class="inner header-row">
-				<a class="brand" href="#top">
-					<img
-						class="brand-logo"
-						src="/assets/sxe-logo-science-transparent.png"
-						alt="Science x Entrepreneurship"
-						decoding="async"
-					/>
-				</a>
+	<header class="site-header">
+		<div class="inner header-row">
+			<a class="brand" href="#top" onclick={closeMenu} aria-label="SxE">
+				<img
+					class="brand-logo"
+					src="/assets/sxe-logo-science-transparent.png"
+					alt="Science x Entrepreneurship"
+					decoding="async"
+				/>
+				<span class="brand-subtitle">{landing.brandSubtitle}</span>
+			</a>
 
-				<button
-					type="button"
-					class="menu-toggle"
+			<button
+				type="button"
+				class="menu-toggle"
 				onclick={toggleMenu}
 				aria-expanded={isMobileMenuOpen}
 				aria-controls="site-nav"
 				aria-label="Navigation umschalten"
 			>
-				<span></span>
-				<span></span>
-				<span></span>
+				{#if isMobileMenuOpen}
+					<X size={22} />
+				{:else}
+					<Menu size={22} />
+				{/if}
 			</button>
 
-				<nav id="site-nav" class:open={isMobileMenuOpen}>
-					<a href="#main-theme" onclick={closeMenu}>{content.site.navMainThemeLabel}</a>
-					<a href="#mission" onclick={closeMenu}>{content.site.navMissionLabel}</a>
-					<a href="#newsletter" onclick={closeMenu}>{content.site.navNewsletterLabel}</a>
-					<a href="#team" onclick={closeMenu}>{content.site.navTeamLabel}</a>
-					<a href="/impressum" onclick={closeMenu}>{content.site.navImpressumLabel}</a>
+			<nav id="site-nav" class:open={isMobileMenuOpen} aria-label="Hauptnavigation">
+				{#each landing.nav as item (item.id)}
+					<a
+						href={`#${item.id}`}
+						class:active={activeSectionId === item.id}
+						onclick={closeMenu}
+						aria-current={activeSectionId === item.id ? "page" : undefined}
+					>
+						{t(item.label)}
+					</a>
+				{/each}
+				<div class="header-controls">
+					<div class="language-toggle" aria-label={t(landing.languageToggleLabel)}>
+						<button
+							type="button"
+							class:active={language === "de"}
+							onclick={() => setLanguage("de")}
+							aria-pressed={language === "de"}
+						>
+							DE
+						</button>
+						<button
+							type="button"
+							class:active={language === "en"}
+							onclick={() => setLanguage("en")}
+							aria-pressed={language === "en"}
+						>
+							EN
+						</button>
+					</div>
 					<button
 						type="button"
 						class="theme-toggle"
@@ -510,7 +308,7 @@
 							toggleThemeMode();
 							closeMenu();
 						}}
-						aria-label={content.site.themeToggleAriaLabel}
+						aria-label={t(landing.themeToggleAriaLabel)}
 						aria-pressed={themeMode === "light"}
 					>
 						<span class="theme-toggle-icon" aria-hidden="true">
@@ -521,214 +319,301 @@
 						</span>
 						<span class="theme-toggle-thumb" aria-hidden="true"></span>
 					</button>
-				</nav>
-			</div>
-		</header>
+				</div>
+			</nav>
+		</div>
+	</header>
 
 	<main class="main-stack">
-		<section id="main-theme" class="panel hero-panel reveal" style="--delay: 60ms;">
+		<section id="top" class="panel hero-panel reveal" aria-labelledby="hero-title">
 			<div class="hero-copy">
-				<p class="kicker"><Sparkles size={14} strokeWidth={2.2} /> {content.site.heroKicker}</p>
-				<h1>{content.site.heroTitle}</h1>
-				<p class="lead">{content.site.heroLead}</p>
+				<p class="kicker"><Sparkles size={14} strokeWidth={2.2} /> {t(landing.hero.kicker)}</p>
+				<h1 id="hero-title" class:de-title={language === "de"}>{t(landing.hero.title)}</h1>
+				<p class="lead">{t(landing.hero.lead)}</p>
 				<div class="hero-actions">
-					<a href={content.site.heroPrimaryHref} class="button button-primary"
-						>{content.site.heroPrimaryLabel} <ArrowRight size={16} /></a
+					<a href={landing.hero.primaryHref} class="button button-primary"
+						>{t(landing.hero.primaryLabel)} <ArrowRight size={16} /></a
 					>
-					<a href={content.site.heroSecondaryHref} class="button button-ghost"
-						>{content.site.heroSecondaryLabel}</a
+					<a href={landing.hero.secondaryHref} class="button button-ghost"
+						>{t(landing.hero.secondaryLabel)}</a
 					>
 				</div>
 			</div>
 
-			<aside class="cms-chip" aria-label="CMS-Information">
-				<p class="chip-head"><Newspaper size={14} strokeWidth={2.2} /> {content.site.cmsChipTitle}</p>
-				<p>{content.site.cmsChipBody}</p>
-				<div class="chip-grid">
-					<span>{content.site.cmsChipTag1}</span>
-					<span>{content.site.cmsChipTag2}</span>
-					<span>{content.site.cmsChipTag3}</span>
-				</div>
+			<aside class="hero-visual" aria-label="SxE">
+				<img
+					class="hero-cover"
+					src={landing.podcast.fallbackThumbnail}
+					alt="Podcast-Cover Forschung mit Folgen, Episode 03 mit Nicholas Turley"
+					decoding="async"
+					fetchpriority="high"
+				/>
 			</aside>
+		</section>
 
-				<div class="news-carousel-shell">
-					{#if canNavigateNews}
-						<div class="news-carousel-controls" aria-label={content.site.newsControlsAriaLabel}>
-							<button
-								type="button"
-								class="news-carousel-button"
-								onclick={showPreviousNews}
-								disabled={!canGoPreviousNews}
-								aria-label={content.site.newsPreviousButtonAriaLabel}
-							>
-								<ChevronLeft size={16} />
-								<span>{content.site.newsPreviousButtonLabel}</span>
-							</button>
-							<button
-								type="button"
-								class="news-carousel-button"
-								onclick={showNextNews}
-								disabled={!canGoNextNews}
-								aria-label={content.site.newsNextButtonAriaLabel}
-							>
-								<span>{content.site.newsNextButtonLabel}</span>
-								<ChevronRight size={16} />
-							</button>
+		<section id="about" class="panel section-panel reveal" aria-labelledby="about-title">
+			<div class="section-head">
+				<p class="kicker"><Users size={14} strokeWidth={2.2} /> {t(landing.about.kicker)}</p>
+				<h2 id="about-title">{t(landing.about.title)}</h2>
+				<div class="lead rich-text">
+					{#each t(landing.about.body).split("\n\n") as paragraph}
+						<p>{paragraph}</p>
+					{/each}
+				</div>
+			</div>
+			<div class="card-grid three">
+				{#each landing.about.features as feature (t(feature.title))}
+					<article class="content-card">
+						<span class="card-icon" aria-hidden="true">{feature.icon}</span>
+						<h3>{t(feature.title)}</h3>
+						<p>{t(feature.text)}</p>
+					</article>
+				{/each}
+			</div>
+		</section>
+
+		<section class="panel section-panel reveal" aria-labelledby="infographics-title">
+			<div class="section-head">
+				<p class="kicker"><BookOpen size={14} strokeWidth={2.2} /> {t(landing.infographics.kicker)}</p>
+				<h2 id="infographics-title">{t(landing.infographics.title)}</h2>
+			</div>
+			<div class="infographic-grid">
+				{#each landing.infographics.items as item (item.src)}
+					<article class="infographic-card">
+						<div>
+							<h3>{t(item.title)}</h3>
+							<p>{t(item.teaser)}</p>
+							<p class="meta">{item.credit}</p>
 						</div>
-					{/if}
+						<img src={item.src} alt={t(item.alt)} loading="lazy" decoding="async" />
+					</article>
+				{/each}
+			</div>
+		</section>
 
-					<div
-						class="news-carousel"
-						role="region"
-						aria-label={content.site.newsCarouselAriaLabel}
-						use:bindNewsSwipe
-					>
-					<div
-						class="news-track"
-						class:dragging={isNewsTrackDragging}
-						style={`--news-columns: ${newsVisibleCount || 1}; --news-drag-offset: ${swipeOffsetX}px;`}
-					>
-						{#each visibleNews as item (item.id)}
-							<article class="news-card">
-								<p class="meta">{formatNewsDate(item.date)}</p>
-								<h2>{item.title}</h2>
-								<p>{item.excerpt}</p>
+		<section id="faq" class="panel section-panel reveal" aria-labelledby="faq-title">
+			<div class="section-head">
+				<p class="kicker"><Sparkles size={14} strokeWidth={2.2} /> {t(landing.faq.kicker)}</p>
+				<h2 id="faq-title">{t(landing.faq.title)}</h2>
+				<p class="lead">{t(landing.faq.intro)}</p>
+			</div>
+			<div class="faq-list">
+				{#each landing.faq.groups as group (t(group.title))}
+					<section class="faq-group" aria-labelledby={`faq-group-${group.itemIds[0]}`}>
+						<h3 id={`faq-group-${group.itemIds[0]}`} class="faq-group-title">{t(group.title)}</h3>
+						{#each faqItemsForGroup(group.itemIds) as item (item.id)}
+							<article id={`faq-${item.id}`} class="faq-item" class:open={openFaqId === item.id}>
+								<h4>
 									<button
 										type="button"
-										class="news-card-action"
-										onclick={() => openPodcastModal(item.id)}
+										aria-expanded={openFaqId === item.id}
+										aria-controls={`faq-panel-${item.id}`}
+										onclick={() => toggleFaq(item.id)}
 									>
-									{item.ctaLabel}
-									<ArrowRight size={14} />
-								</button>
+										<span>{faqItemNumber(item.id)}</span>
+										{t(item.question)}
+										<span class="faq-chevron" aria-hidden="true">
+											<ChevronDown size={18} />
+										</span>
+									</button>
+								</h4>
+								<div id={`faq-panel-${item.id}`} class="faq-answer" hidden={openFaqId !== item.id}>
+									<p>{t(item.answer)}</p>
+									{#if item.links?.length}
+										<div class="faq-link-block">
+											<strong>{language === "de" ? "Weiterführende Links" : "Further links"}</strong>
+											<ul>
+												{#each item.links as link (`${item.id}-${link.url}`)}
+													<li>
+														<a
+															href={link.url}
+															target={isExternalUrl(link.url) ? "_blank" : undefined}
+															rel={isExternalUrl(link.url) ? "noopener noreferrer" : undefined}
+														>
+															{t(link.label)}
+															{#if isExternalUrl(link.url)}
+																<ExternalLink size={13} />
+															{/if}
+														</a>
+													</li>
+												{/each}
+											</ul>
+										</div>
+									{/if}
+								</div>
 							</article>
 						{/each}
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section id="mission" class="panel mission-panel reveal" style="--delay: 120ms;">
-			<p class="kicker"><Sparkles size={14} strokeWidth={2.2} /> {content.site.missionKicker}</p>
-			<h2>{content.site.missionTitle}</h2>
-			<div class="mission-grid">
-				{#each content.missionItems as item (item.id)}
-					<article class="mission-card">
-						<h3>{item.title}</h3>
-						<p>{item.text}</p>
-					</article>
+					</section>
 				{/each}
 			</div>
 		</section>
 
-		<section id="newsletter" class="panel newsletter-panel reveal" style="--delay: 180ms;">
-			<div class="newsletter-copy">
-				<p class="kicker"><Mail size={14} strokeWidth={2.2} /> {content.site.newsletterKicker}</p>
-				<h2>{content.site.newsletterTitle}</h2>
-				<p class="lead">{content.site.newsletterLead}</p>
+		<section id="podcast" class="panel podcast-panel reveal" aria-labelledby="podcast-title">
+			<div class="podcast-copy">
+				<p class="kicker"><Podcast size={14} strokeWidth={2.2} /> {t(landing.podcast.kicker)}</p>
+				<h2 id="podcast-title">{t(landing.podcast.title)}</h2>
+				<p class="lead">{t(landing.podcast.lead)}</p>
+				<a class="button button-primary" href={landing.podcast.href}
+					>{t(landing.podcast.ctaLabel)} <ArrowRight size={16} /></a
+				>
 			</div>
-
-			<form class="newsletter-form" onsubmit={handleNewsletterSubmit}>
-				<label for="newsletter-email">{content.site.newsletterEmailLabel}</label>
-				<input
-					id="newsletter-email"
-					type="email"
-					placeholder={content.site.newsletterEmailPlaceholder}
-					required
+			<article class="latest-episode-card">
+				<img
+					src={landing.podcast.fallbackThumbnail}
+					alt="Forschung mit Folgen"
+					loading="lazy"
+					decoding="async"
 				/>
-				<button type="submit">{content.site.newsletterSubmitLabel} <ArrowRight size={14} /></button>
-			</form>
+				<div>
+					<p class="meta">
+						{#if latestEpisode}{formatNewsDate(latestEpisode.date)}{:else}Podcast{/if}
+					</p>
+					<h3>{latestEpisode?.title ?? landing.podcast.title}</h3>
+					<p>
+						{latestEpisode?.excerpt ??
+							(language === "de" ? "Neue Folgen erscheinen hier." : "New episodes will appear here.")}
+					</p>
+					<a href={podcastLinkForEpisode(latestEpisode)} target="_blank" rel="noopener noreferrer">
+						{language === "de" ? "Aktuelle Folge öffnen" : "Open latest episode"}
+						<ExternalLink size={14} />
+					</a>
+				</div>
+				<!-- TODO: RSS-Feed-URL einfügen und latest episode serverseitig mappen. -->
+			</article>
 		</section>
 
-		<section id="team" class="panel team-panel reveal" style="--delay: 240ms;">
-			<p class="kicker"><Users size={14} strokeWidth={2.2} /> {content.site.teamKicker}</p>
-			<h2>{content.site.teamTitle}</h2>
-			<div class="team-grid">
-				{#each content.teamMembers as item (item.id)}
-					<article class="team-card">
-						<div class="avatar" aria-hidden="true">{item.avatarLabel}</div>
-						<h3>{item.name}</h3>
-						<p class="meta">{item.role}</p>
-						<p>{item.text}</p>
-					</article>
-				{/each}
+		<section id="resources" class="panel section-panel reveal" aria-labelledby="resources-title">
+			<div class="section-head">
+				<p class="kicker"><Rocket size={14} strokeWidth={2.2} /> {t(landing.resources.kicker)}</p>
+				<h2 id="resources-title">{t(landing.resources.title)}</h2>
 			</div>
-		</section>
-	</main>
-
-	<footer id="footer" class="site-footer reveal" style="--delay: 360ms;">
-		<div class="inner footer-grid">
-			<div>
-				<h2>{content.site.footerTitle}</h2>
-				<p>{content.site.footerDescription}</p>
-			</div>
-			<div class="footer-links">
-				<a href="#top">{content.site.footerStartLabel}</a>
-				<a href="#main-theme">{content.site.footerNewsLabel}</a>
-				<a href="/impressum">{content.site.footerImpressumLabel}</a>
-				<a href="/impressum#datenschutz">{content.site.footerDatenschutzLabel}</a>
-			</div>
-		</div>
-		<p class="footer-end">© {new Date().getFullYear()} {content.site.copyrightBrandName}</p>
-	</footer>
-
-	{#if isPodcastModalOpen && activeModalNewsItem}
-		<div class="modal-overlay" role="presentation" onclick={handlePodcastModalBackdropClick}>
-			<div
-				class="podcast-modal"
-				role="dialog"
-				aria-modal="true"
-				aria-labelledby="podcast-modal-title"
-			>
-					<button
-						type="button"
-						class="podcast-modal-close"
-						aria-label={content.site.podcastModalCloseButtonAriaLabel}
-						onclick={closePodcastModal}
-						bind:this={modalCloseButton}
-					>
-					<X size={16} />
-				</button>
-
-					<p class="podcast-modal-date">{formatNewsDate(activeModalNewsItem.date)}</p>
-					<h2 id="podcast-modal-title">{activeModalNewsItem.title}</h2>
-
-					{#if activeModalYoutubeEmbedUrl}
-						<div class="podcast-youtube-embed">
-							<iframe
-								src={activeModalYoutubeEmbedUrl}
-								title={`${content.site.podcastModalYoutubeTitlePrefix}: ${activeModalNewsItem.title}`}
-								loading="lazy"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-								referrerpolicy="strict-origin-when-cross-origin"
-								allowfullscreen
-							></iframe>
-						</div>
-					{/if}
-
-					{#if activeModalNewsItem.podcastLinks.length > 0}
-						<div class="podcast-link-grid">
-								{#each activeModalNewsItem.podcastLinks as link (`${link.label}-${link.url}`)}
-									{@const platform = podcastPlatformKey(link.label, link.url)}
-									{@const brandIconUrl = podcastPlatformBrandIconUrl(platform)}
-									<a href={link.url} target="_blank" rel="noopener noreferrer">
-										<span class="podcast-link-main">
-											{#if brandIconUrl}
-												<span class="podcast-link-icon" aria-hidden="true">
-													<img src={brandIconUrl} alt="" loading="lazy" decoding="async" />
-												</span>
-											{/if}
-											<span>{link.label}</span>
+			<div class="resource-category-grid">
+				{#each landing.resources.categories as category (t(category.title))}
+					<section class="resource-category" aria-labelledby={`resource-${t(category.title)}`}>
+						<h3 id={`resource-${t(category.title)}`}>{t(category.title)}</h3>
+						<div class="resource-grid">
+							{#each category.items as item (item.name)}
+								<a class="resource-card" href={item.url} target="_blank" rel="noopener noreferrer">
+									<span class="resource-card-head">
+										<span class="resource-logo" aria-hidden="true">
+											<img src={resourceLogoUrl(item.url)} alt="" loading="lazy" decoding="async" />
 										</span>
+										<strong>{item.name}</strong>
+									</span>
+									<span>{t(item.description)}</span>
+									<span class="resource-external" aria-hidden="true">
+										<ExternalLink size={14} />
+									</span>
 								</a>
 							{/each}
 						</div>
-					{:else}
-					<p class="podcast-empty">{content.site.podcastModalEmptyStateText}</p>
+					</section>
+				{/each}
+			</div>
+		</section>
+
+		<section id="team" class="panel section-panel reveal" aria-labelledby="team-title">
+			<div class="section-head">
+				<p class="kicker"><Users size={14} strokeWidth={2.2} /> {t(landing.team.kicker)}</p>
+				<h2 id="team-title">{t(landing.team.title)}</h2>
+				<p class="lead">{t(landing.team.lead)}</p>
+			</div>
+			<div class="card-grid three">
+				{#each landing.team.items as item (t(item.title))}
+					<article class="content-card">
+						<span class="card-icon" aria-hidden="true">{item.icon}</span>
+						<h3>{t(item.title)}</h3>
+						<p>{t(item.text)}</p>
+					</article>
+				{/each}
+			</div>
+		</section>
+
+		<section id="contact" class="panel contact-panel reveal" aria-labelledby="contact-title">
+			<div class="contact-copy">
+				<p class="kicker"><Mail size={14} strokeWidth={2.2} /> {t(landing.contact.kicker)}</p>
+				<h2 id="contact-title">{t(landing.contact.title)}</h2>
+				<p class="lead">{t(landing.contact.lead)}</p>
+				<a href={landing.contact.emailHref}>{landing.contact.emailLabelText}</a>
+				<form class="newsletter-form" onsubmit={handleContactSubmit}>
+					<h3>{t(landing.contact.newsletterTitle)}</h3>
+					<p>{t(landing.contact.newsletterLead)}</p>
+					<label for="newsletter-email">{t(landing.contact.newsletterEmailLabel)}</label>
+					<div class="newsletter-row">
+						<input
+							id="newsletter-email"
+							name="newsletter-email"
+							type="email"
+							autocomplete="email"
+							placeholder={t(landing.contact.newsletterEmailPlaceholder)}
+							required
+						/>
+						<button type="submit">{t(landing.contact.newsletterSubmitLabel)}</button>
+					</div>
+				</form>
+			</div>
+
+			<form class="contact-form" onsubmit={handleContactSubmit}>
+				<label for="contact-name">{t(landing.contact.nameLabel)}</label>
+				<input id="contact-name" name="name" autocomplete="name" required />
+
+				<label for="contact-email">{t(landing.contact.emailLabel)}</label>
+				<input id="contact-email" name="email" type="email" autocomplete="email" required />
+
+				<label for="contact-message">{t(landing.contact.messageLabel)}</label>
+				<textarea id="contact-message" name="message" rows="5" required></textarea>
+
+				<button type="submit">{t(landing.contact.submitLabel)} <ArrowRight size={14} /></button>
+				{#if contactSubmitted}
+					<p class="form-note" role="status">{t(landing.contact.successMessage)}</p>
 				{/if}
+			</form>
+		</section>
+	</main>
+
+	<footer class="site-footer reveal">
+		<div class="inner footer-grid">
+			<div>
+				<img
+					class="footer-logo"
+					src="/assets/sxe-logo-science-transparent.png"
+					alt="Science x Entrepreneurship"
+					loading="lazy"
+					decoding="async"
+				/>
+				<p>{t(landing.footer.description)}</p>
+			</div>
+			<div class="footer-links">
+				<a href="/impressum">{t(landing.footer.imprintLabel)}</a>
+				<a href="/impressum#datenschutz">{t(landing.footer.privacyLabel)}</a>
+				<div class="language-toggle footer-language" aria-label={t(landing.languageToggleLabel)}>
+					<button
+						type="button"
+						class:active={language === "de"}
+						onclick={() => setLanguage("de")}
+						aria-pressed={language === "de"}
+					>
+						DE
+					</button>
+					<button
+						type="button"
+						class:active={language === "en"}
+						onclick={() => setLanguage("en")}
+						aria-pressed={language === "en"}
+					>
+						EN
+					</button>
+				</div>
+				{#each landing.contact.socialLinks as link (link.label)}
+					{#if link.url === "#"}
+						<!-- TODO: Link einfügen -->
+					{/if}
+					<a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+				{/each}
 			</div>
 		</div>
-	{/if}
+		<p class="footer-end">© {new Date().getFullYear()} {landing.footer.copyright}</p>
+	</footer>
 </div>
 
 <style>
@@ -738,11 +623,13 @@
 
 	:global(body) {
 		margin: 0;
-		font-family: "Manrope", "Avenir Next", sans-serif;
-		background: var(--background);
+		font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	}
 
-	:global(*:focus-visible) {
+	:global(a:focus-visible),
+	:global(button:focus-visible),
+	:global(input:focus-visible),
+	:global(textarea:focus-visible) {
 		outline: 2px solid rgb(var(--rgb-focus-blue));
 		outline-offset: 2px;
 	}
@@ -798,7 +685,7 @@
 		z-index: 40;
 		backdrop-filter: blur(16px);
 		border-bottom: 1px solid var(--line-soft);
-		background: rgb(6 11 20 / 0.74);
+		background: rgb(6 11 20 / 0.82);
 	}
 
 	.header-row {
@@ -806,50 +693,97 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 0.92rem 0;
+		padding: 0.72rem 0;
 	}
 
 	.brand {
 		display: inline-flex;
 		align-items: center;
+		gap: 0.72rem;
+		min-width: 0;
 		text-decoration: none;
 	}
 
 	.brand-logo {
 		display: block;
 		width: auto;
-		height: clamp(3.1rem, 5.2vw, 4.35rem);
-		max-width: min(14rem, 42vw);
+		height: clamp(2.8rem, 4.8vw, 4rem);
+		max-width: min(12rem, 34vw);
 		object-fit: contain;
 		object-position: left center;
 	}
 
-	nav {
-		display: flex;
-		align-items: center;
-		gap: 0.45rem;
+	.brand-subtitle {
+		color: rgb(var(--rgb-text-soft-dark));
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		white-space: nowrap;
 	}
 
-	nav a {
+	nav,
+	.header-controls,
+	.language-toggle {
+		display: flex;
+		align-items: center;
+	}
+
+	nav {
+		gap: 0.35rem;
+	}
+
+	nav a,
+	.footer-links a {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		min-height: 2.1rem;
-		padding: 0.25rem 0.82rem;
-		font-size: 0.87rem;
-		font-weight: 600;
-		letter-spacing: 0.03em;
-		border-radius: 999px;
+		padding: 0.25rem 0.72rem;
 		border: 1px solid transparent;
-		color: rgb(212 222 239);
+		border-radius: 999px;
+		color: rgb(209 220 241);
+		font-size: 0.84rem;
+		font-weight: 700;
 		text-decoration: none;
 		transition: all 0.2s ease;
 	}
 
-	nav a:hover {
+	nav a:hover,
+	nav a.active,
+	.footer-links a:hover {
 		border-color: var(--line-soft);
-		background: rgb(var(--rgb-white) / 0.06);
+		background: rgb(var(--rgb-white) / 0.08);
 		color: rgb(var(--rgb-white));
+	}
+
+	.header-controls {
+		gap: 0.4rem;
+		margin-left: 0.2rem;
+	}
+
+	.language-toggle {
+		padding: 0.16rem;
+		border: 1px solid rgb(var(--rgb-white) / 0.16);
+		border-radius: 999px;
+		background: rgb(var(--rgb-white) / 0.08);
+	}
+
+	.language-toggle button {
+		min-width: 2rem;
+		height: 1.75rem;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: rgb(var(--rgb-text-soft-dark));
+		font-size: 0.72rem;
+		font-weight: 800;
+		cursor: pointer;
+	}
+
+	.language-toggle button.active {
+		background: rgb(var(--rgb-brand-blue));
+		color: rgb(24 23 18);
 	}
 
 	.theme-toggle {
@@ -866,10 +800,6 @@
 		color: rgb(var(--rgb-text-strong-dark));
 		cursor: pointer;
 		transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-	}
-
-	nav .theme-toggle {
-		margin-left: 0.2rem;
 	}
 
 	.theme-toggle:hover {
@@ -903,846 +833,692 @@
 		border-radius: 999px;
 		background: rgb(var(--rgb-brand-blue));
 		box-shadow: 0 5px 12px rgb(var(--rgb-black) / 0.24);
+		transform: translateX(1.72rem);
 		transition: transform 0.22s ease, background-color 0.2s ease;
 	}
 
 	.theme-toggle.light .theme-toggle-thumb {
-		transform: translateX(1.72rem);
+		transform: translateX(0);
 		background: rgb(var(--rgb-warning-amber));
 	}
 
 	.menu-toggle {
 		display: none;
-		padding: 0;
-		border: 0;
-		background: transparent;
-		cursor: pointer;
-		flex-direction: column;
-		gap: 0.26rem;
-	}
-
-	.menu-toggle span {
-		display: block;
-		width: 1.5rem;
-		height: 2px;
+		width: 2.35rem;
+		height: 2.35rem;
+		place-items: center;
+		border: 1px solid var(--line-soft);
 		border-radius: 999px;
-		background: rgb(var(--rgb-text-bright-dark));
+		background: rgb(var(--rgb-white) / 0.08);
+		color: rgb(var(--rgb-text-strong-dark));
+		cursor: pointer;
 	}
 
 	.main-stack {
-		display: grid;
-		gap: 1rem;
-		padding: clamp(1.1rem, 2.7vw, 1.8rem) 0 clamp(2.8rem, 6vw, 4.2rem);
 		position: relative;
 		z-index: 1;
+		display: grid;
+		gap: 1rem;
+		width: min(1140px, calc(100% - 2.5rem));
+		margin: 1rem auto 0;
 	}
 
 	.panel {
-		width: min(1140px, calc(100% - 2.5rem));
-		margin-inline: auto;
-		border-radius: 1.15rem;
+		width: 100%;
 		border: 1px solid var(--line-soft);
-		background: linear-gradient(165deg, var(--shell-1), var(--shell-0));
+		border-radius: 0.9rem;
+		background:
+			linear-gradient(150deg, rgb(var(--rgb-white) / 0.09), rgb(var(--rgb-white) / 0.035)),
+			var(--shell-1);
 		box-shadow:
-			0 24px 40px rgb(var(--rgb-black) / 0.28),
-			inset 0 1px 0 rgb(var(--rgb-white) / 0.04);
-		padding: clamp(1.2rem, 3.2vw, 2.35rem);
+			0 24px 50px rgb(var(--rgb-black) / 0.24),
+			inset 0 1px 0 rgb(var(--rgb-white) / 0.1);
 	}
 
-	.hero-panel {
+	.hero-panel,
+	.podcast-panel,
+	.contact-panel {
 		display: grid;
-		grid-template-columns: 1.25fr 0.75fr;
-		gap: 1rem;
+		grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+		gap: clamp(1rem, 3vw, 2rem);
+		align-items: center;
+		padding: clamp(1.15rem, 4vw, 3rem);
 	}
 
-	.hero-copy {
+	.section-panel {
 		display: grid;
-		gap: 0.8rem;
-		align-content: start;
+		gap: 1.15rem;
+		padding: clamp(1.1rem, 3vw, 2rem);
+	}
+
+	.hero-copy,
+	.section-head,
+	.podcast-copy,
+	.contact-copy {
+		display: grid;
+		gap: 0.75rem;
 	}
 
 	.kicker {
 		display: inline-flex;
-		gap: 0.45rem;
 		align-items: center;
-		font-size: 0.74rem;
-		font-weight: 700;
-		letter-spacing: 0.18em;
+		gap: 0.42rem;
+		width: fit-content;
+		margin: 0;
+		border-radius: 999px;
+		color: rgb(255 205 130);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		color: rgb(153 172 207);
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	p {
 		margin: 0;
 	}
 
 	h1,
 	h2,
-	h3 {
-		margin: 0;
+	h3,
+	h4 {
 		font-family: "Space Grotesk", "Manrope", sans-serif;
-		line-height: 1.05;
-		letter-spacing: 0.01em;
+		color: rgb(var(--rgb-text-bright-dark));
+		letter-spacing: 0;
 	}
 
 	h1 {
-		font-size: clamp(2.1rem, 4.6vw, 3.6rem);
-		max-width: 18ch;
+		max-width: 12ch;
+		font-size: clamp(2.35rem, 7vw, 5.25rem);
+		line-height: 0.96;
+	}
+
+	h1.de-title {
+		max-width: 14ch;
+		font-size: clamp(2rem, 5.8vw, 4.3rem);
+		line-height: 1;
 	}
 
 	h2 {
-		font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+		font-size: clamp(1.65rem, 3vw, 2.75rem);
+		line-height: 1.05;
 	}
 
 	h3 {
-		font-size: clamp(1.03rem, 1.8vw, 1.22rem);
+		font-size: 1.05rem;
+		line-height: 1.2;
+	}
+
+	h4 {
+		font-size: 1rem;
+		line-height: 1.2;
+	}
+
+	.lead,
+	.content-card p,
+	.infographic-card p,
+	.latest-episode-card p,
+	.resource-card span,
+	.footer-grid p,
+	.contact-copy a,
+	.faq-answer p {
+		color: var(--copy-muted);
 	}
 
 	.lead {
-		margin: 0;
-		max-width: 62ch;
-		color: var(--copy-muted);
+		max-width: 66ch;
+		font-size: clamp(1rem, 1.5vw, 1.15rem);
+	}
+
+	.rich-text {
+		display: grid;
+		gap: 0.7rem;
 	}
 
 	.hero-actions {
 		display: flex;
-		align-items: center;
-		gap: 0.62rem;
 		flex-wrap: wrap;
+		gap: 0.7rem;
+		margin-top: 0.25rem;
 	}
 
-	.button {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		height: 2.75rem;
-		padding: 0 1rem;
-		border-radius: 0.72rem;
-		font-size: 0.84rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		text-decoration: none;
-		transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
-	}
-
-	.button:hover {
-		transform: translateY(-2px);
-	}
-
-	.button-primary {
-		background: linear-gradient(
-			140deg,
-			rgb(var(--rgb-brand-teal)),
-			rgb(var(--rgb-brand-blue))
-		);
-		color: rgb(var(--rgb-surface-light));
-	}
-
-	.button-ghost {
-		border: 1px solid var(--line-strong);
-		background: rgb(var(--rgb-white) / 0.04);
-		color: rgb(216 227 247);
-	}
-
-	.cms-chip {
-		height: fit-content;
-		display: grid;
-		gap: 0.65rem;
-		padding: 1rem;
-		border-radius: 0.95rem;
-		border: 1px solid rgb(var(--rgb-white) / 0.14);
-		background: linear-gradient(150deg, rgb(var(--rgb-white) / 0.06), rgb(var(--rgb-white) / 0.02));
-	}
-
-	.cms-chip p {
-		margin: 0;
-		color: rgb(208 220 243);
-	}
-
-	.chip-head {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-size: 0.76rem;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-		color: rgb(154 178 217);
-	}
-
-	.chip-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.45rem;
-	}
-
-	.chip-grid span {
+	.button,
+	.newsletter-form button,
+	.contact-form button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		height: 1.9rem;
-		padding: 0 0.72rem;
+		gap: 0.45rem;
+		min-height: 2.75rem;
+		padding: 0.7rem 1rem;
 		border-radius: 999px;
-		background: rgb(var(--rgb-white) / 0.07);
-		font-size: 0.77rem;
-		color: rgb(215 228 251);
-	}
-
-	.news-carousel-shell {
-		grid-column: 1 / -1;
-		display: grid;
-		gap: 0.65rem;
-	}
-
-	.news-carousel-controls {
-		display: flex;
-		justify-content: flex-end;
-		gap: 0.5rem;
-	}
-
-	.news-carousel-button {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		height: 2rem;
-		padding: 0 0.72rem;
-		border-radius: 999px;
-		border: 1px solid rgb(var(--rgb-white) / 0.16);
-		background: rgb(var(--rgb-white) / 0.06);
-		color: rgb(233 242 255);
-		font-size: 0.74rem;
-		font-weight: 700;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
+		font-weight: 800;
+		text-decoration: none;
 		cursor: pointer;
-		transition: background-color 0.2s ease, transform 0.2s ease;
+		transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 	}
 
-	.news-carousel-button:hover {
-		background: rgb(var(--rgb-white) / 0.14);
+	.button:hover,
+	.newsletter-form button:hover,
+	.contact-form button:hover {
 		transform: translateY(-1px);
 	}
 
-	.news-carousel-button:disabled {
-		opacity: 0.45;
-		cursor: not-allowed;
-		transform: none;
+	.button-primary,
+	.newsletter-form button,
+	.contact-form button {
+		border: 1px solid rgb(var(--rgb-brand-blue) / 0.55);
+		background: rgb(var(--rgb-brand-blue));
+		color: rgb(22 22 18);
 	}
 
-	.news-carousel {
-		border-radius: 0.9rem;
-		overflow: hidden;
-		touch-action: pan-y;
+	.button-ghost {
+		border: 1px solid var(--line-soft);
+		background: rgb(var(--rgb-white) / 0.06);
+		color: rgb(var(--rgb-text-bright-dark));
 	}
 
-	.news-carousel:focus-visible {
-		outline: 2px solid rgb(var(--rgb-focus-blue));
-		outline-offset: 3px;
-	}
-
-	.news-track {
+	.hero-visual {
 		display: grid;
-		gap: 0.8rem;
-		grid-template-columns: repeat(var(--news-columns, 1), minmax(0, 1fr));
-		transform: translateX(var(--news-drag-offset, 0px));
-		transition: transform 220ms ease;
-		will-change: transform;
 	}
 
-	.news-track.dragging {
-		transition: none;
-	}
-
-	.news-card,
-	.mission-card,
-	.team-card {
-		display: grid;
-		align-content: start;
-		gap: 0.4rem;
-		min-height: 100%;
+	.hero-cover {
+		display: block;
+		width: min(100%, 28rem);
+		justify-self: center;
+		aspect-ratio: 1;
 		border-radius: 0.85rem;
-		padding: 0.95rem;
+		border: 1px solid var(--line-soft);
+		object-fit: cover;
+		box-shadow: 0 24px 38px rgb(var(--rgb-black) / 0.24);
+	}
+
+	.card-grid,
+	.resource-grid {
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.content-card,
+	.infographic-card,
+	.latest-episode-card,
+	.resource-card,
+	.faq-item,
+	.contact-form {
 		border: 1px solid rgb(var(--rgb-white) / 0.12);
+		border-radius: 0.85rem;
 		background: var(--shell-2);
+	}
+
+	.card-grid.three {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.content-card {
+		display: grid;
+		gap: 0.45rem;
+		padding: 1rem;
 		transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 	}
 
-	.news-card:hover,
-	.mission-card:hover,
-	.team-card:hover {
-		transform: translateY(-5px);
+	.content-card:hover,
+	.resource-card:hover {
+		transform: translateY(-4px);
 		border-color: rgb(var(--rgb-brand-blue) / 0.45);
-		box-shadow: 0 16px 24px rgb(var(--rgb-black) / 0.26);
+		box-shadow: 0 16px 24px rgb(var(--rgb-black) / 0.22);
+	}
+
+	.card-icon {
+		font-size: 1.55rem;
+	}
+
+	.infographic-grid,
+	.resource-category-grid {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.infographic-card {
+		display: grid;
+		grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+		gap: 1rem;
+		align-items: center;
+		padding: 1rem;
+	}
+
+	.infographic-card div {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.infographic-card img,
+	.latest-episode-card img {
+		display: block;
+		width: 100%;
+		border-radius: 0.65rem;
+		background: rgb(var(--rgb-white) / 0.9);
+	}
+
+	.infographic-card img {
+		max-height: 27rem;
+		object-fit: contain;
 	}
 
 	.meta {
-		margin: 0;
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
 		color: rgb(151 173 211);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
 	}
 
-	.news-card p,
-	.mission-card p,
-	.team-card p {
-		margin: 0.15rem 0 0;
-		color: rgb(196 208 230);
+	.faq-list {
+		display: grid;
+		gap: 1rem;
 	}
 
-	.news-card-action {
+	.faq-group {
+		display: grid;
+		gap: 0.6rem;
+	}
+
+	.faq-group-title {
+		padding: 0 0.15rem;
+		color: rgb(255 205 130);
+		font-size: 0.98rem;
+		letter-spacing: 0.03em;
+	}
+
+	.faq-item {
+		overflow: clip;
+		scroll-margin-top: 7rem;
+	}
+
+	.faq-item h4 button {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 0.75rem;
+		align-items: center;
+		width: 100%;
+		padding: 0.95rem 1rem;
+		border: 0;
+		background: transparent;
+		color: rgb(var(--rgb-text-bright-dark));
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+
+	.faq-item h4 button span {
+		color: rgb(255 205 130);
+		font-size: 0.78rem;
+		font-weight: 800;
+	}
+
+	.faq-chevron {
+		transition: transform 0.22s ease;
+	}
+
+	.faq-item.open .faq-chevron {
+		transform: rotate(180deg);
+	}
+
+	.faq-answer {
+		display: grid;
+		gap: 0.8rem;
+		padding: 0 1rem 1rem 3.55rem;
+	}
+
+	.faq-link-block {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.faq-link-block strong {
+		color: rgb(var(--rgb-text-bright-dark));
+		font-size: 0.82rem;
+	}
+
+	.faq-link-block ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.faq-link-block a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.32rem;
+		min-height: 2rem;
+		padding: 0.28rem 0.58rem;
+		border: 1px solid rgb(var(--rgb-white) / 0.14);
+		border-radius: 999px;
+		background: rgb(var(--rgb-white) / 0.07);
+		color: rgb(255 205 130);
+		font-size: 0.78rem;
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.podcast-panel {
+		align-items: stretch;
+	}
+
+	.latest-episode-card {
+		display: grid;
+		grid-template-columns: 8rem minmax(0, 1fr);
+		gap: 1rem;
+		align-items: center;
+		padding: 1rem;
+	}
+
+	.latest-episode-card img {
+		aspect-ratio: 1;
+		object-fit: contain;
+	}
+
+	.latest-episode-card div {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.latest-episode-card a,
+	.contact-copy a {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		margin-top: 0.5rem;
 		width: fit-content;
-		padding: 0.35rem 0.6rem;
-		border-radius: 999px;
-		border: 0;
-		background: rgb(var(--rgb-white) / 0.1);
-		color: rgb(248 251 255);
-		font-size: 0.76rem;
-		font-weight: 700;
-		cursor: pointer;
-		transition: background-color 0.2s ease;
+		color: rgb(255 205 130);
+		font-weight: 800;
+		text-decoration: none;
 	}
 
-	.news-card-action:hover {
-		background: rgb(var(--rgb-white) / 0.17);
-	}
-
-	.mission-panel,
-	.team-panel {
+	.resource-category {
 		display: grid;
-		gap: 0.8rem;
+		gap: 0.75rem;
 	}
 
-	.mission-grid,
-	.team-grid {
-		display: grid;
-		gap: 0.85rem;
+	.resource-grid {
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
 	}
 
-	.newsletter-panel {
+	.resource-card {
+		position: relative;
 		display: grid;
-		grid-template-columns: 1fr minmax(300px, 460px);
-		gap: 1rem;
-		align-items: end;
+		gap: 0.4rem;
+		min-height: 9rem;
+		padding: 1rem;
+		text-decoration: none;
+		transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 	}
 
-	.newsletter-copy {
+	.resource-card-head {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		min-width: 0;
+	}
+
+	.resource-logo {
 		display: grid;
-		gap: 0.8rem;
+		flex: 0 0 auto;
+		width: 2.4rem;
+		height: 2.4rem;
+		place-items: center;
+		border: 1px solid rgb(var(--rgb-white) / 0.14);
+		border-radius: 0.65rem;
+		background: rgb(var(--rgb-white) / 0.9);
+	}
+
+	.resource-logo img {
+		display: block;
+		width: 1.55rem;
+		height: 1.55rem;
+		object-fit: contain;
+	}
+
+	.resource-card strong {
+		color: rgb(var(--rgb-text-bright-dark));
+	}
+
+	.resource-external {
+		position: absolute;
+		right: 1rem;
+		bottom: 1rem;
+		color: rgb(255 205 130);
+	}
+
+	.contact-form {
+		display: grid;
+		gap: 0.6rem;
+		padding: 1rem;
 	}
 
 	.newsletter-form {
 		display: grid;
 		gap: 0.55rem;
+		margin-top: 0.5rem;
 		padding: 1rem;
-		border-radius: 0.95rem;
-		border: 1px solid rgb(var(--rgb-white) / 0.13);
-		background: rgb(var(--rgb-black) / 0.24);
+		border: 1px solid rgb(var(--rgb-white) / 0.12);
+		border-radius: 0.85rem;
+		background: var(--shell-2);
 	}
 
-	.newsletter-form label {
-		font-size: 0.81rem;
-		font-weight: 700;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: rgb(173 192 225);
+	.newsletter-form p {
+		color: var(--copy-muted);
 	}
 
-	.newsletter-form input {
-		height: 2.8rem;
-		padding: 0 0.85rem;
-		border: 1px solid rgb(var(--rgb-white) / 0.18);
+	.newsletter-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0.5rem;
+	}
+
+	.newsletter-form label,
+	.contact-form label {
+		color: rgb(var(--rgb-text-bright-dark));
+		font-size: 0.82rem;
+		font-weight: 800;
+	}
+
+	.newsletter-form input,
+	.contact-form input,
+	.contact-form textarea {
+		width: 100%;
+		border: 1px solid var(--line-soft);
 		border-radius: 0.65rem;
-		background: rgb(9 14 28 / 0.8);
-		color: rgb(238 244 255);
+		background: rgb(var(--rgb-black) / 0.18);
+		color: rgb(var(--rgb-text-bright-dark));
+		font: inherit;
+		padding: 0.72rem 0.8rem;
+		resize: vertical;
 	}
 
-	.newsletter-form button {
-		height: 2.8rem;
-		padding: 0 1rem;
+	.newsletter-form button,
+	.contact-form button {
+		margin-top: 0.25rem;
 		border: 0;
-		border-radius: 0.65rem;
-		background: linear-gradient(
-			140deg,
-			rgb(var(--rgb-brand-teal)),
-			rgb(var(--rgb-brand-blue))
-		);
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.09em;
-		text-transform: uppercase;
-		color: rgb(248 253 255);
-		cursor: pointer;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		gap: 0.38rem;
-		transition: filter 0.2s ease;
 	}
 
-	.newsletter-form button:hover {
-		filter: brightness(1.07);
-	}
-
-	.avatar {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 2rem;
-		min-width: 4.6rem;
-		width: fit-content;
-		padding: 0 0.7rem;
-		border-radius: 999px;
-		background: rgb(var(--rgb-white) / 0.1);
-		font-size: 0.67rem;
-		font-weight: 800;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: rgb(217 232 255);
+	.form-note {
+		color: rgb(255 205 130);
+		font-size: 0.88rem;
 	}
 
 	.site-footer {
 		position: relative;
 		z-index: 1;
-		margin-top: 0.45rem;
-		padding: 2.2rem 0 1.25rem;
+		margin-top: 1.1rem;
+		padding: 1.4rem 0 1.6rem;
 		border-top: 1px solid var(--line-soft);
-		background: rgb(4 9 18 / 0.84);
+		background: rgb(6 11 20 / 0.72);
 	}
 
 	.footer-grid {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
 		gap: 1rem;
-		grid-template-columns: 1.3fr 1fr;
+		align-items: center;
 	}
 
-	.footer-grid p {
-		margin: 0.4rem 0 0;
-		color: rgb(180 194 220);
+	.footer-logo {
+		display: block;
+		width: 9rem;
+		height: auto;
+		margin-bottom: 0.55rem;
 	}
 
 	.footer-links {
 		display: flex;
-		justify-content: flex-end;
-		gap: 0.55rem;
 		flex-wrap: wrap;
-	}
-
-	.footer-links a {
-		display: inline-flex;
+		gap: 0.5rem;
+		justify-content: flex-end;
 		align-items: center;
-		justify-content: center;
-		height: 2rem;
-		padding: 0 0.72rem;
-		border-radius: 999px;
-		border: 1px solid rgb(var(--rgb-white) / 0.14);
-		background: rgb(var(--rgb-white) / 0.05);
-		color: rgb(220 230 250);
-		font-size: 0.78rem;
-		font-weight: 700;
-		text-decoration: none;
 	}
 
-	.footer-links a:hover {
-		background: rgb(var(--rgb-white) / 0.12);
+	.footer-language {
+		margin-inline: 0.2rem;
 	}
 
 	.footer-end {
-		margin: 1rem 0 0;
-		text-align: center;
-		color: rgb(142 161 196);
-		font-size: 0.8rem;
-	}
-
-	.modal-overlay {
-		position: fixed;
-		inset: 0;
-		z-index: 90;
-		display: grid;
-		place-items: center;
-		padding: 1rem;
-		background: rgb(2 6 13 / 0.72);
-		backdrop-filter: blur(6px);
-	}
-
-	.podcast-modal {
-		width: min(560px, 100%);
-		max-height: min(82vh, 700px);
-		overflow-y: auto;
-		display: grid;
-		gap: 0.8rem;
-		padding: 1.1rem;
-		border-radius: 1rem;
-		border: 1px solid rgb(var(--rgb-white) / 0.18);
-		background: linear-gradient(165deg, rgb(21 30 50 / 0.92), rgb(8 13 23 / 0.97));
-		box-shadow: 0 24px 40px rgb(var(--rgb-black) / 0.42);
-	}
-
-	.podcast-modal-close {
-		justify-self: end;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		border-radius: 999px;
-		border: 1px solid rgb(var(--rgb-white) / 0.18);
-		background: rgb(var(--rgb-white) / 0.07);
-		color: rgb(var(--rgb-text-strong-dark));
-		cursor: pointer;
-	}
-
-	.podcast-modal-close:hover {
-		background: rgb(var(--rgb-white) / 0.16);
-	}
-
-	.podcast-modal-date {
-		margin: 0;
-		font-size: 0.76rem;
-		font-weight: 700;
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-		color: rgb(157 180 219);
-	}
-
-	.podcast-link-grid {
-		display: grid;
-		gap: 0.55rem;
-		grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
-	}
-
-	.podcast-link-grid a {
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		min-height: 2.4rem;
-		padding: 0 0.8rem;
-		border-radius: 0.68rem;
-		border: 1px solid rgb(var(--rgb-white) / 0.18);
-		background: rgb(var(--rgb-white) / 0.07);
-		color: rgb(239 245 255);
-		font-size: 0.8rem;
-		font-weight: 700;
-		text-decoration: none;
-	}
-
-	.podcast-link-grid a:hover {
-		background: rgb(var(--rgb-white) / 0.16);
-	}
-
-	.podcast-link-main {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		min-width: 0;
-	}
-
-	.podcast-link-main span:last-child {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.podcast-link-icon {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.5rem;
-		height: 1.5rem;
-		border-radius: 999px;
-		background: rgb(var(--rgb-white) / 0.11);
-	}
-
-	.podcast-link-icon img {
-		width: 0.95rem;
-		height: 0.95rem;
-		display: block;
-	}
-
-	.podcast-youtube-embed {
-		display: grid;
-		justify-items: center;
-	}
-
-	.podcast-youtube-embed iframe {
-		width: min(100%, 740px);
-		aspect-ratio: 16 / 9;
-		border: 1px solid rgb(var(--rgb-white) / 0.16);
-		border-radius: 0.75rem;
-		background: rgb(2 4 9);
-	}
-
-	.podcast-empty {
-		margin: 0;
-		color: rgb(197 209 232);
-	}
-
-	:global(html:not(.dark)) .page-shell {
-		--shell-0: rgb(var(--rgb-surface-light));
-		--shell-1: rgb(251 254 255);
-		--shell-2: rgb(236 245 255);
-		--line-soft: rgb(var(--rgb-slate-900) / 0.12);
-		--line-strong: rgb(var(--rgb-slate-900) / 0.22);
-		--copy-muted: rgb(66 84 111);
-	}
-
-	:global(html:not(.dark)) .ambient {
-		background:
-			radial-gradient(circle at 10% 8%, rgb(var(--rgb-accent-blue-soft) / 0.18), transparent 32%),
-			radial-gradient(circle at 86% 14%, rgb(var(--rgb-accent-teal-soft) / 0.14), transparent 34%),
-			linear-gradient(180deg, rgb(17 24 39 / 0.015), transparent 32%);
-	}
-
-	:global(html:not(.dark)) .skip-link {
-		background: rgb(var(--rgb-text-strong-dark));
-		color: rgb(16 32 58);
-	}
-
-	:global(html:not(.dark)) .site-header {
-		background: rgb(var(--rgb-white) / 0.88);
-	}
-
-	:global(html:not(.dark)) .brand {
-		color: rgb(18 37 63);
-	}
-
-	:global(html:not(.dark)) nav a {
-		color: rgb(42 64 97);
-	}
-
-	:global(html:not(.dark)) nav a:hover {
-		color: rgb(15 31 55);
-		background: rgb(16 32 58 / 0.08);
-	}
-
-	:global(html:not(.dark)) .theme-toggle {
-		border-color: rgb(176 112 24 / 0.26);
-		background: rgb(255 238 214 / 0.8);
-		color: rgb(111 70 17);
-	}
-
-	:global(html:not(.dark)) .theme-toggle:hover {
-		background: rgb(255 226 184 / 0.92);
-	}
-
-	:global(html:not(.dark)) .theme-toggle-icon {
-		color: rgb(139 89 20 / 0.55);
-	}
-
-	:global(html:not(.dark)) .menu-toggle span {
-		background: rgb(var(--rgb-slate-850));
-	}
-
-	:global(html:not(.dark)) .panel {
-		box-shadow:
-			0 20px 32px rgb(var(--rgb-slate-900) / 0.08),
-			inset 0 1px 0 rgb(var(--rgb-white) / 0.8);
-	}
-
-	:global(html:not(.dark)) .kicker {
-		color: rgb(83 105 139);
-	}
-
-	:global(html:not(.dark)) .button-ghost {
-		background: rgb(var(--rgb-white) / 0.66);
-		color: rgb(22 49 83);
-	}
-
-	:global(html:not(.dark)) .cms-chip {
-		border-color: rgb(var(--rgb-slate-900) / 0.14);
-		background: linear-gradient(150deg, rgb(var(--rgb-white) / 0.85), rgb(238 246 255 / 0.62));
-	}
-
-	:global(html:not(.dark)) .cms-chip p {
-		color: rgb(54 76 109);
-	}
-
-	:global(html:not(.dark)) .chip-head {
-		color: rgb(77 99 133);
-	}
-
-	:global(html:not(.dark)) .chip-grid span {
-		background: rgb(var(--rgb-slate-850) / 0.08);
-		color: rgb(35 64 102);
-	}
-
-	:global(html:not(.dark)) .news-carousel-button {
-		border-color: rgb(var(--rgb-slate-900) / 0.16);
-		background: rgb(var(--rgb-slate-850) / 0.08);
-		color: rgb(23 50 82);
-	}
-
-	:global(html:not(.dark)) .news-carousel-button:hover {
-		background: rgb(var(--rgb-slate-850) / 0.14);
-	}
-
-	:global(html:not(.dark)) .news-card,
-	:global(html:not(.dark)) .mission-card,
-	:global(html:not(.dark)) .team-card {
-		border-color: rgb(var(--rgb-slate-900) / 0.12);
-	}
-
-	:global(html:not(.dark)) .news-card {
-		border-color: rgb(176 112 24 / 0.2);
-		background: linear-gradient(150deg, rgb(255 250 241 / 0.96), rgb(255 238 214 / 0.74));
-	}
-
-	:global(html:not(.dark)) .news-card:hover,
-	:global(html:not(.dark)) .mission-card:hover,
-	:global(html:not(.dark)) .team-card:hover {
-		border-color: rgb(var(--rgb-brand-blue) / 0.36);
-		box-shadow: 0 14px 22px rgb(20 38 63 / 0.12);
-	}
-
-	:global(html:not(.dark)) .news-card:hover {
-		border-color: rgb(176 112 24 / 0.36);
-		box-shadow: 0 14px 22px rgb(176 112 24 / 0.14);
-	}
-
-	:global(html:not(.dark)) .meta {
-		color: rgb(79 106 144);
-	}
-
-	:global(html:not(.dark)) .news-card .meta {
-		color: rgb(139 89 20);
-	}
-
-	:global(html:not(.dark)) .news-card p,
-	:global(html:not(.dark)) .mission-card p,
-	:global(html:not(.dark)) .team-card p {
-		color: rgb(64 84 114);
-	}
-
-	:global(html:not(.dark)) .news-card p {
-		color: rgb(89 68 43);
-	}
-
-	:global(html:not(.dark)) .news-card-action {
-		background: rgb(176 112 24 / 0.14);
-		color: rgb(111 70 17);
-	}
-
-	:global(html:not(.dark)) .news-card-action:hover {
-		background: rgb(176 112 24 / 0.22);
-	}
-
-	:global(html:not(.dark)) .newsletter-form {
-		border-color: rgb(var(--rgb-slate-900) / 0.14);
-		background: rgb(var(--rgb-white) / 0.72);
-	}
-
-	:global(html:not(.dark)) .newsletter-form label {
-		color: rgb(77 101 136);
-	}
-
-	:global(html:not(.dark)) .newsletter-form input {
-		border-color: rgb(var(--rgb-slate-900) / 0.2);
-		background: rgb(var(--rgb-white) / 0.9);
-		color: rgb(21 47 80);
-	}
-
-	:global(html:not(.dark)) .avatar {
-		background: rgb(var(--rgb-blue-700) / 0.12);
-		color: rgb(29 58 97);
-	}
-
-	:global(html:not(.dark)) .site-footer {
-		background: rgb(247 251 255 / 0.9);
-	}
-
-	:global(html:not(.dark)) .footer-grid p {
-		color: rgb(69 90 121);
-	}
-
-	:global(html:not(.dark)) .footer-links a {
-		border-color: rgb(var(--rgb-slate-900) / 0.16);
-		background: rgb(var(--rgb-slate-850) / 0.08);
-		color: rgb(28 58 98);
-	}
-
-	:global(html:not(.dark)) .footer-links a:hover {
-		background: rgb(var(--rgb-slate-850) / 0.14);
-	}
-
-	:global(html:not(.dark)) .footer-end {
-		color: rgb(91 115 151);
-	}
-
-	:global(html:not(.dark)) .podcast-modal {
-		border-color: rgb(var(--rgb-slate-900) / 0.16);
-		background: linear-gradient(165deg, rgb(251 254 255 / 0.98), rgb(236 245 255 / 0.96));
-		box-shadow: 0 22px 38px rgb(13 26 46 / 0.22);
-	}
-
-	:global(html:not(.dark)) .podcast-modal h2 {
-		color: rgb(18 40 68);
-	}
-
-	:global(html:not(.dark)) .podcast-modal-close {
-		border-color: rgb(var(--rgb-slate-900) / 0.18);
-		background: rgb(var(--rgb-slate-850) / 0.08);
-		color: rgb(19 43 74);
-	}
-
-	:global(html:not(.dark)) .podcast-modal-close:hover {
-		background: rgb(var(--rgb-slate-850) / 0.14);
-	}
-
-	:global(html:not(.dark)) .podcast-modal-date {
-		color: rgb(79 102 136);
-	}
-
-	:global(html:not(.dark)) .podcast-link-grid a {
-		border-color: rgb(var(--rgb-slate-900) / 0.18);
-		background: rgb(var(--rgb-white) / 0.88);
-		color: rgb(24 54 89);
-	}
-
-	:global(html:not(.dark)) .podcast-link-grid a:hover {
-		background: rgb(220 235 255 / 0.82);
-	}
-
-	:global(html:not(.dark)) .podcast-link-icon {
-		background: rgb(var(--rgb-blue-700) / 0.12);
-	}
-
-	:global(html:not(.dark)) .podcast-empty {
-		color: rgb(75 97 130);
+		width: min(1140px, calc(100% - 2.5rem));
+		margin: 1rem auto 0;
+		color: rgb(145 158 183);
+		font-size: 0.82rem;
 	}
 
 	.reveal {
 		opacity: 0;
-		transform: translateY(22px) scale(0.99);
-		animation: reveal-up 720ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-		animation-delay: var(--delay, 0ms);
+		transform: translateY(18px);
+		animation: reveal-up 640ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 	}
 
 	@keyframes reveal-up {
 		to {
 			opacity: 1;
-			transform: translateY(0) scale(1);
+			transform: translateY(0);
 		}
 	}
 
-	@media (max-width: 980px) {
-		.hero-panel,
-		.newsletter-panel,
-		.footer-grid {
-			grid-template-columns: 1fr;
-		}
+	:global(html:not(.dark)) .page-shell {
+		--line-soft: rgb(var(--rgb-slate-900) / 0.12);
+		--line-strong: rgb(var(--rgb-slate-900) / 0.22);
+		--copy-muted: rgb(64 84 114);
+		background:
+			linear-gradient(180deg, rgb(255 252 247 / 0.92), rgb(247 251 255 / 0.96)),
+			rgb(var(--rgb-surface-light));
+	}
 
-		.footer-links {
-			justify-content: flex-start;
+	:global(html:not(.dark)) .site-header {
+		background: rgb(var(--rgb-white) / 0.9);
+	}
+
+	:global(html:not(.dark)) .brand-subtitle,
+	:global(html:not(.dark)) nav a,
+	:global(html:not(.dark)) .footer-links a {
+		color: rgb(42 64 97);
+	}
+
+	:global(html:not(.dark)) nav a:hover,
+	:global(html:not(.dark)) nav a.active,
+	:global(html:not(.dark)) .footer-links a:hover {
+		color: rgb(111 70 17);
+		background: rgb(255 238 214 / 0.74);
+		border-color: rgb(176 112 24 / 0.22);
+	}
+
+	:global(html:not(.dark)) .language-toggle,
+	:global(html:not(.dark)) .theme-toggle,
+	:global(html:not(.dark)) .menu-toggle {
+		border-color: rgb(176 112 24 / 0.24);
+		background: rgb(255 238 214 / 0.72);
+		color: rgb(111 70 17);
+	}
+
+	:global(html:not(.dark)) .language-toggle button {
+		color: rgb(111 70 17 / 0.72);
+	}
+
+	:global(html:not(.dark)) .panel {
+		background:
+			linear-gradient(150deg, rgb(var(--rgb-white) / 0.96), rgb(255 238 214 / 0.38)),
+			rgb(var(--rgb-white));
+		box-shadow:
+			0 20px 32px rgb(var(--rgb-slate-900) / 0.08),
+			inset 0 1px 0 rgb(var(--rgb-white) / 0.8);
+	}
+
+	:global(html:not(.dark)) .button-ghost {
+		border-color: rgb(176 112 24 / 0.24);
+		background: rgb(255 248 238 / 0.88);
+		color: rgb(111 70 17);
+	}
+
+	:global(html:not(.dark)) .button-ghost:hover {
+		background: rgb(255 226 184 / 0.82);
+	}
+
+	:global(html:not(.dark)) h1,
+	:global(html:not(.dark)) h2,
+	:global(html:not(.dark)) h3,
+	:global(html:not(.dark)) h4,
+	:global(html:not(.dark)) .resource-card strong,
+	:global(html:not(.dark)) .faq-item h4 button,
+	:global(html:not(.dark)) .faq-link-block strong,
+	:global(html:not(.dark)) .contact-form label {
+		color: rgb(18 37 63);
+	}
+
+	:global(html:not(.dark)) .faq-link-block a {
+		border-color: rgb(176 112 24 / 0.2);
+		background: rgb(176 112 24 / 0.1);
+		color: rgb(111 70 17);
+	}
+
+	:global(html:not(.dark)) .resource-logo {
+		border-color: rgb(176 112 24 / 0.2);
+		background: rgb(var(--rgb-white) / 0.96);
+	}
+
+	:global(html:not(.dark)) .content-card,
+	:global(html:not(.dark)) .infographic-card,
+	:global(html:not(.dark)) .latest-episode-card,
+	:global(html:not(.dark)) .resource-card,
+	:global(html:not(.dark)) .faq-item,
+	:global(html:not(.dark)) .newsletter-form,
+	:global(html:not(.dark)) .contact-form {
+		border-color: rgb(176 112 24 / 0.18);
+		background: linear-gradient(150deg, rgb(255 250 241 / 0.96), rgb(255 238 214 / 0.62));
+	}
+
+	:global(html:not(.dark)) .newsletter-form input,
+	:global(html:not(.dark)) .contact-form input,
+	:global(html:not(.dark)) .contact-form textarea {
+		border-color: rgb(var(--rgb-slate-900) / 0.18);
+		background: rgb(var(--rgb-white) / 0.88);
+		color: rgb(18 37 63);
+	}
+
+	:global(html:not(.dark)) .site-footer {
+		background: rgb(247 251 255 / 0.92);
+	}
+
+	@media (max-width: 1040px) {
+		.brand-subtitle {
+			display: none;
 		}
 	}
 
-		@media (max-width: 860px) {
-			.menu-toggle {
-				display: flex;
-			}
+	@media (max-width: 900px) {
+		.menu-toggle {
+			display: grid;
+		}
 
 		nav {
 			display: none;
@@ -1751,10 +1527,10 @@
 			left: 1.25rem;
 			right: 1.25rem;
 			padding: 0.65rem;
-			gap: 0.3rem;
+			gap: 0.35rem;
 			border-radius: 0.72rem;
 			border: 1px solid var(--line-soft);
-			background: rgb(7 11 20 / 0.95);
+			background: rgb(7 11 20 / 0.96);
 			box-shadow: 0 16px 24px rgb(var(--rgb-black) / 0.34);
 			flex-direction: column;
 			align-items: stretch;
@@ -1764,31 +1540,65 @@
 			display: flex;
 		}
 
-			nav a {
-				justify-content: flex-start;
-				height: 2.3rem;
-			}
-
-			nav .theme-toggle {
-				align-self: flex-start;
-				height: 2.3rem;
-				margin-left: 0;
-			}
-
-			:global(html:not(.dark)) nav {
-				background: rgb(var(--rgb-white) / 0.95);
-				box-shadow: 0 16px 24px rgb(30 46 71 / 0.14);
-			}
+		nav a {
+			justify-content: flex-start;
 		}
+
+		.header-controls {
+			margin-left: 0;
+			justify-content: space-between;
+		}
+
+		:global(html:not(.dark)) nav {
+			background: rgb(var(--rgb-white) / 0.97);
+			box-shadow: 0 16px 24px rgb(30 46 71 / 0.14);
+		}
+
+		.hero-panel,
+		.podcast-panel,
+		.contact-panel,
+		.infographic-card,
+		.footer-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.card-grid.three {
+			grid-template-columns: 1fr;
+		}
+
+		.footer-links {
+			justify-content: flex-start;
+		}
+	}
 
 	@media (max-width: 640px) {
 		.inner,
-		.panel {
+		.main-stack,
+		.footer-end {
 			width: calc(100% - 1.4rem);
 		}
 
-		.main-stack {
-			gap: 0.8rem;
+		.brand-logo {
+			max-width: 9rem;
+		}
+
+		.hero-panel,
+		.section-panel,
+		.podcast-panel,
+		.contact-panel {
+			padding: 1rem;
+		}
+
+		.latest-episode-card {
+			grid-template-columns: 1fr;
+		}
+
+		.faq-answer {
+			padding-left: 1rem;
+		}
+
+		.newsletter-row {
+			grid-template-columns: 1fr;
 		}
 	}
 

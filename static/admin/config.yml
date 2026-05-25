@@ -7,6 +7,387 @@ media_folder: static/uploads
 public_folder: /uploads
 
 singletons:
+  - name: landing_content
+    label: Landing Content
+    file: src/lib/content/landing-content.json
+    fields:
+      - label: Meta
+        name: meta
+        widget: object
+        fields:
+          - label: Title
+            name: title
+            widget: object
+            fields: &localized_string_fields
+              - { label: Deutsch, name: de, widget: string }
+              - { label: English, name: en, widget: string }
+          - label: Description
+            name: description
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - { label: Open Graph Image, name: ogImage, widget: string }
+      - { label: Brand Name, name: brandName, widget: string }
+      - { label: Brand Subtitle, name: brandSubtitle, widget: string }
+      - label: Skip Link Label
+        name: skipLinkLabel
+        widget: object
+        fields: *localized_string_fields
+      - label: Language Toggle Label
+        name: languageToggleLabel
+        widget: object
+        fields: *localized_string_fields
+      - label: Theme Toggle Aria Label
+        name: themeToggleAriaLabel
+        widget: object
+        fields: *localized_string_fields
+      - label: Navigation
+        name: nav
+        widget: list
+        fields:
+          - { label: Anchor ID, name: id, widget: string }
+          - label: Label
+            name: label
+            widget: object
+            fields: *localized_string_fields
+      - label: Hero
+        name: hero
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Lead
+            name: lead
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Primary Label
+            name: primaryLabel
+            widget: object
+            fields: *localized_string_fields
+          - { label: Primary Href, name: primaryHref, widget: string }
+          - label: Secondary Label
+            name: secondaryLabel
+            widget: object
+            fields: *localized_string_fields
+          - { label: Secondary Href, name: secondaryHref, widget: string }
+          - label: Stats
+            name: stats
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string }
+              - label: Label
+                name: label
+                widget: object
+                fields: *localized_string_fields
+      - label: About
+        name: about
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Body
+            name: body
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Features
+            name: features
+            widget: list
+            fields:
+              - { label: Icon, name: icon, widget: string }
+              - label: Title
+                name: title
+                widget: object
+                fields: *localized_string_fields
+              - label: Text
+                name: text
+                widget: object
+                fields:
+                  - { label: Deutsch, name: de, widget: text }
+                  - { label: English, name: en, widget: text }
+      - label: Infographics
+        name: infographics
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - label: Title
+                name: title
+                widget: object
+                fields: *localized_string_fields
+              - label: Teaser
+                name: teaser
+                widget: object
+                fields:
+                  - { label: Deutsch, name: de, widget: text }
+                  - { label: English, name: en, widget: text }
+              - { label: Image Source, name: src, widget: string }
+              - label: Alt Text
+                name: alt
+                widget: object
+                fields: *localized_string_fields
+              - { label: Credit, name: credit, widget: string }
+      - label: Podcast
+        name: podcast
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Lead
+            name: lead
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: CTA Label
+            name: ctaLabel
+            widget: object
+            fields: *localized_string_fields
+          - { label: Href, name: href, widget: string }
+          - { label: Fallback Thumbnail, name: fallbackThumbnail, widget: string }
+          - { label: RSS TODO, name: rssTodo, widget: text }
+      - label: FAQ
+        name: faq
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Intro
+            name: intro
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Groups
+            name: groups
+            widget: list
+            fields:
+              - label: Title
+                name: title
+                widget: object
+                fields: *localized_string_fields
+              - label: FAQ Item IDs
+                name: itemIds
+                widget: list
+                field: { label: FAQ Item ID, name: itemId, widget: string }
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - { label: ID, name: id, widget: string }
+              - label: Question
+                name: question
+                widget: object
+                fields: *localized_string_fields
+              - label: Answer
+                name: answer
+                widget: object
+                fields:
+                  - { label: Deutsch, name: de, widget: text }
+                  - { label: English, name: en, widget: text }
+              - label: Links
+                name: links
+                widget: list
+                required: false
+                fields:
+                  - label: Label
+                    name: label
+                    widget: object
+                    fields: *localized_string_fields
+                  - { label: URL, name: url, widget: string }
+      - label: Resources
+        name: resources
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Categories
+            name: categories
+            widget: list
+            fields:
+              - label: Title
+                name: title
+                widget: object
+                fields: *localized_string_fields
+              - label: Items
+                name: items
+                widget: list
+                fields:
+                  - { label: Name, name: name, widget: string }
+                  - label: Description
+                    name: description
+                    widget: object
+                    fields:
+                      - { label: Deutsch, name: de, widget: text }
+                      - { label: English, name: en, widget: text }
+                  - { label: URL, name: url, widget: string }
+      - label: Contact
+        name: contact
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Lead
+            name: lead
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Newsletter Title
+            name: newsletterTitle
+            widget: object
+            fields: *localized_string_fields
+          - label: Newsletter Lead
+            name: newsletterLead
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Newsletter Email Label
+            name: newsletterEmailLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Newsletter Email Placeholder
+            name: newsletterEmailPlaceholder
+            widget: object
+            fields: *localized_string_fields
+          - label: Newsletter Submit Label
+            name: newsletterSubmitLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Name Label
+            name: nameLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Email Label
+            name: emailLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Message Label
+            name: messageLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Submit Label
+            name: submitLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Success Message
+            name: successMessage
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - { label: Email Href, name: emailHref, widget: string }
+          - { label: Email Label Text, name: emailLabelText, widget: string }
+          - label: Social Links
+            name: socialLinks
+            widget: list
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: URL, name: url, widget: string }
+      - label: Team
+        name: team
+        widget: object
+        fields:
+          - label: Kicker
+            name: kicker
+            widget: object
+            fields: *localized_string_fields
+          - label: Title
+            name: title
+            widget: object
+            fields: *localized_string_fields
+          - label: Lead
+            name: lead
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - { label: Icon, name: icon, widget: string }
+              - label: Title
+                name: title
+                widget: object
+                fields: *localized_string_fields
+              - label: Text
+                name: text
+                widget: object
+                fields:
+                  - { label: Deutsch, name: de, widget: text }
+                  - { label: English, name: en, widget: text }
+      - label: Footer
+        name: footer
+        widget: object
+        fields:
+          - label: Description
+            name: description
+            widget: object
+            fields:
+              - { label: Deutsch, name: de, widget: text }
+              - { label: English, name: en, widget: text }
+          - label: Imprint Label
+            name: imprintLabel
+            widget: object
+            fields: *localized_string_fields
+          - label: Privacy Label
+            name: privacyLabel
+            widget: object
+            fields: *localized_string_fields
+          - { label: Copyright, name: copyright, widget: string }
+
   - name: site_settings
     label: Site Settings
     file: src/lib/content/site-settings.json
