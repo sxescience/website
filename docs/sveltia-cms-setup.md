@@ -18,11 +18,27 @@ Sveltia CMS is served from `static/admin/index.html` with config in `static/admi
 
 ## 3) Content files managed by CMS
 
-- `src/lib/content/site-settings.json`
+- `src/lib/content/landing-content.json`
 - `src/lib/content/news.json`
-- `src/lib/content/mission-items.json`
-- `src/lib/content/team-members.json`
 - `src/lib/content/legal-content.json`
+
+The SvelteKit app loads these files through `src/lib/cms/service.ts`. Content mapping and validation
+are split into `src/lib/cms/mappers.ts` and `src/lib/cms/content-utils.ts`, so invalid CMS edits fail
+with field-specific errors instead of being silently cast into the page.
+
+The Landing Page singleton mirrors the public page structure in editing order:
+
+1. Header
+2. Hero
+3. Über SxE
+4. Infografiken
+5. FAQ
+6. Podcast
+7. Ressourcen
+8. Team
+9. Kontakt
+10. Footer
+11. SEO & Social Sharing
 
 ## 4) Auth notes
 

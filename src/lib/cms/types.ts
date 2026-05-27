@@ -1,3 +1,9 @@
+export const LANGUAGE_CODES = ["de", "en"] as const;
+
+export type LanguageCode = (typeof LANGUAGE_CODES)[number];
+
+export type LocalizedString = Record<LanguageCode, string>;
+
 export type PodcastLink = {
 	label: string;
 	url: string;
@@ -8,6 +14,8 @@ export type OrderedContentItem = {
 	order: number;
 };
 
+export type NewsStatus = "published" | "draft";
+
 export type NewsItem = OrderedContentItem & {
 	title: string;
 	excerpt: string;
@@ -15,24 +23,8 @@ export type NewsItem = OrderedContentItem & {
 	ctaLabel: string;
 	href: string;
 	podcastLinks: PodcastLink[];
-	status: string;
+	status: NewsStatus | string;
 };
-
-export type MissionItem = OrderedContentItem & {
-	title: string;
-	text: string;
-};
-
-export type TeamMember = OrderedContentItem & {
-	name: string;
-	role: string;
-	text: string;
-	avatarLabel: string;
-};
-
-export type LanguageCode = "de" | "en";
-
-export type LocalizedString = Record<LanguageCode, string>;
 
 export type LandingNavItem = {
 	id: string;
@@ -58,16 +50,16 @@ export type InfographicItem = {
 	credit: string;
 };
 
+export type FaqLink = {
+	label: LocalizedString;
+	url: string;
+};
+
 export type FaqItem = {
 	id: string;
 	question: LocalizedString;
 	answer: LocalizedString;
-	links?: FaqLink[];
-};
-
-export type FaqLink = {
-	label: LocalizedString;
-	url: string;
+	links: FaqLink[];
 };
 
 export type FaqGroup = {
@@ -177,64 +169,9 @@ export type LandingContent = {
 	};
 };
 
-export type SiteSettings = {
-	brandName: string;
-	skipLinkLabel: string;
-	navMainThemeLabel: string;
-	navMissionLabel: string;
-	navNewsletterLabel: string;
-	navTeamLabel: string;
-	navImpressumLabel: string;
-	heroKicker: string;
-	heroTitle: string;
-	heroLead: string;
-	heroPrimaryLabel: string;
-	heroPrimaryHref: string;
-	heroSecondaryLabel: string;
-	heroSecondaryHref: string;
-	cmsChipTitle: string;
-	cmsChipBody: string;
-	cmsChipTag1: string;
-	cmsChipTag2: string;
-	cmsChipTag3: string;
-	newsControlsAriaLabel: string;
-	newsCarouselAriaLabel: string;
-	newsPreviousButtonLabel: string;
-	newsPreviousButtonAriaLabel: string;
-	newsNextButtonLabel: string;
-	newsNextButtonAriaLabel: string;
-	missionKicker: string;
-	missionTitle: string;
-	newsletterKicker: string;
-	newsletterTitle: string;
-	newsletterLead: string;
-	newsletterEmailLabel: string;
-	newsletterEmailPlaceholder: string;
-	newsletterSubmitLabel: string;
-	teamKicker: string;
-	teamTitle: string;
-	teamAvatarLabel: string;
-	footerTitle: string;
-	footerDescription: string;
-	footerStartLabel: string;
-	footerNewsLabel: string;
-	footerImpressumLabel: string;
-	footerDatenschutzLabel: string;
-	themeToggleAriaLabel: string;
-	themeLightModeLabel: string;
-	themeDarkModeLabel: string;
-	podcastModalCloseButtonAriaLabel: string;
-	podcastModalEmptyStateText: string;
-	podcastModalYoutubeTitlePrefix: string;
-	copyrightBrandName: string;
-};
-
 export type HomeContent = {
-	site: SiteSettings;
 	landing: LandingContent;
 	news: NewsItem[];
-	missionItems: MissionItem[];
-	teamMembers: TeamMember[];
 };
 
 export type LegalContent = {
@@ -251,5 +188,3 @@ export type LegalContent = {
 	datenschutzHtml: string;
 	noticeText: string;
 };
-
-export type CmsCollectionRow = Record<string, unknown>;

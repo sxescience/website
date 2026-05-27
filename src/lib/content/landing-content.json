@@ -1,73 +1,64 @@
 {
-  "meta": {
-    "title": {
-      "de": "Scientists x Entrepreneurship | SxE",
-      "en": "Scientists x Entrepreneurship | SxE"
+  "header": {
+    "brandName": "SxE",
+    "brandSubtitle": "Scientists x Entrepreneurship",
+    "skipLinkLabel": {
+      "de": "Zum Inhalt springen",
+      "en": "Skip to content"
     },
-    "description": {
-      "de": "Hunderttausende Forscher arbeiten unermüdlich daran, Wissenschaft voranzubringen. Doch zu viele Entdeckungen verlassen das Labor nie. Das wollen wir ändern.",
-      "en": "Hundreds of thousands of researchers are working tirelessly to advance science, but too many discoveries never leave the lab. We want to change that."
+    "languageToggleLabel": {
+      "de": "Sprache wechseln",
+      "en": "Switch language"
     },
-    "ogImage": "/assets/sxe-logo-science-transparent.png"
+    "themeToggleAriaLabel": {
+      "de": "Farbmodus umschalten",
+      "en": "Toggle color mode"
+    },
+    "nav": [
+      {
+        "id": "about",
+        "label": {
+          "de": "Über SxE",
+          "en": "About SxE"
+        }
+      },
+      {
+        "id": "faq",
+        "label": {
+          "de": "FAQ",
+          "en": "FAQ"
+        }
+      },
+      {
+        "id": "podcast",
+        "label": {
+          "de": "Podcast",
+          "en": "Podcast"
+        }
+      },
+      {
+        "id": "resources",
+        "label": {
+          "de": "Ressourcen",
+          "en": "Resources"
+        }
+      },
+      {
+        "id": "team",
+        "label": {
+          "de": "Team",
+          "en": "Team"
+        }
+      },
+      {
+        "id": "contact",
+        "label": {
+          "de": "Kontakt",
+          "en": "Contact"
+        }
+      }
+    ]
   },
-  "brandName": "SxE",
-  "brandSubtitle": "Scientists x Entrepreneurship",
-  "skipLinkLabel": {
-    "de": "Zum Inhalt springen",
-    "en": "Skip to content"
-  },
-  "languageToggleLabel": {
-    "de": "Sprache wechseln",
-    "en": "Switch language"
-  },
-  "themeToggleAriaLabel": {
-    "de": "Farbmodus umschalten",
-    "en": "Toggle color mode"
-  },
-  "nav": [
-    {
-      "id": "about",
-      "label": {
-        "de": "Über SxE",
-        "en": "About SxE"
-      }
-    },
-    {
-      "id": "faq",
-      "label": {
-        "de": "FAQ",
-        "en": "FAQ"
-      }
-    },
-    {
-      "id": "podcast",
-      "label": {
-        "de": "Podcast",
-        "en": "Podcast"
-      }
-    },
-    {
-      "id": "resources",
-      "label": {
-        "de": "Ressourcen",
-        "en": "Resources"
-      }
-    },
-    {
-      "id": "team",
-      "label": {
-        "de": "Team",
-        "en": "Team"
-      }
-    },
-    {
-      "id": "contact",
-      "label": {
-        "de": "Kontakt",
-        "en": "Contact"
-      }
-    }
-  ],
   "hero": {
     "kicker": {
       "de": "Deep-Tech-Gründung beginnt in der Wissenschaft",
@@ -223,27 +214,6 @@
         "credit": "Credit: Anna-Lena Schindl, Positron Ventures"
       }
     ]
-  },
-  "podcast": {
-    "kicker": {
-      "de": "Podcast",
-      "en": "Podcast"
-    },
-    "title": {
-      "de": "Forschung mit Folgen",
-      "en": "Forschung mit Folgen"
-    },
-    "lead": {
-      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind. Die aktuelle Website nutzt vorerst die CMS-Folgen als Fallback; eine RSS-Anbindung ist vorbereitet.",
-      "en": "In the podcast, we speak with founders who moved from science toward application. The current site uses CMS episodes as a fallback for now; an RSS integration hook is prepared."
-    },
-    "ctaLabel": {
-      "de": "Zum Podcast",
-      "en": "Listen to the Podcast"
-    },
-    "href": "/podcast",
-    "fallbackThumbnail": "/assets/podcast-cover-placeholder.jpeg",
-    "rssTodo": "TODO: RSS-Feed-URL eintragen und latest episode serverseitig mappen."
   },
   "faq": {
     "kicker": {
@@ -678,6 +648,27 @@
       }
     ]
   },
+  "podcast": {
+    "kicker": {
+      "de": "Podcast",
+      "en": "Podcast"
+    },
+    "title": {
+      "de": "Forschung mit Folgen",
+      "en": "Forschung mit Folgen"
+    },
+    "lead": {
+      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind. Die aktuelle Website nutzt vorerst die CMS-Folgen als Fallback; eine RSS-Anbindung ist vorbereitet.",
+      "en": "In the podcast, we speak with founders who moved from science toward application. The current site uses CMS episodes as a fallback for now; an RSS integration hook is prepared."
+    },
+    "ctaLabel": {
+      "de": "Zum Podcast",
+      "en": "Listen to the Podcast"
+    },
+    "href": "/podcast",
+    "fallbackThumbnail": "/assets/podcast-cover-placeholder.jpeg",
+    "rssTodo": "TODO: RSS-Feed-URL eintragen und latest episode serverseitig mappen."
+  },
   "resources": {
     "kicker": {
       "de": "Ressourcen & Programme",
@@ -850,6 +841,55 @@
       }
     ]
   },
+  "team": {
+    "kicker": {
+      "de": "Team",
+      "en": "Team"
+    },
+    "title": {
+      "de": "Das Team hinter SxE",
+      "en": "The team behind SxE"
+    },
+    "lead": {
+      "de": "SxE wird ehrenamtlich getragen. Die Arbeit verteilt sich auf Initiative, Podcast, Ressourcen und Community-Aufbau.",
+      "en": "SxE is volunteer-led. The work spans initiative building, podcast, resources and community development."
+    },
+    "items": [
+      {
+        "icon": "🤝",
+        "title": {
+          "de": "Initiative & Community",
+          "en": "Initiative & community"
+        },
+        "text": {
+          "de": "Wir verbinden Wissenschaftler, Gründer und Unterstützer, die Deep-Tech-Gründungen aus der Wissenschaft stärken möchten.",
+          "en": "We connect scientists, founders and supporters who want to strengthen deep-tech ventures from science."
+        }
+      },
+      {
+        "icon": "🎙️",
+        "title": {
+          "de": "Podcast",
+          "en": "Podcast"
+        },
+        "text": {
+          "de": "Mit Forschung mit Folgen sammeln wir Erfahrungsberichte von Menschen, die Wissenschaft in Anwendung übersetzen.",
+          "en": "With Forschung mit Folgen, we collect stories from people translating science into application."
+        }
+      },
+      {
+        "icon": "🧭",
+        "title": {
+          "de": "Ressourcen & Orientierung",
+          "en": "Resources & orientation"
+        },
+        "text": {
+          "de": "Wir kuratieren Programme, Fragen und Einstiegspunkte für die ersten Schritte in Richtung Gründung.",
+          "en": "We curate programs, questions and starting points for first steps toward entrepreneurship."
+        }
+      }
+    ]
+  },
   "contact": {
     "kicker": {
       "de": "Kontakt",
@@ -912,55 +952,6 @@
       }
     ]
   },
-  "team": {
-    "kicker": {
-      "de": "Team",
-      "en": "Team"
-    },
-    "title": {
-      "de": "Das Team hinter SxE",
-      "en": "The team behind SxE"
-    },
-    "lead": {
-      "de": "SxE wird ehrenamtlich getragen. Die Arbeit verteilt sich auf Initiative, Podcast, Ressourcen und Community-Aufbau.",
-      "en": "SxE is volunteer-led. The work spans initiative building, podcast, resources and community development."
-    },
-    "items": [
-      {
-        "icon": "🤝",
-        "title": {
-          "de": "Initiative & Community",
-          "en": "Initiative & community"
-        },
-        "text": {
-          "de": "Wir verbinden Wissenschaftler, Gründer und Unterstützer, die Deep-Tech-Gründungen aus der Wissenschaft stärken möchten.",
-          "en": "We connect scientists, founders and supporters who want to strengthen deep-tech ventures from science."
-        }
-      },
-      {
-        "icon": "🎙️",
-        "title": {
-          "de": "Podcast",
-          "en": "Podcast"
-        },
-        "text": {
-          "de": "Mit Forschung mit Folgen sammeln wir Erfahrungsberichte von Menschen, die Wissenschaft in Anwendung übersetzen.",
-          "en": "With Forschung mit Folgen, we collect stories from people translating science into application."
-        }
-      },
-      {
-        "icon": "🧭",
-        "title": {
-          "de": "Ressourcen & Orientierung",
-          "en": "Resources & orientation"
-        },
-        "text": {
-          "de": "Wir kuratieren Programme, Fragen und Einstiegspunkte für die ersten Schritte in Richtung Gründung.",
-          "en": "We curate programs, questions and starting points for first steps toward entrepreneurship."
-        }
-      }
-    ]
-  },
   "footer": {
     "description": {
       "de": "SxE ist eine ehrenamtliche Initiative für Wissenschaftler, die Anwendung, Deep Tech und Gründung als mögliche Wege zu Wirkung erkunden möchten.",
@@ -975,5 +966,16 @@
       "en": "Privacy"
     },
     "copyright": "Scientists x Entrepreneurship"
+  },
+  "meta": {
+    "title": {
+      "de": "Scientists x Entrepreneurship | SxE",
+      "en": "Scientists x Entrepreneurship | SxE"
+    },
+    "description": {
+      "de": "Hunderttausende Forscher arbeiten unermüdlich daran, Wissenschaft voranzubringen. Doch zu viele Entdeckungen verlassen das Labor nie. Das wollen wir ändern.",
+      "en": "Hundreds of thousands of researchers are working tirelessly to advance science, but too many discoveries never leave the lab. We want to change that."
+    },
+    "ogImage": "/assets/sxe-logo-science-transparent.png"
   }
 }

@@ -1,4 +1,4 @@
-# Forschung mit Folgen Website
+# SxE Website
 
 SvelteKit website with a built-in Git-based CMS (`Sveltia`) under `/admin`.
 
@@ -14,11 +14,11 @@ npm run dev
 - Admin UI: `static/admin/index.html`
 - CMS config: `static/admin/config.yml`
 - Editable content files:
-  - `src/lib/content/site-settings.json`
+  - `src/lib/content/landing-content.json`
   - `src/lib/content/news.json`
-  - `src/lib/content/mission-items.json`
-  - `src/lib/content/team-members.json`
   - `src/lib/content/legal-content.json`
+- Runtime CMS validation and mapping live in `src/lib/cms`.
+- The Landing Page CMS form follows the same section order as the website.
 
 ## Vercel deployment
 
