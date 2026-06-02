@@ -1411,8 +1411,15 @@
 		--line-strong: rgb(var(--rgb-slate-900) / 0.22);
 		--copy-muted: rgb(64 84 114);
 		background:
-			linear-gradient(180deg, rgb(255 252 247 / 0.92), rgb(247 251 255 / 0.96)),
+			linear-gradient(180deg, rgb(249 250 252 / 0.98), rgb(246 248 251 / 0.98)),
 			rgb(var(--rgb-surface-light));
+	}
+
+	:global(html:not(.dark)) .ambient {
+		background:
+			radial-gradient(circle at 10% 8%, rgb(88 105 128 / 0.08), transparent 30%),
+			radial-gradient(circle at 86% 14%, rgb(88 105 128 / 0.06), transparent 34%),
+			linear-gradient(180deg, rgb(var(--rgb-white) / 0.38), transparent 30%);
 	}
 
 	:global(html:not(.dark)) .site-header {
@@ -1447,7 +1454,7 @@
 
 	:global(html:not(.dark)) .panel {
 		background:
-			linear-gradient(150deg, rgb(var(--rgb-white) / 0.96), rgb(255 238 214 / 0.38)),
+			linear-gradient(150deg, rgb(var(--rgb-white) / 0.97), rgb(238 246 255 / 0.5)),
 			rgb(var(--rgb-white));
 		box-shadow:
 			0 20px 32px rgb(var(--rgb-slate-900) / 0.08),
@@ -1494,7 +1501,7 @@
 	:global(html:not(.dark)) .newsletter-form,
 	:global(html:not(.dark)) .contact-form {
 		border-color: rgb(176 112 24 / 0.18);
-		background: linear-gradient(150deg, rgb(255 250 241 / 0.96), rgb(255 238 214 / 0.62));
+		background: linear-gradient(150deg, rgb(var(--rgb-white) / 0.96), rgb(255 238 214 / 0.48));
 	}
 
 	:global(html:not(.dark)) .newsletter-form input,
