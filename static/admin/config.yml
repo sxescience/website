@@ -125,6 +125,11 @@ singletons:
             widget: list
             summary: "{{fields.title.de}}"
             fields:
+              - label: HTML Diagram Variant
+                name: variant
+                widget: select
+                required: false
+                options: [career, skills, cofounder]
               - <<: *localized_string
                 label: Title
                 name: title

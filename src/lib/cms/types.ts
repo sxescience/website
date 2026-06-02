@@ -43,6 +43,7 @@ export type LandingFeature = {
 };
 
 export type InfographicItem = {
+	variant?: "career" | "skills" | "cofounder";
 	title: LocalizedString;
 	teaser: LocalizedString;
 	src: string;

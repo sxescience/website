@@ -154,6 +154,10 @@ function mapInfographics(value: unknown): LandingContent["infographics"] {
 		kicker: localizedString(row.kicker, "landing_content.infographics.kicker"),
 		title: localizedString(row.title, "landing_content.infographics.title"),
 		items: list(row.items, "landing_content.infographics.items").map((item, index) => ({
+			variant: mapInfographicVariant(
+				item.variant,
+				`landing_content.infographics.items[${index}].variant`
+			),
 			title: localizedString(item.title, `landing_content.infographics.items[${index}].title`),
 			teaser: localizedString(item.teaser, `landing_content.infographics.items[${index}].teaser`),
 			src: requiredString(item.src, `landing_content.infographics.items[${index}].src`),
@@ -161,6 +165,21 @@ function mapInfographics(value: unknown): LandingContent["infographics"] {
 			credit: requiredString(item.credit, `landing_content.infographics.items[${index}].credit`)
 		}))
 	};
+}
+
+function mapInfographicVariant(
+	value: unknown,
+	context: string
+): "career" | "skills" | "cofounder" | undefined {
+	if (value === undefined || value === null || value === "") {
+		return undefined;
+	}
+
+	if (value === "career" || value === "skills" || value === "cofounder") {
+		return value;
+	}
+
+	throw new Error(`CMS field "${context}" must be career, skills or cofounder.`);
 }
 
 function mapPodcast(value: unknown): LandingContent["podcast"] {

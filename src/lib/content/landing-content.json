@@ -166,6 +166,7 @@
     },
     "items": [
       {
+        "variant": "career",
         "title": {
           "de": "Akademische Karriere vs. Gründung",
           "en": "Academic career vs. starting a company"
@@ -182,6 +183,7 @@
         "credit": "Credit: TUM Venture Labs"
       },
       {
+        "variant": "skills",
         "title": {
           "de": "Skills von Wissenschaftlern und Gründern",
           "en": "Skills of scientists and founders"
@@ -198,6 +200,7 @@
         "credit": "Credit: TUM Venture Labs"
       },
       {
+        "variant": "cofounder",
         "title": {
           "de": "Brauche ich einen Business-Cofounder?",
           "en": "Do I need a business co-founder?"

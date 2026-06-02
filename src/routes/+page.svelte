@@ -23,6 +23,124 @@
 	const SECTION_IDS = ["about", "faq", "podcast", "resources", "team", "contact"];
 
 	type ThemeMode = "dark" | "light";
+	type ComparisonColumn = {
+		key: "startup" | "academia";
+		icon: string;
+		title: LocalizedString;
+		subtitle: LocalizedString;
+		pros: LocalizedString[];
+		cons: LocalizedString[];
+	};
+	type SkillComparison = {
+		skill: LocalizedString;
+		science: LocalizedString;
+		startup: LocalizedString;
+	};
+	type CofounderPath = {
+		question: LocalizedString;
+		answer: LocalizedString;
+		verdict: LocalizedString;
+		text: LocalizedString;
+		muted?: boolean;
+	};
+
+	const careerComparison: ComparisonColumn[] = [
+		{
+			key: "startup",
+			icon: "🚀",
+			title: { de: "Gründung", en: "Startup" },
+			subtitle: { de: "", en: "" },
+			pros: [
+				{ de: "Eigene Ideen in die Realität umsetzen.", en: "Turn your own ideas into reality." },
+				{ de: "Sichtbare Wirkung in Gesellschaft oder Industrie erzeugen.", en: "Create visible impact in society or industry." },
+				{ de: "Viel Autonomie und kreative Freiheit.", en: "High autonomy and creative freedom." },
+				{ de: "Steile Lernkurve in Strategie, Führung und Teamarbeit.", en: "Steep learning curve in strategy, leadership and teamwork." }
+			],
+			cons: [
+				{ de: "Hohe Unsicherheit und persönliche Verantwortung.", en: "High uncertainty and personal responsibility." },
+				{ de: "Finanzielle Sicherheit kann am Anfang begrenzt sein.", en: "Financial security can be limited early on." },
+				{ de: "Rückschläge und Anpassung gehören zum Weg.", en: "Setbacks and adaptation are part of the path." },
+				{ de: "Erfolg hängt auch von Timing, Team und Umsetzung ab.", en: "Success also depends on timing, team and execution." }
+			]
+		},
+		{
+			key: "academia",
+			icon: "🎓",
+			title: { de: "Akademische Karriere", en: "Academic career" },
+			subtitle: { de: "", en: "" },
+			pros: [
+				{ de: "Faszinierende Fragen in echter Tiefe erkunden.", en: "Explore fascinating questions in real depth." },
+				{ de: "Zu wissenschaftlichem Fortschritt beitragen.", en: "Contribute to scientific progress." },
+				{ de: "Fundierte Expertise in einem Feld aufbauen.", en: "Build deep expertise in one field." },
+				{ de: "Inspirierendes Umfeld für Lernen und Mentoring.", en: "Inspiring environment for learning and mentoring." }
+			],
+			cons: [
+				{ de: "Karrierewege können lang und stark umkämpft sein.", en: "Career paths can be long and highly competitive." },
+				{ de: "Feste Stellen sind in vielen Bereichen begrenzt.", en: "Permanent positions are limited in many fields." },
+				{ de: "Der Weg zur Anwendung kann Zeit brauchen.", en: "The path to application can take time." },
+				{ de: "Systeme und Förderung können Flexibilität einschränken.", en: "Systems and funding can limit flexibility." }
+			]
+		}
+	];
+	const skillComparisons: SkillComparison[] = [
+		{
+			skill: { de: "Neugier", en: "Curiosity" },
+			science: { de: "Offene Forschungsfragen erkunden.", en: "Explore open research questions." },
+			startup: { de: "Marktlücken und Trends entdecken.", en: "Discover market gaps and trends." }
+		},
+		{
+			skill: { de: "Eigenmotivation", en: "Self-motivation" },
+			science: { de: "Eigene Projekte mit wenigen Deadlines tragen.", en: "Carry own projects with few deadlines." },
+			startup: { de: "Vorangehen, bevor viel Unterstützung da ist.", en: "Move before support is abundant." }
+		},
+		{
+			skill: { de: "Frustrationstoleranz", en: "Tolerance for setbacks" },
+			science: { de: "Mit gescheiterten Experimenten umgehen.", en: "Handle failed experiments." },
+			startup: { de: "Rückschläge bei Produkt und Finanzierung aushalten.", en: "Withstand product and funding setbacks." }
+		},
+		{
+			skill: { de: "Ausdauer", en: "Perseverance" },
+			science: { de: "Anspruchsvolle Projekte über Jahre verfolgen.", en: "Pursue demanding projects over years." },
+			startup: { de: "Lange Wege trotz hoher Geschwindigkeit tragen.", en: "Sustain long paths despite high speed." }
+		},
+		{
+			skill: { de: "Problemlösung", en: "Problem solving" },
+			science: { de: "Komplexe Fragen experimentell lösen.", en: "Solve complex questions experimentally." },
+			startup: { de: "Skalierbare Lösungen für reale Probleme finden.", en: "Find scalable solutions for real problems." }
+		},
+		{
+			skill: { de: "Anpassungsfähigkeit", en: "Adaptability" },
+			science: { de: "Hypothesen anhand neuer Daten ändern.", en: "Adapt hypotheses based on new data." },
+			startup: { de: "Produkte anhand von Marktfeedback schärfen.", en: "Sharpen products based on market feedback." }
+		}
+	];
+	const cofounderPaths: CofounderPath[] = [
+		{
+			question: { de: "Verbessert die Technologie bestehende Produkte?", en: "Does the technology improve existing products?" },
+			answer: { de: "Ja", en: "Yes" },
+			verdict: { de: "Wahrscheinlich hilfreich", en: "Likely helpful" },
+			text: { de: "Branchenwissen und Umsetzungsgeschwindigkeit können entscheidend sein.", en: "Industry knowledge and execution speed can be decisive." }
+		},
+		{
+			question: { de: "Entsteht ein komplett neues Produkt?", en: "Does it create a new product?" },
+			answer: { de: "Viele Märkte möglich", en: "Many markets possible" },
+			verdict: { de: "Vielleicht", en: "Maybe" },
+			text: { de: "Die erste Anwendung zu finden ist oft der Schlüssel.", en: "Finding the first application is often the key." }
+		},
+		{
+			question: { de: "Gibt es klaren Problem-Lösung-Fit?", en: "Is there clear problem-solution fit?" },
+			answer: { de: "Noch nicht", en: "Not yet" },
+			verdict: { de: "Nicht unbedingt", en: "Not necessarily" },
+			text: { de: "Reduziere zuerst Technologie- und Anwendungsrisiko.", en: "Reduce technology and application risk first." }
+		},
+		{
+			question: { de: "Geht es nur um Admin-Aufgaben?", en: "Is it mainly admin work?" },
+			answer: { de: "Registrierung, Buchhaltung, Einstellung", en: "Registration, accounting, hiring" },
+			verdict: { de: "Dafür nicht", en: "Not for that" },
+			text: { de: "Dafür reichen oft Beratung, Angels oder externe Unterstützung.", en: "Advice, angels or external support are often enough." },
+			muted: true
+		}
+	];
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -380,12 +498,79 @@
 			<div class="infographic-grid">
 				{#each landing.infographics.items as item (item.src)}
 					<article class="infographic-card">
-						<div>
+						<div class="infographic-copy">
 							<h3>{t(item.title)}</h3>
 							<p>{t(item.teaser)}</p>
 							<p class="meta">{item.credit}</p>
 						</div>
-						<img src={item.src} alt={t(item.alt)} loading="lazy" decoding="async" />
+						<div class="infographic-media">
+							{#if item.variant === "career"}
+								<div class="infographic-core career-core" role="img" aria-label={t(item.alt)}>
+									{#each careerComparison as column (column.key)}
+										<section class="career-column">
+											<div class="diagram-head">
+												<span class="diagram-badge" aria-hidden="true">{column.icon}</span>
+												<div>
+													<h4>{t(column.title)}</h4>
+													{#if t(column.subtitle)}
+														<p>{t(column.subtitle)}</p>
+													{/if}
+												</div>
+											</div>
+											<div class="comparison-lists">
+												<div>
+													<strong>{language === "de" ? "Vorteile" : "Advantages"}</strong>
+													<ul>
+														{#each column.pros as point}
+															<li>{t(point)}</li>
+														{/each}
+													</ul>
+												</div>
+												<div>
+													<strong>{language === "de" ? "Nachteile" : "Trade-offs"}</strong>
+													<ul class="muted-list">
+														{#each column.cons as point}
+															<li>{t(point)}</li>
+														{/each}
+													</ul>
+												</div>
+											</div>
+										</section>
+									{/each}
+								</div>
+							{:else if item.variant === "skills"}
+								<div class="infographic-core skills-core" role="img" aria-label={t(item.alt)}>
+									<div class="skills-head" aria-hidden="true">
+										<span>{language === "de" ? "Fähigkeit" : "Skill"}</span>
+										<span>Startup</span>
+										<span>{language === "de" ? "Forschung" : "Science"}</span>
+									</div>
+									{#each skillComparisons as row, index (t(row.skill))}
+										<section class="skill-row">
+											<h4><span>{String(index + 1).padStart(2, "0")}</span>{t(row.skill)}</h4>
+											<p><strong>Startup</strong>{t(row.startup)}</p>
+											<p><strong>{language === "de" ? "Forschung" : "Science"}</strong>{t(row.science)}</p>
+										</section>
+									{/each}
+								</div>
+							{:else if item.variant === "cofounder"}
+								<div class="infographic-core cofounder-core" role="img" aria-label={t(item.alt)}>
+									<div class="flow-root">{t(item.title)}</div>
+									<div class="flow-path-grid">
+										{#each cofounderPaths as path (t(path.verdict))}
+											<section class="flow-path" class:muted={path.muted}>
+												<p class="flow-question">{t(path.question)}</p>
+												<p class="flow-answer">{t(path.answer)}</p>
+												<h4>{t(path.verdict)}</h4>
+												<p>{t(path.text)}</p>
+											</section>
+										{/each}
+									</div>
+								</div>
+							{:else}
+								<img src={item.src} alt={t(item.alt)} loading="lazy" decoding="async" />
+							{/if}
+						</div>
 					</article>
 				{/each}
 			</div>
@@ -1089,9 +1274,15 @@
 		padding: 1rem;
 	}
 
-	.infographic-card div {
+	.infographic-copy {
 		display: grid;
 		gap: 0.45rem;
+	}
+
+	.infographic-media {
+		container-type: inline-size;
+		min-width: 0;
+		width: 100%;
 	}
 
 	.infographic-card img,
@@ -1105,6 +1296,262 @@
 	.infographic-card img {
 		max-height: 27rem;
 		object-fit: contain;
+	}
+
+	.infographic-core {
+		display: grid;
+		gap: 0.7rem;
+		min-width: 0;
+		width: 100%;
+		padding: 0.8rem;
+		border: 1px solid rgb(var(--rgb-white) / 0.12);
+		border-radius: 0.65rem;
+		background: rgb(var(--rgb-black) / 0.16);
+		overflow-wrap: anywhere;
+	}
+
+	.career-core {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.career-column,
+	.skill-row,
+	.flow-path {
+		min-width: 0;
+		border: 1px solid rgb(var(--rgb-white) / 0.12);
+		border-radius: 0.6rem;
+		background: rgb(var(--rgb-white) / 0.06);
+	}
+
+	.career-column {
+		display: grid;
+		grid-template-rows: auto auto;
+		align-content: start;
+		gap: 0.7rem;
+		padding: 0.75rem;
+	}
+
+	.diagram-head {
+		display: flex;
+		gap: 0.65rem;
+		align-items: center;
+		min-height: 4.35rem;
+		padding-bottom: 0.65rem;
+		border-bottom: 1px solid rgb(var(--rgb-white) / 0.12);
+	}
+
+	.diagram-badge {
+		display: grid;
+		flex: 0 0 auto;
+		width: 2.2rem;
+		height: 2.2rem;
+		place-items: center;
+		border-radius: 0.55rem;
+		background: rgb(var(--rgb-brand-blue));
+		font-size: 1.05rem;
+	}
+
+	.diagram-head h4,
+	.skill-row h4,
+	.flow-path h4 {
+		margin: 0;
+		font-size: 0.94rem;
+		line-height: 1.15;
+	}
+
+	.diagram-head p,
+	.flow-path p,
+	.skill-row p {
+		margin: 0;
+		color: var(--copy-muted);
+		font-size: 0.78rem;
+		line-height: 1.4;
+	}
+
+	.comparison-lists {
+		display: grid;
+		gap: 0.65rem;
+	}
+
+	.comparison-lists strong {
+		display: block;
+		margin-bottom: 0.35rem;
+		color: rgb(255 205 130);
+		font-size: 0.72rem;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+
+	.comparison-lists ul {
+		display: grid;
+		gap: 0.38rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.comparison-lists li {
+		position: relative;
+		padding-left: 0.9rem;
+		color: rgb(var(--rgb-text-bright-dark));
+		font-size: 0.78rem;
+		line-height: 1.38;
+	}
+
+	.comparison-lists li::before {
+		content: "";
+		position: absolute;
+		top: 0.48em;
+		left: 0;
+		width: 0.36rem;
+		height: 0.36rem;
+		border-radius: 999px;
+		background: rgb(var(--rgb-brand-blue));
+	}
+
+	.comparison-lists .muted-list li::before {
+		width: 0.36rem;
+		height: 0.36rem;
+		border-radius: 999px;
+		background: rgb(var(--rgb-brand-blue));
+	}
+
+	.skills-core {
+		gap: 0.45rem;
+	}
+
+	.skills-head,
+	.skill-row {
+		display: grid;
+		grid-template-columns: minmax(7rem, 0.75fr) repeat(2, minmax(0, 1fr));
+		gap: 0.55rem;
+		align-items: stretch;
+	}
+
+	.skills-head {
+		padding: 0 0.6rem 0.2rem;
+		color: rgb(255 205 130);
+		font-size: 0.7rem;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+
+	.skill-row {
+		padding: 0.65rem;
+	}
+
+	.skill-row h4 {
+		display: flex;
+		gap: 0.45rem;
+		align-items: center;
+	}
+
+	.skill-row h4 span {
+		display: grid;
+		flex: 0 0 auto;
+		width: 1.55rem;
+		height: 1.55rem;
+		place-items: center;
+		border-radius: 999px;
+		background: rgb(var(--rgb-brand-blue));
+		color: rgb(16 32 58);
+		font-size: 0.66rem;
+		font-weight: 900;
+	}
+
+	.skill-row p {
+		display: grid;
+		gap: 0.18rem;
+	}
+
+	.skill-row p strong {
+		display: none;
+		color: rgb(255 205 130);
+		font-size: 0.68rem;
+		text-transform: uppercase;
+	}
+
+	.cofounder-core {
+		gap: 0.85rem;
+	}
+
+	.flow-root {
+		justify-self: center;
+		max-width: 28rem;
+		padding: 0.65rem 0.9rem;
+		border-radius: 0.65rem;
+		background: rgb(var(--rgb-brand-blue));
+		color: rgb(16 32 58);
+		font-weight: 900;
+		text-align: center;
+	}
+
+	.flow-path-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.55rem;
+	}
+
+	.flow-path {
+		position: relative;
+		display: grid;
+		gap: 0.35rem;
+		padding: 0.7rem;
+	}
+
+	.flow-path::before {
+		content: "";
+		position: absolute;
+		top: -0.55rem;
+		left: 50%;
+		width: 1px;
+		height: 0.55rem;
+		background: rgb(var(--rgb-brand-blue));
+	}
+
+	.flow-question {
+		color: rgb(var(--rgb-text-bright-dark)) !important;
+		font-weight: 800;
+	}
+
+	.flow-answer {
+		color: rgb(255 205 130) !important;
+		font-size: 0.7rem !important;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+
+	.flow-path.muted {
+		border-style: dashed;
+		background: rgb(var(--rgb-white) / 0.035);
+	}
+
+	@container (max-width: 560px) {
+		.career-core,
+		.flow-path-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.skills-head {
+			display: none;
+		}
+
+		.skill-row {
+			grid-template-columns: 1fr;
+			gap: 0.42rem;
+		}
+
+		.skill-row p strong {
+			display: block;
+		}
+
+		.flow-root {
+			justify-self: stretch;
+		}
+
+		.flow-path::before {
+			left: 1.15rem;
+		}
 	}
 
 	.meta {
@@ -1491,6 +1938,43 @@
 	:global(html:not(.dark)) .resource-logo {
 		border-color: rgb(176 112 24 / 0.2);
 		background: rgb(var(--rgb-white) / 0.96);
+	}
+
+	:global(html:not(.dark)) .infographic-core {
+		border-color: rgb(176 112 24 / 0.16);
+		background: rgb(var(--rgb-white) / 0.72);
+	}
+
+	:global(html:not(.dark)) .career-column,
+	:global(html:not(.dark)) .skill-row,
+	:global(html:not(.dark)) .flow-path {
+		border-color: rgb(var(--rgb-slate-900) / 0.12);
+		background: rgb(var(--rgb-white) / 0.68);
+	}
+
+	:global(html:not(.dark)) .diagram-head {
+		border-bottom-color: rgb(var(--rgb-slate-900) / 0.12);
+	}
+
+	:global(html:not(.dark)) .diagram-head p,
+	:global(html:not(.dark)) .flow-path p,
+	:global(html:not(.dark)) .skill-row p {
+		color: rgb(64 84 114);
+	}
+
+	:global(html:not(.dark)) .comparison-lists strong,
+	:global(html:not(.dark)) .skills-head,
+	:global(html:not(.dark)) .flow-answer {
+		color: rgb(111 70 17) !important;
+	}
+
+	:global(html:not(.dark)) .comparison-lists li,
+	:global(html:not(.dark)) .flow-question {
+		color: rgb(18 37 63) !important;
+	}
+
+	:global(html:not(.dark)) .flow-path.muted {
+		background: rgb(238 246 255 / 0.48);
 	}
 
 	:global(html:not(.dark)) .content-card,
