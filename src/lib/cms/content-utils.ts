@@ -1,4 +1,4 @@
-import { LANGUAGE_CODES, type LocalizedString, type OrderedContentItem } from "./types";
+import { LANGUAGE_CODES, type LocalizedString } from "./types";
 
 export type UnknownRecord = Record<string, unknown>;
 
@@ -41,19 +41,6 @@ export function optionalList(value: unknown, context: string): UnknownRecord[] {
 	return list(value, context);
 }
 
-export function listFromSource(value: unknown, context: string): UnknownRecord[] {
-	if (Array.isArray(value)) {
-		return list(value, context);
-	}
-
-	const wrapped = optionalRecord(value);
-	if (wrapped && Array.isArray(wrapped.items)) {
-		return list(wrapped.items, `${context}.items`);
-	}
-
-	throw new CmsContentError(`CMS data "${context}" must be a list or an object with an items list.`);
-}
-
 export function requiredString(value: unknown, context: string): string {
 	if (typeof value === "string" && value.trim().length > 0) {
 		return value.trim();
@@ -62,19 +49,12 @@ export function requiredString(value: unknown, context: string): string {
 	throw new CmsContentError(`CMS field "${context}" must be a non-empty string.`);
 }
 
-export function requiredNumber(value: unknown, context: string): number {
-	if (typeof value === "number" && Number.isFinite(value)) {
-		return value;
+export function optionalString(value: unknown): string {
+	if (typeof value !== "string") {
+		return "";
 	}
 
-	if (typeof value === "string") {
-		const parsed = Number(value);
-		if (Number.isFinite(parsed)) {
-			return parsed;
-		}
-	}
-
-	throw new CmsContentError(`CMS field "${context}" must be a valid number.`);
+	return value.trim();
 }
 
 export function localizedString(value: unknown, context: string): LocalizedString {
@@ -86,27 +66,4 @@ export function localizedString(value: unknown, context: string): LocalizedStrin
 	}
 
 	return mapped;
-}
-
-export function mapOrderedCollection<T extends OrderedContentItem>(
-	source: unknown,
-	context: string,
-	mapper: (row: UnknownRecord, index: number) => T | undefined
-): T[] {
-	const rows = listFromSource(source, context);
-	const mapped: T[] = [];
-
-	for (const [index, row] of rows.entries()) {
-		try {
-			const item = mapper(row, index);
-			if (item) {
-				mapped.push(item);
-			}
-		} catch (error) {
-			const message = error instanceof Error ? error.message : String(error);
-			console.warn(`[cms] Skipping invalid ${context} item ${index + 1}: ${message}`);
-		}
-	}
-
-	return mapped.sort((a, b) => a.order - b.order);
 }

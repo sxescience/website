@@ -15,7 +15,7 @@
 		Users,
 		X
 	} from "lucide-svelte";
-	import type { FaqItem, LanguageCode, LocalizedString, NewsItem } from "$lib/cms/types";
+	import type { FaqItem, LanguageCode, LocalizedString, PodcastEpisode } from "$lib/cms/types";
 	import type { PageData } from "./$types";
 
 	const LANGUAGE_STORAGE_KEY = "sxe-language";
@@ -153,7 +153,8 @@
 
 	const content = $derived(data.content);
 	const landing = $derived(content.landing);
-	const latestEpisode = $derived(content.news[0]);
+	const podcastSettings = $derived(content.podcastSettings);
+	const latestEpisode = $derived(content.podcastFeed.episodes[0]);
 
 	onMount(() => {
 		language = getStoredLanguage();
@@ -313,8 +314,21 @@
 		// TODO: Echten Formularversand anbinden.
 	}
 
-	function podcastLinkForEpisode(item: NewsItem | undefined): string {
-		return item?.podcastLinks[0]?.url ?? landing.podcast.href;
+	function podcastLinkForEpisode(item: PodcastEpisode | undefined): string {
+		return item?.url || item?.audioUrl || landing.podcast.href;
+	}
+
+	function podcastStatusMessage(): string {
+		if (content.podcastFeed.status === "missing-url") {
+			return t(podcastSettings.missingFeedMessage);
+		}
+		if (content.podcastFeed.status === "error") {
+			return t(podcastSettings.feedErrorMessage);
+		}
+		if (content.podcastFeed.status === "empty") {
+			return t(podcastSettings.emptyFeedMessage);
+		}
+		return language === "de" ? "Neue Folgen erscheinen hier." : "New episodes will appear here.";
 	}
 
 	function resourceLogoUrl(url: string): string {
@@ -322,7 +336,7 @@
 			const hostname = new URL(url).hostname.replace(/^www\./, "");
 			return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=96`;
 		} catch {
-			return "/assets/sxe-logo-science-transparent.png";
+			return "/assets/SxE%20Logo.png";
 		}
 	}
 
@@ -366,11 +380,10 @@
 			<a class="brand" href="#top" onclick={closeMenu} aria-label="SxE">
 				<img
 					class="brand-logo"
-					src="/assets/sxe-logo-science-transparent.png"
+					src="/assets/SxE%20Logo.png"
 					alt="Science x Entrepreneurship"
 					decoding="async"
 				/>
-				<span class="brand-subtitle">{landing.brandSubtitle}</span>
 			</a>
 
 			<button
@@ -461,8 +474,8 @@
 			<aside class="hero-visual" aria-label="SxE">
 				<img
 					class="hero-cover"
-					src={landing.podcast.fallbackThumbnail}
-					alt="Podcast-Cover Forschung mit Folgen, Episode 03 mit Nicholas Turley"
+					src={podcastSettings.fallbackCover}
+					alt={t(podcastSettings.title)}
 					decoding="async"
 					fetchpriority="high"
 				/>
@@ -644,8 +657,8 @@
 			</div>
 			<article class="latest-episode-card">
 				<img
-					src={landing.podcast.fallbackThumbnail}
-					alt="Forschung mit Folgen"
+					src={latestEpisode?.image || podcastSettings.fallbackCover}
+					alt={latestEpisode?.title || t(podcastSettings.title)}
 					loading="lazy"
 					decoding="async"
 				/>
@@ -653,17 +666,15 @@
 					<p class="meta">
 						{#if latestEpisode}{formatNewsDate(latestEpisode.date)}{:else}Podcast{/if}
 					</p>
-					<h3>{latestEpisode?.title ?? landing.podcast.title}</h3>
+					<h3>{latestEpisode?.title ?? t(podcastSettings.title)}</h3>
 					<p>
-						{latestEpisode?.excerpt ??
-							(language === "de" ? "Neue Folgen erscheinen hier." : "New episodes will appear here.")}
+						{latestEpisode?.description || podcastStatusMessage()}
 					</p>
 					<a href={podcastLinkForEpisode(latestEpisode)} target="_blank" rel="noopener noreferrer">
 						{language === "de" ? "Aktuelle Folge öffnen" : "Open latest episode"}
 						<ExternalLink size={14} />
 					</a>
 				</div>
-				<!-- TODO: RSS-Feed-URL einfügen und latest episode serverseitig mappen. -->
 			</article>
 		</section>
 
@@ -761,7 +772,7 @@
 			<div>
 				<img
 					class="footer-logo"
-					src="/assets/sxe-logo-science-transparent.png"
+					src="/assets/SxE%20Logo.png"
 					alt="Science x Entrepreneurship"
 					loading="lazy"
 					decoding="async"
@@ -892,19 +903,10 @@
 	.brand-logo {
 		display: block;
 		width: auto;
-		height: clamp(2.8rem, 4.8vw, 4rem);
-		max-width: min(12rem, 34vw);
+		height: clamp(3.25rem, 5.4vw, 4.8rem);
+		max-width: min(13.5rem, 42vw);
 		object-fit: contain;
 		object-position: left center;
-	}
-
-	.brand-subtitle {
-		color: rgb(var(--rgb-text-soft-dark));
-		font-size: 0.72rem;
-		font-weight: 800;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		white-space: nowrap;
 	}
 
 	nav,
@@ -1816,7 +1818,7 @@
 
 	.footer-logo {
 		display: block;
-		width: 9rem;
+		width: min(12rem, 56vw);
 		height: auto;
 		margin-bottom: 0.55rem;
 	}
@@ -1873,7 +1875,6 @@
 		background: rgb(var(--rgb-white) / 0.9);
 	}
 
-	:global(html:not(.dark)) .brand-subtitle,
 	:global(html:not(.dark)) nav a,
 	:global(html:not(.dark)) .footer-links a {
 		color: rgb(42 64 97);
@@ -1998,12 +1999,6 @@
 
 	:global(html:not(.dark)) .site-footer {
 		background: rgb(247 251 255 / 0.92);
-	}
-
-	@media (max-width: 1040px) {
-		.brand-subtitle {
-			display: none;
-		}
 	}
 
 	@media (max-width: 900px) {

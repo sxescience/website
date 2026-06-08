@@ -15,10 +15,11 @@ npm run dev
 - CMS config: `static/admin/config.yml`
 - Editable content files:
   - `src/lib/content/landing-content.json`
-  - `src/lib/content/news.json`
+  - `src/lib/content/podcast-settings.json`
   - `src/lib/content/legal-content.json`
 - Runtime CMS validation and mapping live in `src/lib/cms`.
 - The Landing Page CMS form follows the same section order as the website.
+- Podcast episodes are loaded from the central RSS feed configured in the CMS.
 
 ## Vercel deployment
 

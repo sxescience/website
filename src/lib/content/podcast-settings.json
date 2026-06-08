@@ -1,0 +1,102 @@
+{
+  "rssUrl": "/assets/apple-rss-sample.xml",
+  "title": {
+    "de": "Forschung mit Folgen",
+    "en": "Forschung mit Folgen"
+  },
+  "kicker": {
+    "de": "Podcast",
+    "en": "Podcast"
+  },
+  "intro": {
+    "de": "Gespräche mit Menschen, die Wissenschaft in Anwendung übersetzen. Der Podcast begleitet Wege aus der Forschung in Gründung, Produktentwicklung und Wirkung.",
+    "en": "Conversations with people translating science into application. The podcast follows paths from research into startups, products and impact."
+  },
+  "metaTitle": {
+    "de": "Forschung mit Folgen | SxE Podcast",
+    "en": "Forschung mit Folgen | SxE Podcast"
+  },
+  "metaDescription": {
+    "de": "Der Podcast von Scientists x Entrepreneurship über Wege aus der Wissenschaft in die Anwendung.",
+    "en": "The Scientists x Entrepreneurship podcast about moving from science into application."
+  },
+  "backLinkLabel": {
+    "de": "Zur Startseite",
+    "en": "Back to home"
+  },
+  "listenLabel": {
+    "de": "Hören und ansehen",
+    "en": "Listen and watch"
+  },
+  "searchLabel": {
+    "de": "Folgen durchsuchen",
+    "en": "Search episodes"
+  },
+  "searchPlaceholder": {
+    "de": "Name, Thema oder Stichwort",
+    "en": "Name, topic or keyword"
+  },
+  "latestLabel": {
+    "de": "Neueste Folge",
+    "en": "Latest episode"
+  },
+  "recentLabel": {
+    "de": "Alle Folgen",
+    "en": "All episodes"
+  },
+  "noResultsMessage": {
+    "de": "Keine Folge passt zu deiner Suche.",
+    "en": "No episode matches your search."
+  },
+  "missingFeedMessage": {
+    "de": "Der Podcast-RSS-Feed ist noch nicht im CMS hinterlegt.",
+    "en": "The podcast RSS feed has not been configured in the CMS yet."
+  },
+  "feedErrorMessage": {
+    "de": "Der Podcast-RSS-Feed konnte gerade nicht geladen werden.",
+    "en": "The podcast RSS feed could not be loaded right now."
+  },
+  "emptyFeedMessage": {
+    "de": "Im RSS-Feed wurden noch keine Folgen gefunden.",
+    "en": "No episodes were found in the RSS feed yet."
+  },
+  "newsletterTitle": {
+    "de": "Neue Folgen nicht verpassen",
+    "en": "Do not miss new episodes"
+  },
+  "newsletterLead": {
+    "de": "Erhalte Updates zu neuen Folgen, Ressourcen und SxE-Formaten.",
+    "en": "Get updates on new episodes, resources and SxE formats."
+  },
+  "newsletterEmailLabel": {
+    "de": "E-Mail",
+    "en": "Email"
+  },
+  "newsletterEmailPlaceholder": {
+    "de": "name@example.com",
+    "en": "name@example.com"
+  },
+  "newsletterSubmitLabel": {
+    "de": "Eintragen",
+    "en": "Subscribe"
+  },
+  "episodeCtaLabel": {
+    "de": "Folge öffnen",
+    "en": "Open episode"
+  },
+  "fallbackCover": "/assets/podcast-cover-placeholder.jpeg",
+  "platformLinks": [
+    {
+      "label": "Apple Podcasts",
+      "url": "https://podcasts.apple.com/"
+    },
+    {
+      "label": "Spotify",
+      "url": "https://open.spotify.com/"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/"
+    }
+  ]
+}

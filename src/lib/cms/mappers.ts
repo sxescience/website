@@ -1,11 +1,9 @@
 import {
 	asRecord,
 	list,
-	listFromSource,
 	localizedString,
-	mapOrderedCollection,
 	optionalList,
-	requiredNumber,
+	optionalString,
 	requiredString,
 	type UnknownRecord
 } from "./content-utils";
@@ -19,21 +17,86 @@ import type {
 	LandingHeroStat,
 	LandingNavItem,
 	LegalContent,
-	NewsItem,
+	PodcastPageContent,
 	PodcastLink,
+	PodcastSettings,
 	ResourceCategory,
 	ResourceItem,
 	SocialLink
 } from "./types";
 
-const LIVE_STATUSES = new Set(["published", "live", "active", "public"]);
 const MIN_FAQ_GROUP_SIZE = 4;
 const MAX_FAQ_GROUP_SIZE = 7;
 
-export function mapHomeContent(source: { landing: unknown; news: unknown }): HomeContent {
+export function mapHomeContent(source: {
+	landing: unknown;
+	podcastSettings: unknown;
+	podcastFeed: HomeContent["podcastFeed"];
+}): HomeContent {
 	return {
 		landing: mapLandingContent(source.landing),
-		news: mapNews(source.news)
+		podcastSettings: mapPodcastSettings(source.podcastSettings),
+		podcastFeed: source.podcastFeed
+	};
+}
+
+export function mapPodcastPageContent(source: {
+	landing: unknown;
+	podcastSettings: unknown;
+	podcastFeed: HomeContent["podcastFeed"];
+}): PodcastPageContent {
+	return {
+		landing: mapLandingContent(source.landing),
+		podcastSettings: mapPodcastSettings(source.podcastSettings),
+		podcastFeed: source.podcastFeed
+	};
+}
+
+export function mapPodcastSettings(source: unknown): PodcastSettings {
+	const row = asRecord(source, "podcast_settings");
+
+	return {
+		rssUrl: optionalString(row.rssUrl),
+		title: localizedString(row.title, "podcast_settings.title"),
+		kicker: localizedString(row.kicker, "podcast_settings.kicker"),
+		intro: localizedString(row.intro, "podcast_settings.intro"),
+		metaTitle: localizedString(row.metaTitle, "podcast_settings.metaTitle"),
+		metaDescription: localizedString(row.metaDescription, "podcast_settings.metaDescription"),
+		backLinkLabel: localizedString(row.backLinkLabel, "podcast_settings.backLinkLabel"),
+		listenLabel: localizedString(row.listenLabel, "podcast_settings.listenLabel"),
+		searchLabel: localizedString(row.searchLabel, "podcast_settings.searchLabel"),
+		searchPlaceholder: localizedString(
+			row.searchPlaceholder,
+			"podcast_settings.searchPlaceholder"
+		),
+		latestLabel: localizedString(row.latestLabel, "podcast_settings.latestLabel"),
+		recentLabel: localizedString(row.recentLabel, "podcast_settings.recentLabel"),
+		noResultsMessage: localizedString(row.noResultsMessage, "podcast_settings.noResultsMessage"),
+		missingFeedMessage: localizedString(
+			row.missingFeedMessage,
+			"podcast_settings.missingFeedMessage"
+		),
+		feedErrorMessage: localizedString(row.feedErrorMessage, "podcast_settings.feedErrorMessage"),
+		emptyFeedMessage: localizedString(row.emptyFeedMessage, "podcast_settings.emptyFeedMessage"),
+		newsletterTitle: localizedString(row.newsletterTitle, "podcast_settings.newsletterTitle"),
+		newsletterLead: localizedString(row.newsletterLead, "podcast_settings.newsletterLead"),
+		newsletterEmailLabel: localizedString(
+			row.newsletterEmailLabel,
+			"podcast_settings.newsletterEmailLabel"
+		),
+		newsletterEmailPlaceholder: localizedString(
+			row.newsletterEmailPlaceholder,
+			"podcast_settings.newsletterEmailPlaceholder"
+		),
+		newsletterSubmitLabel: localizedString(
+			row.newsletterSubmitLabel,
+			"podcast_settings.newsletterSubmitLabel"
+		),
+		episodeCtaLabel: localizedString(row.episodeCtaLabel, "podcast_settings.episodeCtaLabel"),
+		fallbackCover: requiredString(row.fallbackCover, "podcast_settings.fallbackCover"),
+		platformLinks: optionalList(row.platformLinks, "podcast_settings.platformLinks").map(
+			mapPodcastLink
+		)
 	};
 }
 
@@ -190,12 +253,7 @@ function mapPodcast(value: unknown): LandingContent["podcast"] {
 		title: localizedString(row.title, "landing_content.podcast.title"),
 		lead: localizedString(row.lead, "landing_content.podcast.lead"),
 		ctaLabel: localizedString(row.ctaLabel, "landing_content.podcast.ctaLabel"),
-		href: requiredString(row.href, "landing_content.podcast.href"),
-		fallbackThumbnail: requiredString(
-			row.fallbackThumbnail,
-			"landing_content.podcast.fallbackThumbnail"
-		),
-		rssTodo: requiredString(row.rssTodo, "landing_content.podcast.rssTodo")
+		href: requiredString(row.href, "landing_content.podcast.href")
 	};
 }
 
@@ -371,59 +429,9 @@ function mapFooter(value: unknown): LandingContent["footer"] {
 	};
 }
 
-function mapNews(source: unknown): NewsItem[] {
-	return mapOrderedCollection(source, "news", (row, index) => {
-		const status = requiredString(row.status, `news.items[${index}].status`).toLowerCase();
-		if (!LIVE_STATUSES.has(status)) {
-			return undefined;
-		}
-
-		return {
-			id: requiredString(row.id, `news.items[${index}].id`),
-			title: requiredString(row.title, `news.items[${index}].title`),
-			excerpt: requiredString(row.excerpt, `news.items[${index}].excerpt`),
-			date: requiredString(row.date, `news.items[${index}].date`),
-			ctaLabel: requiredString(row.ctaLabel, `news.items[${index}].ctaLabel`),
-			href: requiredString(row.href, `news.items[${index}].href`),
-			podcastLinks: optionalList(row.podcastLinks, `news.items[${index}].podcastLinks`).map(
-				mapPodcastLink
-			),
-			status,
-			order: requiredNumber(row.order, `news.items[${index}].order`)
-		};
-	}).sort(sortNewsItems);
-}
-
 function mapPodcastLink(row: UnknownRecord, index: number): PodcastLink {
 	return {
-		label: requiredString(row.label, `podcastLinks[${index}].label`),
-		url: requiredString(row.url, `podcastLinks[${index}].url`)
+		label: requiredString(row.label, `podcast_settings.platformLinks[${index}].label`),
+		url: requiredString(row.url, `podcast_settings.platformLinks[${index}].url`)
 	};
-}
-
-function sortNewsItems(a: NewsItem, b: NewsItem): number {
-	const aDate = dateSortValue(a.date);
-	const bDate = dateSortValue(b.date);
-
-	if (aDate !== undefined && bDate !== undefined) {
-		if (aDate !== bDate) {
-			return bDate - aDate;
-		}
-		return b.order - a.order;
-	}
-
-	if (aDate !== undefined) {
-		return -1;
-	}
-
-	if (bDate !== undefined) {
-		return 1;
-	}
-
-	return b.order - a.order;
-}
-
-function dateSortValue(value: string): number | undefined {
-	const parsed = Date.parse(value);
-	return Number.isFinite(parsed) ? parsed : undefined;
 }

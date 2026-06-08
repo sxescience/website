@@ -209,8 +209,6 @@ singletons:
             label: CTA Label
             name: ctaLabel
           - { label: Href, name: href, widget: string }
-          - { label: Fallback Thumbnail, name: fallbackThumbnail, widget: image }
-          - { label: RSS TODO, name: rssTodo, widget: text }
       - label: "07 Ressourcen"
         name: resources
         widget: object
@@ -341,34 +339,82 @@ singletons:
             name: description
           - { label: Open Graph Image, name: ogImage, widget: image }
 
-  - name: news
-    label: Podcast Episodes
-    file: src/lib/content/news.json
+  - name: podcast_settings
+    label: Podcast Settings
+    file: src/lib/content/podcast-settings.json
     fields:
-      - label: Episodes
-        name: items
+      - { label: RSS Feed URL, name: rssUrl, widget: string, required: false }
+      - <<: *localized_string
+        label: Podcast Title
+        name: title
+      - <<: *localized_string
+        label: Kicker
+        name: kicker
+      - <<: *localized_text
+        label: Intro
+        name: intro
+      - <<: *localized_string
+        label: Meta Title
+        name: metaTitle
+      - <<: *localized_text
+        label: Meta Description
+        name: metaDescription
+      - <<: *localized_string
+        label: Back Link Label
+        name: backLinkLabel
+      - <<: *localized_string
+        label: Listen Label
+        name: listenLabel
+      - <<: *localized_string
+        label: Search Label
+        name: searchLabel
+      - <<: *localized_string
+        label: Search Placeholder
+        name: searchPlaceholder
+      - <<: *localized_string
+        label: Latest Label
+        name: latestLabel
+      - <<: *localized_string
+        label: Recent Label
+        name: recentLabel
+      - <<: *localized_text
+        label: No Results Message
+        name: noResultsMessage
+      - <<: *localized_text
+        label: Missing Feed Message
+        name: missingFeedMessage
+      - <<: *localized_text
+        label: Feed Error Message
+        name: feedErrorMessage
+      - <<: *localized_text
+        label: Empty Feed Message
+        name: emptyFeedMessage
+      - <<: *localized_string
+        label: Newsletter Title
+        name: newsletterTitle
+      - <<: *localized_text
+        label: Newsletter Lead
+        name: newsletterLead
+      - <<: *localized_string
+        label: Newsletter Email Label
+        name: newsletterEmailLabel
+      - <<: *localized_string
+        label: Newsletter Email Placeholder
+        name: newsletterEmailPlaceholder
+      - <<: *localized_string
+        label: Newsletter Submit Label
+        name: newsletterSubmitLabel
+      - <<: *localized_string
+        label: Episode CTA Label
+        name: episodeCtaLabel
+      - { label: Fallback Cover, name: fallbackCover, widget: image }
+      - label: Platform Links
+        name: platformLinks
         widget: list
-        summary: "{{fields.title}}"
+        summary: "{{fields.label}}"
         fields:
-          - { label: ID, name: id, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Excerpt, name: excerpt, widget: text }
-          - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD" }
-          - { label: CTA Label, name: ctaLabel, widget: string }
-          - { label: Href, name: href, widget: string }
-          - label: Podcast Links
-            name: podcastLinks
-            widget: list
-            required: false
-            summary: "{{fields.label}}"
-            fields:
-              - { label: Plattform, name: label, widget: string }
-              - { label: URL, name: url, widget: string }
-          - label: Status
-            name: status
-            widget: select
-            options: [published, draft]
-          - { label: Order, name: order, widget: number, value_type: int, min: 1 }
+          - { label: Label, name: label, widget: string }
+          - { label: URL, name: url, widget: string }
 
   - name: legal_content
     label: Impressum und Datenschutz

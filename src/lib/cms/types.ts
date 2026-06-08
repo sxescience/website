@@ -9,21 +9,50 @@ export type PodcastLink = {
 	url: string;
 };
 
-export type OrderedContentItem = {
+export type PodcastEpisode = {
 	id: string;
-	order: number;
+	title: string;
+	description: string;
+	date: string;
+	url: string;
+	audioUrl: string;
+	image: string;
+	duration: string;
 };
 
-export type NewsStatus = "published" | "draft";
+export type PodcastFeedStatus = "missing-url" | "ok" | "error" | "empty";
 
-export type NewsItem = OrderedContentItem & {
-	title: string;
-	excerpt: string;
-	date: string;
-	ctaLabel: string;
-	href: string;
-	podcastLinks: PodcastLink[];
-	status: NewsStatus | string;
+export type PodcastFeedResult = {
+	status: PodcastFeedStatus;
+	episodes: PodcastEpisode[];
+	errorMessage?: string;
+};
+
+export type PodcastSettings = {
+	rssUrl: string;
+	title: LocalizedString;
+	kicker: LocalizedString;
+	intro: LocalizedString;
+	metaTitle: LocalizedString;
+	metaDescription: LocalizedString;
+	backLinkLabel: LocalizedString;
+	listenLabel: LocalizedString;
+	searchLabel: LocalizedString;
+	searchPlaceholder: LocalizedString;
+	latestLabel: LocalizedString;
+	recentLabel: LocalizedString;
+	noResultsMessage: LocalizedString;
+	missingFeedMessage: LocalizedString;
+	feedErrorMessage: LocalizedString;
+	emptyFeedMessage: LocalizedString;
+	newsletterTitle: LocalizedString;
+	newsletterLead: LocalizedString;
+	newsletterEmailLabel: LocalizedString;
+	newsletterEmailPlaceholder: LocalizedString;
+	newsletterSubmitLabel: LocalizedString;
+	episodeCtaLabel: LocalizedString;
+	fallbackCover: string;
+	platformLinks: PodcastLink[];
 };
 
 export type LandingNavItem = {
@@ -123,8 +152,6 @@ export type LandingContent = {
 		lead: LocalizedString;
 		ctaLabel: LocalizedString;
 		href: string;
-		fallbackThumbnail: string;
-		rssTodo: string;
 	};
 	faq: {
 		kicker: LocalizedString;
@@ -172,7 +199,14 @@ export type LandingContent = {
 
 export type HomeContent = {
 	landing: LandingContent;
-	news: NewsItem[];
+	podcastSettings: PodcastSettings;
+	podcastFeed: PodcastFeedResult;
+};
+
+export type PodcastPageContent = {
+	landing: LandingContent;
+	podcastSettings: PodcastSettings;
+	podcastFeed: PodcastFeedResult;
 };
 
 export type LegalContent = {

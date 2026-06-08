@@ -19,12 +19,15 @@ Sveltia CMS is served from `static/admin/index.html` with config in `static/admi
 ## 3) Content files managed by CMS
 
 - `src/lib/content/landing-content.json`
-- `src/lib/content/news.json`
+- `src/lib/content/podcast-settings.json`
 - `src/lib/content/legal-content.json`
 
 The SvelteKit app loads these files through `src/lib/cms/service.ts`. Content mapping and validation
 are split into `src/lib/cms/mappers.ts` and `src/lib/cms/content-utils.ts`, so invalid CMS edits fail
 with field-specific errors instead of being silently cast into the page.
+
+Podcast episodes are not edited manually in the CMS. The central RSS feed URL in
+`src/lib/content/podcast-settings.json` is used by both the Landing Page and `/podcast`.
 
 The Landing Page singleton mirrors the public page structure in editing order:
 

@@ -661,16 +661,14 @@
       "en": "Forschung mit Folgen"
     },
     "lead": {
-      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind.",
-      "en": "In the podcast, we speak with founders who moved from science toward application."
+      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind. Neue Folgen werden zentral aus dem Podcast-RSS-Feed geladen.",
+      "en": "In the podcast, we speak with founders who moved from science toward application. New episodes are loaded centrally from the podcast RSS feed."
     },
     "ctaLabel": {
       "de": "Zum Podcast",
       "en": "Listen to the Podcast"
     },
-    "href": "/podcast",
-    "fallbackThumbnail": "/assets/podcast-cover-placeholder.jpeg",
-    "rssTodo": "TODO: RSS-Feed-URL eintragen und latest episode serverseitig mappen."
+    "href": "/podcast"
   },
   "resources": {
     "kicker": {
@@ -979,6 +977,6 @@
       "de": "Hunderttausende Forscher arbeiten unermüdlich daran, Wissenschaft voranzubringen. Doch zu viele Entdeckungen verlassen das Labor nie. Das wollen wir ändern.",
       "en": "Hundreds of thousands of researchers are working tirelessly to advance science, but too many discoveries never leave the lab. We want to change that."
     },
-    "ogImage": "/assets/sxe-logo-science-transparent.png"
+    "ogImage": "/assets/SxE%20Logo.png"
   }
 }
