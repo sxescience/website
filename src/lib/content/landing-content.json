@@ -661,8 +661,8 @@
       "en": "Forschung mit Folgen"
     },
     "lead": {
-      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind. Die aktuelle Website nutzt vorerst die CMS-Folgen als Fallback; eine RSS-Anbindung ist vorbereitet.",
-      "en": "In the podcast, we speak with founders who moved from science toward application. The current site uses CMS episodes as a fallback for now; an RSS integration hook is prepared."
+      "de": "Im Podcast sprechen wir mit Gründern, die den Weg aus der Wissenschaft in die Anwendung gegangen sind.",
+      "en": "In the podcast, we speak with founders who moved from science toward application."
     },
     "ctaLabel": {
       "de": "Zum Podcast",
