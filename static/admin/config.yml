@@ -24,285 +24,251 @@ x-field-templates:
 
 singletons:
   - name: landing_content
-    label: Landing Page
+    label: Startseite
     file: src/lib/content/landing-content.json
     fields:
-      - label: "01 Header"
-        name: header
-        widget: object
-        summary: "{{fields.brandName}}"
-        fields:
-          - { label: Brand Name, name: brandName, widget: string }
-          - { label: Brand Subtitle, name: brandSubtitle, widget: string }
-          - <<: *localized_string
-            label: Skip Link Label
-            name: skipLinkLabel
-          - <<: *localized_string
-            label: Language Toggle Label
-            name: languageToggleLabel
-          - <<: *localized_string
-            label: Theme Toggle Aria Label
-            name: themeToggleAriaLabel
-          - label: Navigation
-            name: nav
-            widget: list
-            summary: "{{fields.id}}"
-            fields:
-              - { label: Anchor ID, name: id, widget: string }
-              - <<: *localized_string
-                label: Label
-                name: label
-      - label: "02 Hero"
+      - label: "01 Hero"
         name: hero
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
           - <<: *localized_text
-            label: Lead
+            label: Einleitung
             name: lead
           - <<: *localized_string
-            label: Primary Label
+            label: Primärer Button
             name: primaryLabel
-          - { label: Primary Href, name: primaryHref, widget: string }
+          - { label: Ziel primärer Button, name: primaryHref, widget: string }
           - <<: *localized_string
-            label: Secondary Label
+            label: Sekundärer Button
             name: secondaryLabel
-          - { label: Secondary Href, name: secondaryHref, widget: string }
-          - label: Stats
+          - { label: Ziel sekundärer Button, name: secondaryHref, widget: string }
+          - label: Kennzahlen / Begriffe
             name: stats
             widget: list
             summary: "{{fields.value}}"
             fields:
-              - { label: Value, name: value, widget: string }
+              - { label: Wert, name: value, widget: string }
               - <<: *localized_string
-                label: Label
+                label: Beschreibung
                 name: label
-      - label: "03 Über SxE"
+
+      - label: "02 Über SxE"
         name: about
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
           - <<: *localized_text
-            label: Body
+            label: Text
             name: body
-          - label: Features
+          - label: Kacheln
             name: features
             widget: list
             summary: "{{fields.title.de}}"
             fields: &feature_fields
-              - { label: Icon, name: icon, widget: string }
+              - { label: Icon oder Emoji, name: icon, widget: string }
               - <<: *localized_string
-                label: Title
+                label: Titel
                 name: title
               - <<: *localized_text
                 label: Text
                 name: text
-      - label: "04 Infografiken"
+
+      - label: "03 Infografiken"
         name: infographics
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
-          - label: Items
+          - label: Grafiken
             name: items
             widget: list
             summary: "{{fields.title.de}}"
             fields:
-              - label: HTML Diagram Variant
+              - label: Diagrammtyp
                 name: variant
                 widget: select
                 required: false
-                options: [career, skills, cofounder]
+                options:
+                  - { label: "Karriere vs. Gründung", value: career }
+                  - { label: "Skills", value: skills }
+                  - { label: "Business-Cofounder", value: cofounder }
               - <<: *localized_string
-                label: Title
+                label: Titel
                 name: title
               - <<: *localized_text
                 label: Teaser
                 name: teaser
-              - { label: Image Source, name: src, widget: image }
+              - { label: Fallback-Bild, name: src, widget: image }
               - <<: *localized_text
-                label: Alt Text
+                label: Alt-Text
                 name: alt
               - { label: Credit, name: credit, widget: string }
-      - label: "05 FAQ"
+
+      - label: "04 FAQ"
         name: faq
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
           - <<: *localized_text
             label: Intro
             name: intro
-          - label: Groups
+          - label: Zwischentitel
             name: groups
             widget: list
             summary: "{{fields.title.de}}"
+            hint: "Die IDs müssen zu den Fragen unten passen. Jede Gruppe braucht 4 bis 7 Fragen."
             fields:
               - <<: *localized_string
-                label: Title
+                label: Titel
                 name: title
-              - label: FAQ Item IDs
+              - label: Fragen in dieser Gruppe
                 name: itemIds
                 widget: list
                 min: 4
                 max: 7
-                field: { label: FAQ Item ID, name: itemId, widget: string }
-          - label: Items
+                field: { label: Fragen-ID, name: itemId, widget: string }
+          - label: Fragen
             name: items
             widget: list
             summary: "{{fields.question.de}}"
             fields:
-              - { label: ID, name: id, widget: string }
+              - { label: Fragen-ID, name: id, widget: string, hint: "Wird für Links und Gruppierung genutzt. Bitte nach dem Anlegen nicht ändern." }
               - <<: *localized_string
-                label: Question
+                label: Frage
                 name: question
               - <<: *localized_text
-                label: Answer
+                label: Antwort
                 name: answer
-              - label: Links
+              - label: Links in der Antwort
                 name: links
                 widget: list
                 required: false
                 summary: "{{fields.label.de}}"
                 fields:
                   - <<: *localized_string
-                    label: Label
+                    label: Linktext
                     name: label
                   - { label: URL, name: url, widget: string }
-      - label: "06 Podcast"
+
+      - label: "05 Podcast-Teaser"
         name: podcast
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
           - <<: *localized_text
-            label: Lead
+            label: Text
             name: lead
           - <<: *localized_string
-            label: CTA Label
+            label: Button
             name: ctaLabel
-          - { label: Href, name: href, widget: string }
-      - label: "07 Ressourcen"
+          - { label: Button-Ziel, name: href, widget: string }
+
+      - label: "06 Ressourcen"
         name: resources
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
-          - label: Categories
+          - label: Kategorien
             name: categories
             widget: list
             summary: "{{fields.title.de}}"
             fields:
               - <<: *localized_string
-                label: Title
+                label: Titel
                 name: title
-              - label: Items
+              - label: Einträge
                 name: items
                 widget: list
                 summary: "{{fields.name}}"
                 fields:
                   - { label: Name, name: name, widget: string }
                   - <<: *localized_text
-                    label: Description
+                    label: Beschreibung
                     name: description
-                  - { label: URL, name: url, widget: string }
-      - label: "08 Team"
-        name: team
-        widget: object
-        summary: "{{fields.title.de}}"
-        fields:
-          - <<: *localized_string
-            label: Kicker
-            name: kicker
-          - <<: *localized_string
-            label: Title
-            name: title
-          - <<: *localized_text
-            label: Lead
-            name: lead
-          - label: Items
-            name: items
-            widget: list
-            summary: "{{fields.title.de}}"
-            fields: *feature_fields
-      - label: "09 Kontakt"
+                  - { label: Externer Link, name: url, widget: string }
+
+      - label: "07 Kontakt"
         name: contact
         widget: object
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Kicker
+            label: Dachzeile
             name: kicker
           - <<: *localized_string
-            label: Title
+            label: Überschrift
             name: title
           - <<: *localized_text
-            label: Lead
+            label: Text
             name: lead
           - <<: *localized_string
-            label: Newsletter Title
+            label: Newsletter-Titel
             name: newsletterTitle
           - <<: *localized_text
-            label: Newsletter Lead
+            label: Newsletter-Text
             name: newsletterLead
           - <<: *localized_string
-            label: Newsletter Email Label
+            label: Newsletter E-Mail Label
             name: newsletterEmailLabel
           - <<: *localized_string
-            label: Newsletter Email Placeholder
+            label: Newsletter Platzhalter
             name: newsletterEmailPlaceholder
           - <<: *localized_string
-            label: Newsletter Submit Label
+            label: Newsletter Button
             name: newsletterSubmitLabel
           - <<: *localized_string
             label: Name Label
             name: nameLabel
           - <<: *localized_string
-            label: Email Label
+            label: E-Mail Label
             name: emailLabel
           - <<: *localized_string
-            label: Message Label
+            label: Nachricht Label
             name: messageLabel
           - <<: *localized_string
-            label: Submit Label
+            label: Absenden Button
             name: submitLabel
           - <<: *localized_text
-            label: Success Message
+            label: Bestätigung
             name: successMessage
-          - { label: Email Href, name: emailHref, widget: string }
-          - { label: Email Label Text, name: emailLabelText, widget: string }
+          - { label: E-Mail Link, name: emailHref, widget: string }
+          - { label: Sichtbare E-Mail, name: emailLabelText, widget: string }
           - label: Social Links
             name: socialLinks
             widget: list
@@ -311,124 +277,132 @@ singletons:
             fields:
               - { label: Label, name: label, widget: string }
               - { label: URL, name: url, widget: string }
-      - label: "10 Footer"
+
+      - label: "08 Footer"
         name: footer
         widget: object
         summary: "{{fields.copyright}}"
         fields:
           - <<: *localized_text
-            label: Description
+            label: Beschreibung
             name: description
           - <<: *localized_string
-            label: Imprint Label
+            label: Impressum Label
             name: imprintLabel
           - <<: *localized_string
-            label: Privacy Label
+            label: Datenschutz Label
             name: privacyLabel
           - { label: Copyright, name: copyright, widget: string }
-      - label: "11 SEO & Social Sharing"
+
+      - label: "09 SEO & Social Sharing"
         name: meta
         widget: object
+        collapsed: true
         summary: "{{fields.title.de}}"
         fields:
           - <<: *localized_string
-            label: Title
+            label: Meta Title
             name: title
           - <<: *localized_text
-            label: Description
+            label: Meta Description
             name: description
-          - { label: Open Graph Image, name: ogImage, widget: image }
+          - { label: Open-Graph-Bild, name: ogImage, widget: image }
 
   - name: podcast_settings
-    label: Podcast Settings
+    label: Podcast
     file: src/lib/content/podcast-settings.json
     fields:
       - { label: RSS Feed URL, name: rssUrl, widget: string, required: false }
       - <<: *localized_string
-        label: Podcast Title
+        label: Podcast-Titel
         name: title
       - <<: *localized_string
-        label: Kicker
+        label: Dachzeile
         name: kicker
       - <<: *localized_text
         label: Intro
         name: intro
       - <<: *localized_string
-        label: Meta Title
-        name: metaTitle
-      - <<: *localized_text
-        label: Meta Description
-        name: metaDescription
-      - <<: *localized_string
-        label: Back Link Label
+        label: Zurück-Link
         name: backLinkLabel
       - <<: *localized_string
-        label: Listen Label
+        label: Plattformen Label
         name: listenLabel
       - <<: *localized_string
-        label: Search Label
+        label: Suche Label
         name: searchLabel
       - <<: *localized_string
-        label: Search Placeholder
+        label: Suche Platzhalter
         name: searchPlaceholder
       - <<: *localized_string
-        label: Latest Label
+        label: Neueste Folge Label
         name: latestLabel
       - <<: *localized_string
-        label: Recent Label
+        label: Alle Folgen Label
         name: recentLabel
       - <<: *localized_text
-        label: No Results Message
+        label: Keine Suchergebnisse
         name: noResultsMessage
       - <<: *localized_text
-        label: Missing Feed Message
+        label: Hinweis, wenn RSS fehlt
         name: missingFeedMessage
       - <<: *localized_text
-        label: Feed Error Message
+        label: Hinweis bei RSS-Fehler
         name: feedErrorMessage
       - <<: *localized_text
-        label: Empty Feed Message
+        label: Hinweis bei leerem RSS
         name: emptyFeedMessage
       - <<: *localized_string
-        label: Newsletter Title
+        label: Newsletter-Titel
         name: newsletterTitle
       - <<: *localized_text
-        label: Newsletter Lead
+        label: Newsletter-Text
         name: newsletterLead
       - <<: *localized_string
-        label: Newsletter Email Label
+        label: Newsletter E-Mail Label
         name: newsletterEmailLabel
       - <<: *localized_string
-        label: Newsletter Email Placeholder
+        label: Newsletter Platzhalter
         name: newsletterEmailPlaceholder
       - <<: *localized_string
-        label: Newsletter Submit Label
+        label: Newsletter Button
         name: newsletterSubmitLabel
       - <<: *localized_string
-        label: Episode CTA Label
+        label: Folgen-Button
         name: episodeCtaLabel
-      - { label: Fallback Cover, name: fallbackCover, widget: image }
-      - label: Platform Links
+      - { label: Fallback-Cover, name: fallbackCover, widget: image }
+      - label: Plattformlinks
         name: platformLinks
         widget: list
         summary: "{{fields.label}}"
         fields:
           - { label: Label, name: label, widget: string }
           - { label: URL, name: url, widget: string }
+      - label: "SEO"
+        name: seo
+        widget: object
+        collapsed: true
+        fields:
+          - <<: *localized_string
+            label: Meta Title
+            name: metaTitle
+          - <<: *localized_text
+            label: Meta Description
+            name: metaDescription
 
   - name: legal_content
-    label: Impressum und Datenschutz
+    label: Impressum & Datenschutz
     file: src/lib/content/legal-content.json
     fields:
-      - { label: Brand Name, name: brandName, widget: string }
-      - { label: Page Kicker, name: pageKicker, widget: string }
-      - { label: Page Title, name: pageTitle, widget: string }
-      - { label: Page Lead, name: pageLead, widget: text }
-      - { label: Back Link Label, name: backLinkLabel, widget: string }
-      - { label: Impressum Title, name: impressumTitle, widget: string }
+      - { label: Markenname, name: brandName, widget: string }
+      - { label: Dachzeile, name: pageKicker, widget: string }
+      - { label: Seitentitel, name: pageTitle, widget: string }
+      - { label: Einleitung, name: pageLead, widget: text }
+      - { label: Zurück-Link Label, name: backLinkLabel, widget: string }
+      - { label: Impressum Titel, name: impressumTitle, widget: string }
       - { label: Impressum HTML, name: impressumHtml, widget: text }
-      - { label: Website Credit Label, name: websiteCreditLabel, widget: string }
+      - { label: Website Credit, name: websiteCreditLabel, widget: string }
       - { label: Website LinkedIn URL, name: websiteLinkedInUrl, widget: string }
-      - { label: Datenschutz Title, name: datenschutzTitle, widget: string }
+      - { label: Datenschutz Titel, name: datenschutzTitle, widget: string }
       - { label: Datenschutz HTML, name: datenschutzHtml, widget: text }
-      - { label: Notice Text, name: noticeText, widget: text }
+      - { label: Hinweis unten, name: noticeText, widget: text }

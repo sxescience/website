@@ -15,12 +15,26 @@
 		Users,
 		X
 	} from "lucide-svelte";
-	import type { FaqItem, LanguageCode, LocalizedString, PodcastEpisode } from "$lib/cms/types";
+	import type {
+		FaqItem,
+		LandingNavItem,
+		LanguageCode,
+		LocalizedString,
+		PodcastEpisode
+	} from "$lib/cms/types";
 	import type { PageData } from "./$types";
 
 	const LANGUAGE_STORAGE_KEY = "sxe-language";
 	const THEME_STORAGE_KEY = "sxe-theme";
-	const SECTION_IDS = ["about", "faq", "podcast", "resources", "team", "contact"];
+	const SHOW_TEAM_SECTION = false;
+	const SECTION_IDS = [
+		"about",
+		"faq",
+		"podcast",
+		"resources",
+		...(SHOW_TEAM_SECTION ? ["team"] : []),
+		"contact"
+	];
 
 	type ThemeMode = "dark" | "light";
 	type ComparisonColumn = {
@@ -155,6 +169,9 @@
 	const landing = $derived(content.landing);
 	const podcastSettings = $derived(content.podcastSettings);
 	const latestEpisode = $derived(content.podcastFeed.episodes[0]);
+	const visibleNavItems = $derived(
+		landing.nav.filter((item: LandingNavItem) => SECTION_IDS.includes(item.id))
+	);
 
 	onMount(() => {
 		language = getStoredLanguage();
@@ -402,7 +419,7 @@
 			</button>
 
 			<nav id="site-nav" class:open={isMobileMenuOpen} aria-label="Hauptnavigation">
-				{#each landing.nav as item (item.id)}
+				{#each visibleNavItems as item (item.id)}
 					<a
 						href={`#${item.id}`}
 						class:active={activeSectionId === item.id}
@@ -708,22 +725,24 @@
 			</div>
 		</section>
 
-		<section id="team" class="panel section-panel reveal" aria-labelledby="team-title">
-			<div class="section-head">
-				<p class="kicker"><Users size={14} strokeWidth={2.2} /> {t(landing.team.kicker)}</p>
-				<h2 id="team-title">{t(landing.team.title)}</h2>
-				<p class="lead">{t(landing.team.lead)}</p>
-			</div>
-			<div class="card-grid three">
-				{#each landing.team.items as item (t(item.title))}
-					<article class="content-card">
-						<span class="card-icon" aria-hidden="true">{item.icon}</span>
-						<h3>{t(item.title)}</h3>
-						<p>{t(item.text)}</p>
-					</article>
-				{/each}
-			</div>
-		</section>
+		{#if SHOW_TEAM_SECTION}
+			<section id="team" class="panel section-panel reveal" aria-labelledby="team-title">
+				<div class="section-head">
+					<p class="kicker"><Users size={14} strokeWidth={2.2} /> {t(landing.team.kicker)}</p>
+					<h2 id="team-title">{t(landing.team.title)}</h2>
+					<p class="lead">{t(landing.team.lead)}</p>
+				</div>
+				<div class="card-grid three">
+					{#each landing.team.items as item (t(item.title))}
+						<article class="content-card">
+							<span class="card-icon" aria-hidden="true">{item.icon}</span>
+							<h3>{t(item.title)}</h3>
+							<p>{t(item.text)}</p>
+						</article>
+					{/each}
+				</div>
+			</section>
+		{/if}
 
 		<section id="contact" class="panel contact-panel reveal" aria-labelledby="contact-title">
 			<div class="contact-copy">

@@ -1,6 +1,9 @@
 # Sveltia CMS Setup (`/admin`) for Vercel
 
-This project uses Sveltia CMS as a Git-based CMS. No extra backend server is required.
+This project uses Sveltia CMS as its only CMS. Content is stored as JSON in the Git repository and
+published through Vercel deployments.
+
+No extra backend server, database, or paid CMS plan is required.
 
 ## 1) Prerequisites
 
@@ -10,7 +13,7 @@ This project uses Sveltia CMS as a Git-based CMS. No extra backend server is req
 
 ## 2) Admin URL
 
-After deployment, open:
+Open:
 
 - `/admin`
 
@@ -31,17 +34,18 @@ Podcast episodes are not edited manually in the CMS. The central RSS feed URL in
 
 The Landing Page singleton mirrors the public page structure in editing order:
 
-1. Header
-2. Hero
-3. Über SxE
-4. Infografiken
-5. FAQ
-6. Podcast
-7. Ressourcen
-8. Team
-9. Kontakt
-10. Footer
-11. SEO & Social Sharing
+1. Hero
+2. Über SxE
+3. Infografiken
+4. FAQ
+5. Podcast
+6. Ressourcen
+7. Kontakt
+8. Footer
+9. SEO & Social Sharing
+
+Header, navigation, theme labels, and the hidden Team section are intentionally not shown in the CMS.
+The app provides defaults for these technical values.
 
 ## 4) Auth notes
 

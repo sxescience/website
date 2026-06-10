@@ -3,6 +3,7 @@ import {
 	list,
 	localizedString,
 	optionalList,
+	optionalRecord,
 	optionalString,
 	requiredString,
 	type UnknownRecord
@@ -17,6 +18,7 @@ import type {
 	LandingHeroStat,
 	LandingNavItem,
 	LegalContent,
+	LocalizedString,
 	PodcastPageContent,
 	PodcastLink,
 	PodcastSettings,
@@ -27,6 +29,25 @@ import type {
 
 const MIN_FAQ_GROUP_SIZE = 4;
 const MAX_FAQ_GROUP_SIZE = 7;
+
+const DEFAULT_BRAND_NAME = "SxE";
+const DEFAULT_BRAND_SUBTITLE = "Scientists x Entrepreneurship";
+const DEFAULT_SKIP_LINK_LABEL = { de: "Zum Inhalt springen", en: "Skip to content" };
+const DEFAULT_LANGUAGE_TOGGLE_LABEL = { de: "Sprache wechseln", en: "Switch language" };
+const DEFAULT_THEME_TOGGLE_LABEL = { de: "Farbmodus umschalten", en: "Toggle color mode" };
+const DEFAULT_NAV: LandingNavItem[] = [
+	{ id: "about", label: { de: "Über SxE", en: "About SxE" } },
+	{ id: "faq", label: { de: "FAQ", en: "FAQ" } },
+	{ id: "podcast", label: { de: "Podcast", en: "Podcast" } },
+	{ id: "resources", label: { de: "Ressourcen", en: "Resources" } },
+	{ id: "contact", label: { de: "Kontakt", en: "Contact" } }
+];
+const DEFAULT_TEAM: LandingContent["team"] = {
+	kicker: { de: "Team", en: "Team" },
+	title: { de: "Das Team hinter SxE", en: "The team behind SxE" },
+	lead: { de: "", en: "" },
+	items: []
+};
 
 export function mapHomeContent(source: {
 	landing: unknown;
@@ -54,14 +75,18 @@ export function mapPodcastPageContent(source: {
 
 export function mapPodcastSettings(source: unknown): PodcastSettings {
 	const row = asRecord(source, "podcast_settings");
+	const seo = optionalRecord(row.seo);
 
 	return {
 		rssUrl: optionalString(row.rssUrl),
 		title: localizedString(row.title, "podcast_settings.title"),
 		kicker: localizedString(row.kicker, "podcast_settings.kicker"),
 		intro: localizedString(row.intro, "podcast_settings.intro"),
-		metaTitle: localizedString(row.metaTitle, "podcast_settings.metaTitle"),
-		metaDescription: localizedString(row.metaDescription, "podcast_settings.metaDescription"),
+		metaTitle: localizedString(seo?.metaTitle ?? row.metaTitle, "podcast_settings.metaTitle"),
+		metaDescription: localizedString(
+			seo?.metaDescription ?? row.metaDescription,
+			"podcast_settings.metaDescription"
+		),
 		backLinkLabel: localizedString(row.backLinkLabel, "podcast_settings.backLinkLabel"),
 		listenLabel: localizedString(row.listenLabel, "podcast_settings.listenLabel"),
 		searchLabel: localizedString(row.searchLabel, "podcast_settings.searchLabel"),
@@ -121,23 +146,30 @@ export function mapLegalContent(source: unknown): LegalContent {
 
 function mapLandingContent(source: unknown): LandingContent {
 	const row = asRecord(source, "landing_content");
-	const header = asRecord(row.header ?? row, "landing_content.header");
+	const header = optionalRecord(row.header);
 	const faq = mapFaq(asRecord(row.faq, "landing_content.faq"));
+	const nav = optionalList(header?.nav, "landing_content.header.nav");
 
 	return {
 		meta: mapMeta(row.meta),
-		brandName: requiredString(header.brandName, "landing_content.header.brandName"),
-		brandSubtitle: requiredString(header.brandSubtitle, "landing_content.header.brandSubtitle"),
-		skipLinkLabel: localizedString(header.skipLinkLabel, "landing_content.header.skipLinkLabel"),
-		languageToggleLabel: localizedString(
-			header.languageToggleLabel,
+		brandName: stringWithFallback(header?.brandName, DEFAULT_BRAND_NAME),
+		brandSubtitle: stringWithFallback(header?.brandSubtitle, DEFAULT_BRAND_SUBTITLE),
+		skipLinkLabel: localizedStringWithFallback(
+			header?.skipLinkLabel,
+			DEFAULT_SKIP_LINK_LABEL,
+			"landing_content.header.skipLinkLabel"
+		),
+		languageToggleLabel: localizedStringWithFallback(
+			header?.languageToggleLabel,
+			DEFAULT_LANGUAGE_TOGGLE_LABEL,
 			"landing_content.header.languageToggleLabel"
 		),
-		themeToggleAriaLabel: localizedString(
-			header.themeToggleAriaLabel,
+		themeToggleAriaLabel: localizedStringWithFallback(
+			header?.themeToggleAriaLabel,
+			DEFAULT_THEME_TOGGLE_LABEL,
 			"landing_content.header.themeToggleAriaLabel"
 		),
-		nav: list(header.nav, "landing_content.header.nav").map(mapNavItem),
+		nav: nav.length > 0 ? nav.map(mapNavItem) : DEFAULT_NAV,
 		hero: mapHero(row.hero),
 		about: mapAbout(row.about),
 		infographics: mapInfographics(row.infographics),
@@ -145,8 +177,28 @@ function mapLandingContent(source: unknown): LandingContent {
 		faq,
 		resources: mapResources(row.resources),
 		contact: mapContact(row.contact),
-		team: mapTeam(row.team),
+		team: optionalRecord(row.team) ? mapTeam(row.team) : DEFAULT_TEAM,
 		footer: mapFooter(row.footer)
+	};
+}
+
+function stringWithFallback(value: unknown, fallback: string): string {
+	return optionalString(value) || fallback;
+}
+
+function localizedStringWithFallback(
+	value: unknown,
+	fallback: LocalizedString,
+	context: string
+): LocalizedString {
+	const row = optionalRecord(value);
+	if (!row) {
+		return fallback;
+	}
+
+	return {
+		de: optionalString(row.de) || fallback.de,
+		en: optionalString(row.en) || fallback.en
 	};
 }
 
