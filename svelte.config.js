@@ -11,7 +11,7 @@ const config = {
 		}),
 		prerender: {
 			crawl: true,
-			entries: ['*', '/sitemap.xml', '/rss.xml']
+			entries: ['/', '/podcast', '/impressum', '/admin', '/sitemap.xml', '/rss.xml']
 		}
 	}
 };
