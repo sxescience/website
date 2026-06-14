@@ -15,9 +15,14 @@ app.use(express.static(join(__dirname, 'build'), {
   etag: false
 }));
 
-// SPA fallback - only for actual page routes (not /api/* or missing files)
+// SPA fallback - only for actual page routes (not /api/*, /__data.json, or missing files)
 app.get('*', (req, res) => {
   const indexPath = join(__dirname, 'build', 'index.html');
+
+  // Don't fallback for SvelteKit internal endpoints or API routes
+  if (req.path.startsWith('/__') || req.path.startsWith('/api/')) {
+    return res.status(404).send('Not Found');
+  }
 
   // Check if the file exists as a static asset
   const filePath = join(__dirname, 'build', req.path);
