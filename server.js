@@ -15,22 +15,26 @@ app.use(express.static(join(__dirname, 'build'), {
   etag: false
 }));
 
-// SPA fallback - only for actual page routes (not /api/*, /__data.json, or missing files)
+// SPA fallback - serve index.html for all routes not found in static files
 app.get('*', (req, res) => {
   const indexPath = join(__dirname, 'build', 'index.html');
-
-  // Don't fallback for SvelteKit internal endpoints or API routes
-  if (req.path.startsWith('/__') || req.path.startsWith('/api/')) {
-    return res.status(404).send('Not Found');
-  }
+  const filePath = join(__dirname, 'build', req.path);
 
   // Check if the file exists as a static asset
-  const filePath = join(__dirname, 'build', req.path);
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    return res.sendFile(filePath);
+  if (fs.existsSync(filePath)) {
+    if (fs.statSync(filePath).isFile()) {
+      return res.sendFile(filePath);
+    }
+    // If it's a directory, try index.html in that directory
+    if (fs.statSync(filePath).isDirectory()) {
+      const indexInDir = join(filePath, 'index.html');
+      if (fs.existsSync(indexInDir)) {
+        return res.sendFile(indexInDir);
+      }
+    }
   }
 
-  // Otherwise serve index.html for SPA routing
+  // For all other routes, serve index.html (SPA fallback)
   res.sendFile(indexPath);
 });
 
