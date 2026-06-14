@@ -1,6 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -8,12 +9,24 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from build directory
-app.use(express.static(join(__dirname, 'build')));
+// Serve static files from build directory with cache control
+app.use(express.static(join(__dirname, 'build'), {
+  maxAge: '1h',
+  etag: false
+}));
 
-// SPA fallback - serve index.html for all other routes
+// SPA fallback - only for actual page routes (not /api/* or missing files)
 app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'build', 'index.html'));
+  const indexPath = join(__dirname, 'build', 'index.html');
+
+  // Check if the file exists as a static asset
+  const filePath = join(__dirname, 'build', req.path);
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+    return res.sendFile(filePath);
+  }
+
+  // Otherwise serve index.html for SPA routing
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
